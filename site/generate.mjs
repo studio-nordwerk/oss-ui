@@ -286,6 +286,7 @@ const body = `${sprite}
   <header class="intro">
     <h1>scroll-carousel</h1>
     <p>A carousel that is a native horizontal scroller first. The layout is plain CSS with scroll snap, so the server markup is already the final layout. A small script adds arrows, dots, paging by group, an API and change events; drag and autoplay are opt-in plugins. No runtime dependencies. React, Preact and Astro adapters included.</p>
+    <p class="sizes"><code>pnpm add @nordwerk/scroll-carousel</code></p>
     <p class="sizes">Core <b>${sizes.core}</b>, drag <b>+${sizes.drag}</b>, autoplay <b>+${sizes.autoplay}</b>, stylesheet <b>${sizes.css}</b>, all gzip and minified.</p>
     <nav class="links" aria-label="Project">
       <a href="https://github.com/studio-nordwerk/scroll-carousel">Source on GitHub</a>

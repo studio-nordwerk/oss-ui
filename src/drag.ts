@@ -71,13 +71,17 @@ export const drag =
       const [t0, x0] = done.trail[0];
       const velocity = event.timeStamp > t0 ? (event.clientX - x0) / (event.timeStamp - t0) : 0;
       const here = readPos();
-      const projected = clamp(here + (rtl ? velocity : -velocity) * 200, 0, max);
-      if (snap == 'none') return scrollTo(projected);
+      const forward = rtl ? velocity : -velocity; // px per ms towards the end
+      // Free scrolling keeps the momentum of the throw.
+      if (snap == 'none') return scrollTo(clamp(here + forward * 200, 0, max));
+      // Snapping rows move by whole pages: to the page the drag reached, or one page on for a
+      // short drag or a flick, never several pages at once however fast the throw.
       const positions = pages.map((page) => page.pos);
-      let page = closest(positions, projected);
+      const start = closest(positions, done.from);
+      let page = closest(positions, here);
       const moved = here - done.from;
-      if (page == closest(positions, done.from) && Math.abs(moved) > 40) {
-        page = clamp(page + Math.sign(moved), 0, pages.length - 1);
+      if (page == start && (Math.abs(moved) > 40 || Math.abs(forward) > 0.3)) {
+        page = clamp(start + Math.sign(Math.abs(moved) > 40 ? moved : forward), 0, pages.length - 1);
       }
       toPage(page);
     };

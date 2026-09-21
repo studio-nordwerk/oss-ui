@@ -55,8 +55,12 @@
     "dist",
     "src/astro",
     "AGENTS.md",
+    "CHANGELOG.md",
     "docs/migration.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -66,7 +70,8 @@
     "fixtures": "node scripts/fixtures.mjs",
     "test:e2e": "playwright test",
     "serve": "node scripts/serve.mjs",
-    "check": "pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm fixtures && pnpm test:e2e"
+    "check": "pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm fixtures && pnpm test:e2e",
+    "prepublishOnly": "node scripts/build.mjs"
   },
   "peerDependencies": {
     "preact": ">=10",

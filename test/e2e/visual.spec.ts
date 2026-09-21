@@ -19,8 +19,16 @@ for (const width of [390, 768, 1280]) {
     await ready(page);
     await page.mouse.move(0, 0);
     for (const name of names) {
-      const root = page.locator(`[data-case="${name}"], [data-wire="${name}"]`);
-      await expect(root).toHaveScreenshot(`${name}-${width}.png`);
+      const selector = `[data-case="${name}"], [data-wire="${name}"]`;
+      // Show only this example, so its position does not depend on text elsewhere on the page:
+      // sub-pixel offsets from prose above would otherwise change the rounded screenshot size.
+      const isolate = await page.addStyleTag({
+        content: `.intro, .bench-bar, .case-head, .readout, .api, .code, .foot, .pattern > h3, .pattern > p, .wf-table-wrap { display: none !important; }
+          main > section:not(:has(${selector})), .pattern:not(:has(${selector})) { display: none !important; }`,
+      });
+      await page.waitForTimeout(100);
+      await expect(page.locator(selector)).toHaveScreenshot(`${name}-${width}.png`);
+      await isolate.evaluate((style) => style.remove());
     }
   });
 }

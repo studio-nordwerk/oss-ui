@@ -19,13 +19,11 @@ Adapters for React, Preact and Astro are included; they render the markup and at
 
 ## Install
 
-Not on npm yet. Until it is, install from a release tarball or a local checkout:
-
 ```sh
-pnpm add ./path/to/scroll-carousel   # after pnpm install && pnpm build in the checkout
+pnpm add @nordwerk/scroll-carousel
 ```
 
-Imports then work under the package name `@nordwerk/scroll-carousel`.
+React and Preact are optional peer dependencies; the Astro component compiles in your Astro build.
 
 ## Quick start
 
