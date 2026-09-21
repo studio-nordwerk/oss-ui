@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 (2026-09-21)
 
 - Astro and `templateLabels`: `statusSingle` template for when only one slide is visible, so a
   status like "Items {first} to {last}" does not read "Items 2 to 2".
