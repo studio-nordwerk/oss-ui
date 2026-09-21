@@ -42,3 +42,10 @@ test('label templates', () => {
   assert.equal(labels.status!(3, 6, 12), 'Showing 3 to 6 of 12');
   assert.deepEqual(Object.keys(templateLabels({})), []);
 });
+
+test('a separate template for a single visible slide', () => {
+  const labels = templateLabels({ status: 'Items {first} to {last} of {count}', statusSingle: 'Item {first} of {count}' });
+  assert.equal(labels.status!(2, 2, 6), 'Item 2 of 6');
+  assert.equal(labels.status!(2, 4, 6), 'Items 2 to 4 of 6');
+  assert.equal(templateLabels({ statusSingle: 'Item {first} of {count}' }).status!(3, 3, 6), 'Item 3 of 6');
+});

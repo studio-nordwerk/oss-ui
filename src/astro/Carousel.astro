@@ -21,8 +21,11 @@ interface Props extends LayoutProps {
   drag?: boolean;
   /** Milliseconds per page; renders the play button. */
   autoplay?: number;
-  /** Label templates: page 'Slide {n} of {count}', status 'Items {first} to {last} of {count}', prev, next. */
-  labels?: { page?: string; status?: string; prev?: string; next?: string; play?: string; pause?: string };
+  /**
+   * Label templates: page 'Slide {n} of {count}', status 'Items {first} to {last} of {count}',
+   * statusSingle 'Item {first} of {count}' for one visible slide, prev, next, play, pause.
+   */
+  labels?: { page?: string; status?: string; statusSingle?: string; prev?: string; next?: string; play?: string; pause?: string };
 }
 
 const props = Astro.props;

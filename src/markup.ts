@@ -101,14 +101,20 @@ export const PRE_POSITION =
   "if(!s||s==f)return;var a=s.getBoundingClientRect(),b=f.getBoundingClientRect();" +
   "t.scrollLeft=getComputedStyle(t).direction=='rtl'?a.right-b.right:a.left-b.left})(document.currentScript.previousElementSibling)";
 
-/** Label templates such as 'Slide {n} of {count}' turned into label functions. */
-export function templateLabels(templates: { page?: string; status?: string } = {}) {
+/**
+ * Label templates such as 'Slide {n} of {count}' turned into label functions. `statusSingle`
+ * is used when only one slide is visible, e.g. 'Item {first} of {count}' next to a `status` of
+ * 'Items {first} to {last} of {count}'.
+ */
+export function templateLabels(templates: { page?: string; status?: string; statusSingle?: string } = {}) {
   const fill = (template: string, values: Record<string, number>) =>
     template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
+  const status = templates.status || templates.statusSingle;
   return {
     ...(templates.page && { page: (n: number, count: number) => fill(templates.page!, { n, count }) }),
-    ...(templates.status && {
-      status: (first: number, last: number, count: number) => fill(templates.status!, { first, last, count }),
+    ...(status && {
+      status: (first: number, last: number, count: number) =>
+        fill(first == last && templates.statusSingle ? templates.statusSingle : status, { first, last, count }),
     }),
   };
 }

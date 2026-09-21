@@ -5,7 +5,7 @@ so the markup your server sends is already the final layout: no layout shift, no
 no device detection on the server. A small script adds arrows, dots, paging by group, an API and
 change events. Drag and autoplay are opt-in plugins. No runtime dependencies.
 
-**Live examples:** https://studio-nordwerk.github.io/scroll-carousel/ (every configuration, with
+**Live examples:** https://www.nordwerk.studio/oss/scroll-carousel (every configuration, with
 its code, plus common storefront patterns as wireframes next to the library options they replace).
 
 | Part | gzip, minified |

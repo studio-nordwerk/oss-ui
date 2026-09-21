@@ -26,7 +26,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
+      # The published site sends visitors of the GitHub Pages address to www.nordwerk.studio,
+      # which serves the same files under /oss/scroll-carousel.
       - run: pnpm site
+        env:
+          SITE_REDIRECT: '1'
       - run: pnpm size
       - run: pnpm fixtures
       - run: pnpm exec playwright install --with-deps chromium webkit firefox

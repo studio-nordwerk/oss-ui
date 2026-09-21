@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Astro and `templateLabels`: `statusSingle` template for when only one slide is visible, so a
+  status like "Items {first} to {last}" does not read "Items 2 to 2".
+- Documentation moved to https://www.nordwerk.studio/oss/scroll-carousel; the GitHub Pages
+  address forwards there.
+
 ## 0.1.0 (2026-09-21)
 
 First version.

@@ -2,7 +2,7 @@
 
 Two parts: how to build a carousel with this package in a project, and how to work on the package
 itself. Human documentation is in README.md; live examples with code are at
-https://studio-nordwerk.github.io/scroll-carousel/.
+https://www.nordwerk.studio/oss/scroll-carousel.
 
 ## Part 1: using the package
 
@@ -79,7 +79,9 @@ JavaScript, never move slides with transforms, never clone slides.
 - `src/astro/Carousel.astro`: shipped as source.
 - `src/carousel.css`: all layout and the default controls.
 - `site/`: the documentation site (`generate.mjs` writes `_site/`), including the wireframe
-  patterns in `wireframes.mjs`. Content there is fictional.
+  patterns in `wireframes.mjs`. Content there is fictional. CI publishes it to GitHub Pages;
+  www.nordwerk.studio/oss/scroll-carousel serves the same files through a proxy that rewrites
+  `<base href>`, so every link in the site must stay relative to `<base>`.
 - `test/unit/`: node's test runner on the TypeScript sources.
 - `test/e2e/`: Playwright against `_site/` and the adapter fixtures from `scripts/fixtures.mjs`.
 
