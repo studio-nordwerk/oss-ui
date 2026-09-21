@@ -35,6 +35,11 @@ for (const { name, url } of fixtures) {
           w.__startLeft = document.querySelector('[data-sc-track]')!.scrollLeft;
         });
       });
+      // Hold the scripts back, so the server markup is painted before anything hydrates or attaches.
+      await page.route(/(-client\.js|_astro\/.*\.js)$/, async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        await route.continue();
+      });
       await page.goto(url);
       await page.waitForSelector('.sc[data-sc-ready]');
       await page.waitForTimeout(300);

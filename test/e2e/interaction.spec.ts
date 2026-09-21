@@ -190,8 +190,15 @@ test('without the script every row still scrolls and no control is shown', async
   expect(baseline).toEqual({ controls: 0, dots: 0, scrollable: baseline.tracks - 2, tracks: 13 });
 });
 
-test('attaching causes no layout shift', async ({ page, browserName }) => {
+test('attaching causes no layout shift, even when the script arrives late', async ({ page, browserName }) => {
   test.skip(browserName != 'chromium', 'layout shift is only reported by Chromium');
+  // Hold the script back, so the page is painted before anything attaches, as on a real network.
+  await page.route('**/demo.js', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    await route.continue();
+  });
+  await page.goto('/');
+  await ready(page);
   const shift = await page.evaluate(
     () =>
       new Promise<number>((resolve) => {

@@ -53,6 +53,10 @@ const snippet = (parts) =>
 
 const playButton = `<button class="sc-play" type="button" data-sc-play aria-label="Stop automatic scrolling"><svg class="sc-icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"/></svg><svg class="sc-icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>`;
 
+// Same structure as the readout the script fills in, so filling it shifts nothing.
+const readout = (id) =>
+  `<p class="readout" data-readout="${id}"><span>index <b>0</b></span><span>page <b>1</b> of <b>1</b></span><span>isBeginning <b>true</b></span><span>isEnd <b>false</b></span><span>change events <b>0</b></span></p>`;
+
 const IMPORTS = `import { attach } from '@nordwerk/scroll-carousel';
 import '@nordwerk/scroll-carousel/carousel.css';`;
 
@@ -151,7 +155,7 @@ ${products.slice(3, 11).map(card).join('\n')}
             <label><input type="radio" name="snap" value="proximity"><span>rests on a product only when close to one<small>scroll snap proximity</small></span></label>
             <label><input type="radio" name="snap" value="none"><span>stops wherever momentum ends<small>no scroll snap, free mode without sticky</small></span></label>
           </fieldset>
-          <p class="readout" data-readout="phone"></p>
+          ${readout('phone')}
         </div>
       </div>`,
     code: [
@@ -272,7 +276,7 @@ const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="
       ${c.custom ?? `<div class="${c.stage}">
         ${c.body}
       </div>`}
-      ${c.id == 'phone' ? '' : `<p class="readout" data-readout="${c.id}"></p>`}
+      ${c.id == 'phone' ? '' : readout(c.id)}
       ${c.after ?? ''}
       ${snippet(c.code)}
     </section>`;

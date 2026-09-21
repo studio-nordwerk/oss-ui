@@ -227,12 +227,13 @@
 }
 
 /* Without the script, or without overflow, controls are absent: never focusable and dead.
-   Dots keep their space so that attaching the script cannot shift the layout. */
-.sc:not([data-sc-ready][data-sc-overflow]) :is(.sc-nav, .sc-play) {
+   Arrows float over the track and can simply go; dots and the play button keep their space,
+   so attaching the script cannot shift the layout around them. */
+.sc:not([data-sc-ready][data-sc-overflow]) .sc-nav {
   display: none;
 }
 
-.sc:not([data-sc-ready][data-sc-overflow]) .sc-dots {
+.sc:not([data-sc-ready][data-sc-overflow]) :is(.sc-dots, .sc-play) {
   visibility: hidden;
 }
 
