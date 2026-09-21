@@ -16,11 +16,14 @@ test.describe('product row paged by group', () => {
     expect(await settled(page, 'bestsellers')).toMatchObject({ page: 1, index: 4 });
     expect(await changes(page, 'bestsellers')).toBe(1);
 
-    // Two quick clicks move two groups and settle once.
+    // Two clicks while the first move is still in flight: the second counts on from its target,
+    // and the row settles once. Both in one task, so the timing does not depend on the machine.
     await row.locator('.sc-dot').first().click();
     await settled(page, 'bestsellers');
-    await row.locator('.sc-next').click();
-    await row.locator('.sc-next').click();
+    await row.locator('.sc-next').evaluate((next: HTMLElement) => {
+      next.click();
+      next.click();
+    });
     expect(await settled(page, 'bestsellers')).toMatchObject({ page: 2, isEnd: true, index: 8 });
     expect(await changes(page, 'bestsellers')).toBe(3);
   });
