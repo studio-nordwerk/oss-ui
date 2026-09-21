@@ -145,6 +145,18 @@ test('right to left', async ({ page }) => {
   expect(await settled(page, 'bestsellers')).toMatchObject({ page: 2 });
 });
 
+test('the page never scrolls sideways', async ({ page }) => {
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.waitForTimeout(200);
+    const { scrollWidth, clientWidth } = await page.evaluate(() => {
+      const { scrollWidth, clientWidth } = document.scrollingElement!;
+      return { scrollWidth, clientWidth };
+    });
+    expect(scrollWidth, `at ${width} px`).toBe(clientWidth);
+  }
+});
+
 test('several carousels on one page are independent', async ({ page }) => {
   await call(page, 'guides', 'goToPage', 3, { instant: true });
   expect(await settled(page, 'guides')).toMatchObject({ page: 3 });

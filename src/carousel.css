@@ -38,6 +38,9 @@
       var(--_n)
   );
   --_edge: calc((100cqi - var(--_size)) / 2 * var(--sc-centered, 0));
+  /* Also the containing block for anything absolutely positioned inside the slides, which the
+     scroller then clips instead of letting it widen the page. */
+  position: relative;
   display: flex;
   gap: var(--_gap);
   margin: 0;
