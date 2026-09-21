@@ -1,0 +1,88 @@
+---
+/*
+ * Astro adapter. Renders the carousel markup around the slides you pass in the default slot
+ * (one element per slide: <li> when as="ul", otherwise any element) and attaches the core in the
+ * browser. Drag and autoplay are loaded only when a carousel on the page asks for them.
+ */
+import '@nordwerk/scroll-carousel/carousel.css';
+import { PRE_POSITION, baseVars, responsiveCss, type LayoutProps } from '@nordwerk/scroll-carousel/markup';
+
+interface Props extends LayoutProps {
+  /** Accessible name of the scrolling list. */
+  label: string;
+  as?: 'ul' | 'div';
+  class?: string;
+  style?: string;
+  centerFew?: boolean;
+  arrows?: boolean;
+  dots?: boolean;
+  initial?: number;
+  rewind?: boolean | 'fade' | 'scroll';
+  drag?: boolean;
+  /** Milliseconds per page; renders the play button. */
+  autoplay?: number;
+  /** Label templates: page 'Slide {n} of {count}', status 'Items {first} to {last} of {count}', prev, next. */
+  labels?: { page?: string; status?: string; prev?: string; next?: string; play?: string; pause?: string };
+}
+
+const props = Astro.props;
+const { as: Track = 'div', label, class: className, style = '', centerFew, arrows = true, dots = true } = props;
+const { initial = 0, rewind, drag, autoplay, labels = {} } = props;
+const id = `sc${Math.random().toString(36).slice(2, 10)}`;
+const css = responsiveCss(id, props);
+const vars = Object.entries(baseVars(props)).map(([name, value]) => `${name}:${value}`).join(';');
+const options = JSON.stringify({ initial, rewind, drag, autoplay, labels, group: typeof props.group == 'object' ? undefined : props.group });
+---
+
+<div class:list={['sc', { 'sc--center-few': centerFew }, className]} data-sc-id={id} data-sc-astro={options} style={[vars, style].filter(Boolean).join(';')}>
+  {css && <style set:html={css} />}
+  <Track class="sc-track" data-sc-track tabindex="0" aria-label={label}><slot /></Track>
+  {arrows && (
+    <>
+      <button type="button" class="sc-nav sc-prev" data-sc-prev aria-label={labels.prev ?? 'Previous'}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6" /></svg>
+      </button>
+      <button type="button" class="sc-nav sc-next" data-sc-next aria-label={labels.next ?? 'Next'}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6" /></svg>
+      </button>
+    </>
+  )}
+  {autoplay && (
+    <button type="button" class="sc-play" data-sc-play aria-label={labels.pause ?? 'Stop automatic scrolling'}>
+      <svg class="sc-icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" /></svg>
+      <svg class="sc-icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /></svg>
+    </button>
+  )}
+  {dots && <div class="sc-dots" data-sc-dots></div>}
+  <p class="sc-status" data-sc-status aria-live="polite"></p>
+</div>
+{initial > 0 && <script is:inline set:html={PRE_POSITION} />}
+
+<script>
+  import { attach, getCarousel, type Plugin } from '@nordwerk/scroll-carousel';
+  import { templateLabels } from '@nordwerk/scroll-carousel/markup';
+
+  async function attachAll() {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-sc-astro]')) {
+      if (getCarousel(root)) continue;
+      const options = JSON.parse(root.dataset.scAstro || '{}');
+      const plugins: Plugin[] = [];
+      if (options.drag) plugins.push((await import('@nordwerk/scroll-carousel/drag')).drag());
+      if (options.autoplay) {
+        const { autoplay } = await import('@nordwerk/scroll-carousel/autoplay');
+        plugins.push(autoplay({ delay: options.autoplay, labels: options.labels }));
+      }
+      // The page may have changed while the plugins loaded.
+      if (root.isConnected) attach(root, { ...options, labels: templateLabels(options.labels), plugins });
+    }
+  }
+
+  attachAll();
+  document.addEventListener('astro:page-load', attachAll);
+  // With view transitions, carousels that leave the page must let go of their listeners.
+  document.addEventListener('astro:before-swap', () => {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-sc-astro]')) {
+      if (!root.closest('[data-astro-transition-persist]')) getCarousel(root)?.destroy();
+    }
+  });
+</script>

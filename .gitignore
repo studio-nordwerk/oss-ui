@@ -1,0 +1,9 @@
+node_modules/
+dist/
+_site/
+test-results/
+playwright-report/
+test/fixtures/astro/.astro/
+.DS_Store
+# The task brief refers to private material and never goes into this repository.
+TASK.md

@@ -1,0 +1,16 @@
+---
+import Carousel from '@nordwerk/scroll-carousel/astro';
+const items = Array.from({ length: 12 }, (_, i) => `Item ${i + 1}`);
+---
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Astro fixture</title></head>
+  <body style="font-family: system-ui, sans-serif">
+    <main style="max-width: 900px; margin: 0 auto; padding: 16px">
+      <h1>Fixture</h1>
+      <Carousel as="ul" label="Fixture items" perView={{ 0: 2, 600: 3, 800: 4 }} group="page" gap={12} initial={5} drag rewind labels={{ prev: 'Previous items', next: 'Next items', page: 'Page {n} of {count}' }}>
+        {items.map((name, i) => <li data-sc-initial={i == 5 ? '' : undefined}><div class="item" style="height:160px;background:#e8ebe8;display:grid;place-items:center">{name}</div></li>)}
+      </Carousel>
+      <p>Below the carousel.</p>
+    </main>
+  </body>
+</html>

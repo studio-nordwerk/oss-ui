@@ -1,0 +1,101 @@
+{
+  "name": "@nordwerk/scroll-carousel",
+  "version": "0.1.0",
+  "description": "A dependency-free carousel on native scrolling: CSS scroll snap first, arrows, dots, paging and an API as progressive enhancement.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/studio-nordwerk/scroll-carousel.git"
+  },
+  "homepage": "https://studio-nordwerk.github.io/scroll-carousel/",
+  "keywords": [
+    "carousel",
+    "slider",
+    "scroll-snap",
+    "progressive-enhancement",
+    "accessibility",
+    "react",
+    "preact",
+    "astro"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./drag": {
+      "types": "./dist/drag.d.ts",
+      "default": "./dist/drag.js"
+    },
+    "./autoplay": {
+      "types": "./dist/autoplay.d.ts",
+      "default": "./dist/autoplay.js"
+    },
+    "./markup": {
+      "types": "./dist/markup.d.ts",
+      "default": "./dist/markup.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "default": "./dist/react.js"
+    },
+    "./preact": {
+      "types": "./dist/preact.d.ts",
+      "default": "./dist/preact.js"
+    },
+    "./astro": "./src/astro/Carousel.astro",
+    "./carousel.css": "./dist/carousel.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src/astro",
+    "AGENTS.md",
+    "docs/migration.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test \"test/unit/*.test.ts\"",
+    "size": "node scripts/size.mjs",
+    "site": "node scripts/build.mjs && node site/generate.mjs",
+    "fixtures": "node scripts/fixtures.mjs",
+    "test:e2e": "playwright test",
+    "serve": "node scripts/serve.mjs",
+    "check": "pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm fixtures && pnpm test:e2e"
+  },
+  "peerDependencies": {
+    "preact": ">=10",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.61.1",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.3.3",
+    "esbuild": "0.28.2",
+    "preact": "^10.29.8",
+    "preact-render-to-string": "6.7.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.5.1"
+}

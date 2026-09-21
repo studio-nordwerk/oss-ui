@@ -1,0 +1,254 @@
+/*
+ * scroll-carousel, prototype stylesheet.
+ *
+ * The layout is complete without JavaScript: the server-rendered markup is already the final
+ * layout, and the script only adds controls. Everything is configured with custom properties,
+ * which can be set anywhere above the track and changed in media or container queries. The root
+ * is the query container, so inside `@container sc (...)` set them on .sc-track.
+ *
+ *   --sc-per-view       slides per view; a fraction shows part of the next slide. Default 1.
+ *   --sc-slide-size     a fixed slide size, or auto for the content width. Wins over per-view.
+ *   --sc-gap            space between slides. Default 1rem.
+ *   --sc-offset-before  space before the first slide; snapped slides line up with it. Default 0.
+ *   --sc-offset-after   space after the last slide. Default 0.
+ *   --sc-snap           mandatory, proximity or none. Default mandatory.
+ *   --sc-align          start or center. Default start.
+ *   --sc-centered       1 pads both ends so the first and last slide can reach the centre.
+ *                       Derived from --sc-per-view, so it does not combine with --sc-slide-size.
+ *   --sc-count          the number of slides, when known; per-view never exceeds it.
+ *   --sc-group          slides per step of next and previous: a number, or page. Read by the script.
+ *   --sc-controls       none hides the arrows, dots and play button, e.g. for free mode on phones.
+ *
+ * Theme, all optional: --sc-control-bg, --sc-control-fg, --sc-control-border,
+ * --sc-control-size, --sc-control-radius, --sc-control-shadow, --sc-nav-top, --sc-nav-inset,
+ * --sc-dot, --sc-dot-size, --sc-dot-height, --sc-dot-active-size, --sc-dot-radius, --sc-dot-idle,
+ * --sc-focus.
+ */
+
+.sc {
+  container: sc / inline-size;
+  position: relative;
+}
+
+.sc-track {
+  --_n: min(var(--sc-per-view, 1), var(--sc-count, 1000));
+  --_gap: var(--sc-gap, 1rem);
+  --_size: calc(
+    (100cqi - var(--sc-offset-before, 0px) - var(--sc-offset-after, 0px) - (var(--_n) - 1) * var(--_gap)) /
+      var(--_n)
+  );
+  --_edge: calc((100cqi - var(--_size)) / 2 * var(--sc-centered, 0));
+  display: flex;
+  gap: var(--_gap);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: calc(var(--sc-offset-before, 0px) + var(--_edge)) calc(var(--sc-offset-after, 0px) + var(--_edge));
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  /* `x none` is invalid, which makes the property fall back to its initial value, none. */
+  scroll-snap-type: x var(--sc-snap, mandatory);
+  scroll-padding-inline: var(--sc-offset-before, 0px) var(--sc-offset-after, 0px);
+  scrollbar-width: none;
+  transition: opacity 0.16s ease;
+}
+
+.sc-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Zero specificity, so a host can size its own slides without a fight. */
+:where(.sc-track > *) {
+  flex: 0 0 var(--sc-slide-size, var(--_size));
+  min-width: 0;
+  scroll-snap-align: var(--sc-align, start);
+}
+
+:where(.sc-track > [data-sc-snap-off]) {
+  scroll-snap-align: none;
+}
+
+/* A row too short to scroll sits in the middle; auto margins collapse to 0 once it overflows. */
+.sc--center-few :where(.sc-track > :first-child) {
+  margin-inline-start: auto;
+}
+
+.sc--center-few :where(.sc-track > :last-child) {
+  margin-inline-end: auto;
+}
+
+.sc-track:focus-visible {
+  outline: 2px solid var(--sc-focus, Highlight);
+  outline-offset: -2px;
+}
+
+.sc[data-sc-drag][data-sc-overflow] .sc-track {
+  cursor: grab;
+}
+
+.sc[data-sc-drag] .sc-track :is(img, a) {
+  -webkit-user-drag: none;
+}
+
+.sc-track[data-sc-dragging] {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sc-track[data-sc-fading] {
+  opacity: 0;
+}
+
+/* Default controls. All optional: a host can bring its own and bind them to the API. */
+
+.sc-nav,
+.sc-play {
+  display: var(--sc-controls, grid);
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: var(--sc-control-size, 2.75rem);
+  block-size: var(--sc-control-size, 2.75rem);
+  padding: 0;
+  border: 1px solid var(--sc-control-border, color-mix(in srgb, currentColor 22%, transparent));
+  border-radius: var(--sc-control-radius, 50%);
+  background: var(--sc-control-bg, Canvas);
+  box-shadow: var(--sc-control-shadow, none);
+  color: var(--sc-control-fg, CanvasText);
+  font: inherit;
+  cursor: pointer;
+}
+
+.sc-nav {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: var(--sc-nav-top, 50%);
+  translate: 0 -50%;
+}
+
+.sc-prev {
+  inset-inline-start: var(--sc-nav-inset, 0.5rem);
+}
+
+.sc-next {
+  inset-inline-end: var(--sc-nav-inset, 0.5rem);
+}
+
+.sc-nav svg,
+.sc-play svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sc-nav:dir(rtl) svg {
+  scale: -1 1;
+}
+
+.sc-nav[aria-disabled='true'] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sc-play .sc-icon-pause,
+.sc[data-sc-playing] .sc-play .sc-icon-play {
+  display: none;
+}
+
+.sc[data-sc-playing] .sc-play .sc-icon-pause {
+  display: block;
+}
+
+.sc-dots {
+  display: var(--sc-controls, flex);
+  flex-wrap: wrap;
+  justify-content: center;
+  min-block-size: 1.5rem;
+}
+
+.sc-dot {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sc-dot, currentColor);
+  cursor: pointer;
+}
+
+.sc-dot::before {
+  content: '';
+  inline-size: var(--sc-dot-size, 0.5rem);
+  block-size: var(--sc-dot-height, var(--sc-dot-size, 0.5rem));
+  border-radius: var(--sc-dot-radius, 1rem);
+  background: currentColor;
+  opacity: var(--sc-dot-idle, 0.35);
+  transition: inline-size 0.2s ease, opacity 0.2s ease;
+}
+
+.sc-dot[aria-current]::before {
+  inline-size: var(--sc-dot-active-size, 1.25rem);
+  opacity: 1;
+}
+
+/* While autoplay runs, the current dot fills up until the next move. */
+.sc[data-sc-playing] .sc-dot[aria-current]::before {
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / 0 100% no-repeat,
+    color-mix(in srgb, currentColor 35%, transparent);
+  animation: sc-progress var(--sc-autoplay-delay, 5s) linear forwards;
+}
+
+.sc[data-sc-playing] .sc-dot[aria-current]:dir(rtl)::before {
+  background-position: 100% 0;
+}
+
+.sc[data-sc-paused] .sc-dot::before {
+  animation-play-state: paused;
+}
+
+@keyframes sc-progress {
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+:is(.sc-nav, .sc-play, .sc-dot):focus-visible {
+  outline: 2px solid var(--sc-focus, Highlight);
+  outline-offset: 2px;
+}
+
+/* Without the script, or without overflow, controls are absent: never focusable and dead.
+   Dots keep their space so that attaching the script cannot shift the layout. */
+.sc:not([data-sc-ready][data-sc-overflow]) :is(.sc-nav, .sc-play) {
+  display: none;
+}
+
+.sc:not([data-sc-ready][data-sc-overflow]) .sc-dots {
+  visibility: hidden;
+}
+
+.sc-status,
+.sc-skip:not(:focus) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-track,
+  .sc-dot::before {
+    transition: none;
+  }
+}
