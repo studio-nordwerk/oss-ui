@@ -15,7 +15,11 @@ const types = {
 };
 
 createServer(async (request, response) => {
-  const path = normalize(decodeURIComponent(new URL(request.url, 'http://localhost').pathname)).replace(/^(\.\.[/\\])+/, '');
+  // The page is published under /scroll-carousel/ and /oss/scroll-carousel/; locally it is served
+  // at both of those and at the root.
+  const path = normalize(decodeURIComponent(new URL(request.url, 'http://localhost').pathname))
+    .replace(/^(\.\.[/\\])+/, '')
+    .replace(/^\/(oss\/)?scroll-carousel(?=\/|$)/, '') || '/';
   let file = join(root, path);
   try {
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html');

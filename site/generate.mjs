@@ -12,6 +12,13 @@ import { arrows, card, categories, days, esc, guide, guides, heroSlide, heroes, 
 import { wireframeSection } from './wireframes.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
+// The page links everything relative to <base href>. GitHub Pages serves it under
+// /scroll-carousel/; www.nordwerk.studio serves it under /oss/scroll-carousel/ and rewrites this
+// one attribute on the way through, so the same files work in both places.
+const BASE = process.env.SITE_BASE || '/scroll-carousel/';
+const CANONICAL = 'https://www.nordwerk.studio/oss/scroll-carousel';
+// Once nordwerk.studio serves the page, visitors of the GitHub Pages address are sent there.
+const REDIRECT = process.env.SITE_REDIRECT == '1';
 const root = join(here, '..');
 const out = join(root, '_site');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -349,6 +356,8 @@ const page = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>scroll-carousel</title>
+<base href="${BASE}">
+${REDIRECT ? `<script>if (location.hostname.endsWith('github.io')) location.replace('${CANONICAL}' + location.search + location.hash);</script>\n<link rel="canonical" href="${CANONICAL}">` : ''}
 <meta name="description" content="${esc(pkg.description)}">
 <link rel="preload" href="fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="lib/carousel.css">

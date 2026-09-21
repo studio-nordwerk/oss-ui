@@ -6,7 +6,7 @@ export const ready = (page: Page) =>
 /** The carousel state of an example, plus its physical scroll position. */
 export const state = (page: Page, name: string) =>
   page.evaluate(async (name) => {
-    const { getCarousel } = await import('/lib/index.js');
+    const { getCarousel } = await import('/scroll-carousel/lib/index.js');
     const root = document.querySelector<HTMLElement>(`[data-case="${name}"], [data-wire="${name}"]`)!;
     const carousel = getCarousel(root)!;
     return { ...carousel.state, left: Math.round(carousel.track.scrollLeft) };
@@ -35,7 +35,7 @@ export const changes = (page: Page, name: string) =>
 export const call = (page: Page, name: string, method: string, ...args: unknown[]) =>
   page.evaluate(
     async ({ name, method, args }) => {
-      const { getCarousel } = await import('/lib/index.js');
+      const { getCarousel } = await import('/scroll-carousel/lib/index.js');
       const root = document.querySelector<HTMLElement>(`[data-case="${name}"], [data-wire="${name}"]`)!;
       (getCarousel(root) as any)[method](...args);
     },
