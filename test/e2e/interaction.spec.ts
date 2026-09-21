@@ -182,7 +182,10 @@ test('without the script every row still scrolls and no control is shown', async
   await page.goto('/?nojs');
   await page.waitForTimeout(300);
   const baseline = await page.evaluate(() => ({
-    controls: [...document.querySelectorAll('.sc-nav, .sc-play')].filter((b) => getComputedStyle(b).display != 'none').length,
+    controls: [...document.querySelectorAll('.sc-nav, .sc-play')].filter((b) => {
+      const style = getComputedStyle(b);
+      return style.display != 'none' && style.visibility != 'hidden';
+    }).length,
     dots: [...document.querySelectorAll('.sc-dots')].filter((d) => getComputedStyle(d).visibility != 'hidden').length,
     scrollable: [...document.querySelectorAll('[data-sc-track]')].filter((t) => t.scrollWidth > t.clientWidth).length,
     tracks: document.querySelectorAll('[data-sc-track]').length,
