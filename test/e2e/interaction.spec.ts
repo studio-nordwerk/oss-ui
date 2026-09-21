@@ -173,7 +173,9 @@ test('too few slides: no controls, no tab stop', async ({ page }) => {
 
 test.describe('autoplay', () => {
   test('moves after the delay, pauses on hover, stops with the button', async ({ page }) => {
-    await page.mouse.move(5, 890);
+    // Autoplay pauses while the hero is off-screen, so bring it into view, pointer beside it.
+    await page.locator('[data-case=hero]').scrollIntoViewIfNeeded();
+    await page.mouse.move(5, 5);
     await expect.poll(async () => (await state(page, 'hero')).index, { timeout: 9000 }).toBe(1);
     await expect(page.locator('[data-case=hero] [data-sc-status]')).toHaveText('');
     await page.hover('[data-case=hero] .hero-slide >> nth=1');

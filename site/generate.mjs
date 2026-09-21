@@ -281,21 +281,34 @@ const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="
       ${snippet(c.code)}
     </section>`;
 
+const GITHUB = 'https://github.com/studio-nordwerk/scroll-carousel';
+const NPM = 'https://www.npmjs.com/package/@nordwerk/scroll-carousel';
+
 const body = `${sprite}
+<div class="sheet">
+<header class="band">
+  <nav class="band-pill" aria-label="Site">
+    <a class="brand" href="https://www.nordwerk.studio"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk <small>Open Source</small></a>
+    <div class="band-links">
+      <a class="optional" href="#hero">Examples</a>
+      <a class="optional" href="#patterns-title">Patterns</a>
+      <a class="nw-btn" href="${GITHUB}">GitHub</a>
+    </div>
+  </nav>
+</header>
 <div class="page">
-  <header class="intro">
-    <h1>scroll-carousel</h1>
-    <p>A carousel that is a native horizontal scroller first. The layout is plain CSS with scroll snap, so the server markup is already the final layout. A small script adds arrows, dots, paging by group, an API and change events; drag and autoplay are opt-in plugins. No runtime dependencies. React, Preact and Astro adapters included.</p>
-    <p class="sizes"><code>pnpm add @nordwerk/scroll-carousel</code></p>
-    <p class="sizes">Core <b>${sizes.core}</b>, drag <b>+${sizes.drag}</b>, autoplay <b>+${sizes.autoplay}</b>, stylesheet <b>${sizes.css}</b>, all gzip and minified.</p>
-    <nav class="links" aria-label="Project">
-      <a href="https://github.com/studio-nordwerk/scroll-carousel">Source on GitHub</a>
-      <a href="https://github.com/studio-nordwerk/scroll-carousel#readme">Documentation</a>
-      <a href="https://github.com/studio-nordwerk/scroll-carousel/blob/main/AGENTS.md">Guide for coding agents</a>
-      <a href="#patterns-title">Storefront patterns</a>
-    </nav>
-    <p>Every example below is live. Its readout shows the carousel's state; the change counter goes up by exactly one per settled move, however long the swipe. Switch the script off in the bar to see what ships before any JavaScript runs. All products and names are made up.</p>
-  </header>
+  <section class="intro" aria-labelledby="page-title">
+    <span class="nw-badge">Open source, MIT</span>
+    <h1 id="page-title">scroll-carousel</h1>
+    <p class="lede">A carousel that is a native horizontal scroller first. The layout is plain CSS with scroll snap, so the server markup is already the final layout. A small script adds arrows, dots, paging and an API; drag and autoplay are opt-in. No runtime dependencies.</p>
+    <div class="actions">
+      <a class="nw-btn" href="${GITHUB}#readme">Read the documentation</a>
+      <a class="nw-btn nw-btn-line" href="${GITHUB}/blob/main/AGENTS.md">Guide for coding agents</a>
+    </div>
+    <p class="install"><code>pnpm add @nordwerk/scroll-carousel</code></p>
+    <p class="sizes">Core <b>${sizes.core}</b>, drag <b>+${sizes.drag}</b>, autoplay <b>+${sizes.autoplay}</b>, stylesheet <b>${sizes.css}</b>, gzip and minified. React, Preact and Astro adapters included.</p>
+    <p class="note">Every example below is live. Its readout shows the carousel's state; the change counter goes up by exactly one per settled move, however long the swipe. Switch the script off in the bar to see what ships before any JavaScript runs. All products and names are made up.</p>
+  </section>
 
   <div class="bench-bar">
     <label class="preset">Style <select id="preset">${PRESETS.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label>
@@ -312,11 +325,23 @@ const body = `${sprite}
     ${wireframeSection()}
   </main>
 
-  <footer class="foot">
-    <p>Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop. Version ${pkg.version}, MIT licence.</p>
-  </footer>
-  <p class="toast" role="status"></p>
-</div>`;
+</div>
+</div>
+<footer class="foot">
+  <div class="foot-inner">
+    <div>
+      <a class="brand" href="https://www.nordwerk.studio"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk</a>
+      <p>scroll-carousel ${pkg.version}, MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
+    </div>
+    <ul>
+      <li><a href="${GITHUB}">Source on GitHub</a></li>
+      <li><a href="${NPM}">Package on npm</a></li>
+      <li><a href="${GITHUB}/blob/main/docs/migration.md">Replacing a library carousel</a></li>
+      <li><a href="${GITHUB}/blob/main/CHANGELOG.md">Changelog</a></li>
+    </ul>
+  </div>
+</footer>
+<p class="toast" role="status"></p>`;
 
 const page = `<!doctype html>
 <html lang="en">
@@ -325,6 +350,7 @@ const page = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>scroll-carousel</title>
 <meta name="description" content="${esc(pkg.description)}">
+<link rel="preload" href="fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="lib/carousel.css">
 <link rel="stylesheet" href="demo.css">
 <script type="module" src="demo.js"></script>
@@ -339,6 +365,11 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 cpSync(join(root, 'dist'), join(out, 'lib'), { recursive: true, filter: (src) => !src.endsWith('.d.ts') });
 cpSync(join(here, 'demo.css'), join(out, 'demo.css'));
+mkdirSync(join(out, 'fonts'));
+for (const subset of ['latin', 'latin-ext']) {
+  const file = `geist-${subset}-wght-normal.woff2`;
+  cpSync(join(root, 'node_modules/@fontsource-variable/geist/files', file), join(out, 'fonts', file));
+}
 cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
 cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
 writeFileSync(join(out, 'index.html'), page);

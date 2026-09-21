@@ -14,6 +14,8 @@ for (const width of [390, 768, 1280]) {
   test(`every example at ${width} px`, async ({ page }) => {
     // Reduced motion: autoplay starts stopped and nothing animates.
     await page.emulateMedia({ reducedMotion: 'reduce' });
+    // The web font is optional and may or may not arrive in time; the fallback is deterministic.
+    await page.route('**/fonts/*.woff2', (route) => route.abort());
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
     await ready(page);
