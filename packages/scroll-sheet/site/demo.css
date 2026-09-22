@@ -1,0 +1,444 @@
+/*
+ * The scroll-sheet page on top of the shared frame (site/frame.css at the repository root): the
+ * settings bar, the example stages with their storefront content, the sheets' own look and the
+ * shadcn preview. The storefront content is fictional and not part of the package.
+ */
+
+/* --- Settings bar ------------------------------------------------------------------------- */
+
+.bench-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-block: 8px 0;
+  padding: 10px 14px;
+  border-radius: 24px;
+  background: var(--sunken);
+  font-size: 14px;
+}
+
+.seg {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.seg legend {
+  float: left;
+  margin-inline-end: 8px;
+  padding: 0;
+  color: var(--muted);
+}
+
+.seg label {
+  position: relative;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.seg input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.seg label:has(input:checked) {
+  background: var(--ground);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  font-weight: var(--w-strong);
+}
+
+.seg label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Stages and readouts ------------------------------------------------------------------ */
+
+.stage {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: 24px;
+  background: var(--sunken);
+}
+
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.readout span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--sunken);
+}
+
+.readout b {
+  color: var(--ink);
+  font-weight: var(--w-strong);
+}
+
+.readout .is-on {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.readout .is-on b {
+  color: var(--accent);
+}
+
+.btn {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--ground);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 16px;
+  background: var(--ground);
+}
+
+.tile-img {
+  aspect-ratio: 4 / 5;
+  border-radius: 10px;
+  background: linear-gradient(160deg, hsl(var(--hue) 40% 88%), hsl(calc(var(--hue) + 30) 35% 76%));
+}
+
+.tile-name,
+.tile-price {
+  margin: 0;
+  font-size: 14px;
+}
+
+.tile-price {
+  font-weight: var(--w-strong);
+}
+
+.tile-btn {
+  justify-content: center;
+}
+
+.map {
+  position: relative;
+  height: 180px;
+  border-radius: 16px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 38px, rgb(255 255 255 / 0.5) 38px 40px),
+    repeating-linear-gradient(90deg, transparent 0 58px, rgb(255 255 255 / 0.5) 58px 60px), #dfe7dc;
+}
+
+.pin {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 14px;
+  height: 14px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.thumb {
+  width: 72px;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, hsl(var(--hue) 45% 70%), hsl(calc(var(--hue) + 25) 40% 45%));
+  cursor: pointer;
+}
+
+.layers {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.layers :is(th, td) {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: start;
+  vertical-align: top;
+}
+
+.layers thead th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.preview {
+  display: block;
+  width: 100%;
+  height: 520px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--sunken);
+}
+
+/* --- The sheets' look on this page (the package is neutral) -------------------------------- */
+
+/* Safari 26 and later colour their status bar and floating toolbar from the page background while
+   a modal is open; the frame's body is dark (for the footer), so keep it light meanwhile. */
+:root:has(dialog.ss:modal) body {
+  background: var(--ground);
+}
+
+/* Theme tokens on an ancestor reach every sheet; one sheet can still set its own. */
+:root {
+  --ss-bg: var(--ground);
+  --ss-fg: var(--ink);
+  --ss-radius: 22px;
+}
+
+.ss-header h2,
+.ss-header p {
+  font-size: 19px;
+  font-weight: var(--w-strong);
+  letter-spacing: -0.01em;
+}
+
+.ss-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sunken);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.ss-close svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.ss :is(input, textarea, select) {
+  /* 16px or more: iOS does not zoom into the field. */
+  font-size: max(16px, 1em);
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.field :is(input, textarea) {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.size-list,
+.check-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.check-list legend {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.size-list label {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.size-list label:has(input:checked) {
+  border-color: var(--ink);
+}
+
+.check-list label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.text-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.nw-btn.wide {
+  width: 100%;
+  justify-content: center;
+}
+
+.menu-list,
+.bag-list,
+.store-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-list a {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.bag-list li {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.bag-img {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: var(--panel-2);
+}
+
+.store-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 10px;
+}
+
+.actions-row {
+  display: flex;
+  gap: 10px;
+}
+
+.lightbox {
+  --ss-dialog-size: 100vw;
+  --ss-radius: 0;
+  --ss-bg: #111;
+  --ss-fg: #f4f4f1;
+}
+
+.lightbox .ss-panel {
+  block-size: 100dvh;
+  max-block-size: none;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.lightbox .ss-close {
+  background: rgb(255 255 255 / 0.14);
+  color: #fff;
+}
+
+.strip {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  margin: 0;
+  padding: 0 16px 16px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  list-style: none;
+}
+
+.strip li {
+  display: grid;
+  flex: 0 0 min(88vw, 720px);
+  scroll-snap-align: center;
+}
+
+.strip figure {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+  margin: 0;
+}
+
+.swatch {
+  border-radius: 12px;
+  background: linear-gradient(135deg, hsl(var(--hue) 45% 70%), hsl(calc(var(--hue) + 25) 40% 40%));
+}

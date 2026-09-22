@@ -92,6 +92,125 @@
         }
       ],
       "categories": ["carousel", "marketing"]
+    },
+    {
+      "name": "scroll-sheet",
+      "type": "registry:ui",
+      "title": "Scroll Sheet",
+      "description": "Bottom sheets, side drawers and dialogs on a native modal <dialog> and CSS scroll snap: opens before hydration, drags natively, 2.1 kB for the core.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/ui/scroll-sheet.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Docs and live examples: https://www.nordwerk.studio/oss/scroll-sheet"
+    },
+    {
+      "name": "size-picker",
+      "type": "registry:block",
+      "title": "Size Picker",
+      "description": "A bottom sheet that opens at half the screen with a list of sizes, an engraving field kept above the iOS keyboard, and the add button at the bottom edge.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/size-picker.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["sheet", "ecommerce"]
+    },
+    {
+      "name": "filter-drawer",
+      "type": "registry:block",
+      "title": "Filter Drawer",
+      "description": "Brand filters in a bottom sheet on phones and a drawer from the end edge on wide screens, with reset and a sticky result button.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/filter-drawer.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["sheet", "ecommerce"]
+    },
+    {
+      "name": "mini-cart",
+      "type": "registry:block",
+      "title": "Mini Cart",
+      "description": "The bag in a drawer from the end edge with items, total and checkout; closes other sheets when it opens.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/mini-cart.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["sheet", "ecommerce"]
+    },
+    {
+      "name": "store-finder",
+      "type": "registry:block",
+      "title": "Store Finder",
+      "description": "A list of stores in a bottom sheet that rests at a third, two thirds or the full height.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/store-finder.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["sheet", "ecommerce"]
+    },
+    {
+      "name": "mobile-menu",
+      "type": "registry:block",
+      "title": "Mobile Menu",
+      "description": "Navigation in a drawer from the start edge; the back button and back swipe close it.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/mobile-menu.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["sheet", "navigation"]
+    },
+    {
+      "name": "contact-dialog",
+      "type": "registry:block",
+      "title": "Contact Dialog",
+      "description": "A centred dialog with a form that closes itself through method=\"dialog\".",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/contact-dialog.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["dialog", "forms"]
+    },
+    {
+      "name": "lightbox",
+      "type": "registry:block",
+      "title": "Lightbox",
+      "description": "Images full screen in a dark dialog with a native scroll-snap strip.",
+      "dependencies": ["@nordwerk/scroll-sheet@^0.1.0"],
+      "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet"],
+      "files": [
+        {
+          "path": "packages/scroll-sheet/registry/blocks/lightbox.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["dialog", "media"]
     }
   ]
 }

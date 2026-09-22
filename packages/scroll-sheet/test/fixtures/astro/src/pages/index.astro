@@ -1,0 +1,21 @@
+---
+import Sheet from '@nordwerk/scroll-sheet/astro';
+const sizes = ['30 ml', '50 ml', '100 ml'];
+const notes = Array.from({ length: 16 }, (_, i) => `Care note ${i + 1}`);
+---
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><title>Astro fixture</title></head>
+  <body style="font-family: system-ui, sans-serif">
+    <main style="max-width: 900px; margin: 0 auto; padding: 16px">
+      <h1>Fixture</h1>
+      <button type="button" id="open-fixture" commandfor="fixture-sheet" command="show-modal">Choose a size</button>
+      <Sheet id="fixture-sheet" snapPoints={['50dvh']} initialSnap={0} history keyboard>
+        <span class="ss-handle" aria-hidden="true"></span>
+        <header class="ss-header"><h2 id="fixture-sheet-title">Choose a size</h2><button class="ss-close" type="button" commandfor="fixture-sheet" command="close" aria-label="Close">×</button></header>
+        <div class="ss-body"><ul>{sizes.map((size) => <li>{size}</li>)}</ul>{notes.map((note) => <p>{note}</p>)}</div>
+        <footer class="ss-footer"><button type="button">Add to bag</button></footer>
+      </Sheet>
+      <div style="height: 150vh">Below.</div>
+    </main>
+  </body>
+</html>

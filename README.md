@@ -8,6 +8,7 @@ and blocks.
 | Package | What it is | Docs |
 | --- | --- | --- |
 | [`@nordwerk/scroll-carousel`](packages/scroll-carousel) | A carousel on native scrolling with CSS scroll snap | [nordwerk.studio/oss/scroll-carousel](https://www.nordwerk.studio/oss/scroll-carousel) |
+| [`@nordwerk/scroll-sheet`](packages/scroll-sheet) | Bottom sheets, side drawers and dialogs on a native modal `<dialog>` | [nordwerk.studio/oss/scroll-sheet](https://www.nordwerk.studio/oss/scroll-sheet) |
 
 Each package is published on its own, with its own version and changelog.
 

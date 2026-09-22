@@ -1,0 +1,64 @@
+---
+/*
+ * Astro adapter. Renders a sheet around what you put in the default slot (header, body, footer)
+ * and attaches the core in the browser. The history and keyboard plugins are loaded only when a
+ * sheet on the page asks for them. Open it with any button:
+ * <button type="button" commandfor="sizes" command="show-modal">Choose a size</button>
+ */
+import '@nordwerk/scroll-sheet/sheet.css';
+
+interface Props {
+  id: string;
+  /** Presentation per breakpoint, e.g. 'bottom md:end'. */
+  presentation?: string;
+  /** Accessible name; otherwise the element with the id `${id}-title` names the sheet. */
+  label?: string;
+  /** Snap points of a bottom sheet below its full height, as CSS lengths. */
+  snapPoints?: string[];
+  initialSnap?: number;
+  replace?: boolean;
+  /** Back button and back swipe close the sheet. */
+  history?: boolean;
+  /** Keep the sheet above the on-screen keyboard (for sheets with form fields). */
+  keyboard?: boolean;
+  class?: string;
+}
+const { id, presentation, label, snapPoints = [], initialSnap, replace, history, keyboard, class: className } = Astro.props;
+const options = JSON.stringify({ history, keyboard, replace });
+---
+<dialog
+  id={id}
+  class:list={['ss', className]}
+  data-ss={presentation}
+  data-ss-astro={options}
+  aria-label={label}
+  aria-labelledby={label ? undefined : `${id}-title`}
+>
+  <div class="ss-panel">
+    {snapPoints.map((at, index) => <i class="ss-snap" style={`--ss-at:${at}`} data-ss-initial={index === initialSnap ? '' : undefined} />)}
+    <slot />
+  </div>
+  <div class="ss-rest"></div>
+</dialog>
+<script>
+  import { attach, getSheet, type Plugin } from '@nordwerk/scroll-sheet';
+  async function attachAll() {
+    for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[data-ss-astro]')) {
+      if (getSheet(dialog)) continue;
+      const options = JSON.parse(dialog.dataset.ssAstro || '{}');
+      const plugins: Plugin[] = [];
+      if (options.history) plugins.push((await import('@nordwerk/scroll-sheet/history')).history());
+      if (options.keyboard) plugins.push((await import('@nordwerk/scroll-sheet/keyboard')).keyboard());
+      // The page may have changed while the plugins loaded.
+      if (dialog.isConnected) attach(dialog, { plugins, replace: options.replace });
+    }
+  }
+  attachAll();
+  document.addEventListener('astro:page-load', attachAll);
+  // With view transitions, sheets that leave the page must let go of their listeners.
+  document.addEventListener('astro:before-swap', () => {
+    for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[data-ss-astro]')) {
+      if (!dialog.closest('[data-astro-transition-persist]')) getSheet(dialog)?.destroy();
+    }
+  });
+</script>

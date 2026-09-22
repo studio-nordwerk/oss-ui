@@ -1,0 +1,800 @@
+/*
+ * scroll-sheet: bottom sheets, side drawers and dialogs on a native modal <dialog>.
+ *
+ * The dialog covers the viewport in the top layer and is itself a scroller. It holds the panel
+ * (what you see) and a spacer (.ss-rest). Scrolling the dialog moves the panel; CSS scroll snap
+ * gives the resting positions. Opening and closing work without script (commandfor/command);
+ * the script adds closing by dragging away, a tap on the dimmed area, an initial snap point and
+ * focus return.
+ *
+ * Presentations: data-ss="bottom" (default), "end", "start", "center", each also with a
+ * breakpoint prefix: data-ss="bottom md:end" is a bottom sheet below 48rem and a drawer from the
+ * end edge above. Breakpoints: sm 40rem, md 48rem, lg 64rem.
+ *
+ * Theme with the --ss-* custom properties listed below, on the sheet or any ancestor.
+ */
+
+/* The page behind a modal sheet does not scroll and does not move: no position: fixed, so the
+   scroll position stays where it is. An app shell that scrolls an element instead of the
+   document marks that element with data-ss-scroll-root. */
+:root:has(dialog.ss:modal) {
+  overflow: hidden;
+  scrollbar-gutter: var(--ss-gutter, stable);
+}
+:root:has(dialog.ss:modal) [data-ss-scroll-root] {
+  overflow: hidden;
+}
+
+.ss {
+  /* Public tokens (--ss-*) resolved with their defaults into private ones, so a --ss-* value set on
+     any ancestor or on the sheet itself wins. */
+  --_bg: var(--ss-bg, #fff);
+  --_fg: var(--ss-fg, currentColor);
+  --_radius: var(--ss-radius, 16px);
+  --_shadow: var(--ss-shadow, 0 0 2px rgb(0 0 0 / 0.08), 0 8px 40px rgb(0 0 0 / 0.16));
+  --_backdrop: var(--ss-backdrop, rgb(0 0 0 / 0.4));
+  --_padding: var(--ss-padding, 1rem);
+  --_top-gap: var(--ss-top-gap, max(env(safe-area-inset-top), 2.5rem));
+  --_drawer-size: var(--ss-drawer-size, min(26rem, 100vw - 3rem));
+  --_dialog-size: var(--ss-dialog-size, min(34rem, 100vw - 2rem));
+  --_sheet-max-size: var(--ss-sheet-max-size, 48rem);
+  --_peek: var(--ss-peek, 4.5rem);
+  --_duration: var(--ss-duration, 0.36s);
+  --_easing: var(--ss-easing, cubic-bezier(0.32, 0.72, 0, 1));
+}
+
+/* ---- Presentation: bottom sheet (default) ------------------------------------------------ */
+
+.ss,
+.ss[data-ss~='bottom'] {
+  --_display: flex;
+  --_direction: column-reverse;
+  --_overflow: hidden auto;
+  --_snap: y mandatory;
+  --_panel-inline: 100%;
+  --_panel-block: auto;
+  --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+  --_panel-radius: var(--_radius) var(--_radius) 0 0;
+  --_panel-align: end none;
+  --_rest-display: block;
+  --_rest-inline: auto;
+  --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+  --_rest-align: none;
+  --_ready-rest-inline: auto;
+  --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+  --_ready-rest-align: start none;
+  --_enter-x: 0px;
+  --_enter-y: 100%;
+  --_css-motion: 0;
+  --_align: stretch;
+  --_panel-pad: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  --_panel-max-inline: var(--_sheet-max-size);
+  --_snap-display: block;
+  --_handle-display: block;
+  --_ready-direction: column;
+  --_ready-rest-order: -1;
+  --_timeline-axis: block;
+  --_timeline-direction: normal;
+  --_collapsed-body: hidden;
+  --_panel-clip: inset(-100vh -100vw 0 -100vw);
+}
+
+/* ---- Presentation: drawer from the end or the start edge ----------------------------------- */
+
+.ss[data-ss~='end'] {
+  --_display: flex;
+  --_direction: row-reverse;
+  --_overflow: auto hidden;
+  --_snap: x mandatory;
+  --_panel-inline: var(--_drawer-size);
+  --_panel-block: var(--ss-viewport-height, 100dvh);
+  --_panel-max-block: none;
+  --_panel-radius: var(--_radius) 0 0 var(--_radius);
+  --_panel-align: none end;
+  --_rest-display: block;
+  --_rest-inline: calc(100vw - var(--_peek));
+  --_rest-block: auto;
+  --_rest-align: none;
+  --_ready-rest-inline: 100vw;
+  --_ready-rest-block: auto;
+  --_ready-rest-align: none start;
+  --_enter-x: 100%;
+  --_enter-y: 0px;
+  --_css-motion: 0;
+  --_align: stretch;
+  --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  --_panel-max-inline: none;
+  --_snap-display: none;
+  --_handle-display: none;
+  --_ready-direction: row;
+  --_ready-rest-order: -1;
+  --_timeline-axis: inline;
+  --_timeline-direction: normal;
+  --_panel-clip: none;
+  --_collapsed-body: auto;
+}
+.ss[data-ss~='start'] {
+  --_display: flex;
+  --_direction: row;
+  --_overflow: auto hidden;
+  --_snap: x mandatory;
+  --_panel-inline: var(--_drawer-size);
+  --_panel-block: var(--ss-viewport-height, 100dvh);
+  --_panel-max-block: none;
+  --_panel-radius: 0 var(--_radius) var(--_radius) 0;
+  --_panel-align: none start;
+  --_rest-display: block;
+  --_rest-inline: calc(100vw - var(--_peek));
+  --_rest-block: auto;
+  --_rest-align: none;
+  --_ready-rest-inline: 100vw;
+  --_ready-rest-block: auto;
+  --_ready-rest-align: none end;
+  --_enter-x: -100%;
+  --_enter-y: 0px;
+  --_css-motion: 0;
+  --_align: stretch;
+  --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  --_panel-max-inline: none;
+  --_snap-display: none;
+  --_handle-display: none;
+  --_ready-direction: row;
+  --_ready-rest-order: 0;
+  --_timeline-axis: inline;
+  --_timeline-direction: reverse;
+  --_panel-clip: none;
+  --_collapsed-body: auto;
+}
+
+/* ---- Presentation: centred dialog ---------------------------------------------------------- */
+
+.ss[data-ss~='center'] {
+  --_display: grid;
+  --_direction: row;
+  --_overflow: hidden;
+  --_snap: none;
+  --_panel-inline: var(--_dialog-size);
+  --_panel-block: auto;
+  --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - 2rem);
+  --_panel-radius: var(--_radius);
+  --_panel-align: none;
+  --_rest-display: none;
+  --_ready-rest-block: 0;
+  --_ready-rest-inline: 0;
+  --_ready-rest-align: none;
+  --_enter-x: 0px;
+  --_enter-y: 1.5rem;
+  --_enter-opacity: 0;
+  --_css-motion: 1;
+  --_align: center;
+  --_panel-pad: 0px;
+  --_panel-max-inline: none;
+  --_snap-display: none;
+  --_handle-display: none;
+  --_ready-direction: row;
+  --_ready-rest-order: 0;
+  --_timeline-axis: block;
+  --_timeline-direction: normal;
+  --_panel-clip: none;
+  --_collapsed-body: auto;
+}
+
+/* The same presentations from a breakpoint on. */
+@media (min-width: 40rem) {
+  .ss[data-ss~='sm:bottom'] {
+    --_display: flex;
+    --_direction: column-reverse;
+    --_overflow: hidden auto;
+    --_snap: y mandatory;
+    --_panel-inline: 100%;
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+    --_panel-radius: var(--_radius) var(--_radius) 0 0;
+    --_panel-align: end none;
+    --_rest-display: block;
+    --_rest-inline: auto;
+    --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+    --_rest-align: none;
+    --_ready-rest-inline: auto;
+    --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+    --_ready-rest-align: start none;
+    --_enter-x: 0px;
+    --_enter-y: 100%;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    --_panel-max-inline: var(--_sheet-max-size);
+    --_snap-display: block;
+    --_handle-display: block;
+    --_ready-direction: column;
+    --_ready-rest-order: -1;
+    --_timeline-axis: block;
+    --_timeline-direction: normal;
+    --_collapsed-body: hidden;
+    --_panel-clip: inset(-100vh -100vw 0 -100vw);
+  }
+  .ss[data-ss~='sm:end'] {
+    --_display: flex;
+    --_direction: row-reverse;
+    --_overflow: auto hidden;
+    --_snap: x mandatory;
+    --_panel-inline: var(--_drawer-size);
+    --_panel-block: var(--ss-viewport-height, 100dvh);
+    --_panel-max-block: none;
+    --_panel-radius: var(--_radius) 0 0 var(--_radius);
+    --_panel-align: none end;
+    --_rest-display: block;
+    --_rest-inline: calc(100vw - var(--_peek));
+    --_rest-block: auto;
+    --_rest-align: none;
+    --_ready-rest-inline: 100vw;
+    --_ready-rest-block: auto;
+    --_ready-rest-align: none start;
+    --_enter-x: 100%;
+    --_enter-y: 0px;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: -1;
+    --_timeline-axis: inline;
+    --_timeline-direction: normal;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+  .ss[data-ss~='sm:start'] {
+    --_display: flex;
+    --_direction: row;
+    --_overflow: auto hidden;
+    --_snap: x mandatory;
+    --_panel-inline: var(--_drawer-size);
+    --_panel-block: var(--ss-viewport-height, 100dvh);
+    --_panel-max-block: none;
+    --_panel-radius: 0 var(--_radius) var(--_radius) 0;
+    --_panel-align: none start;
+    --_rest-display: block;
+    --_rest-inline: calc(100vw - var(--_peek));
+    --_rest-block: auto;
+    --_rest-align: none;
+    --_ready-rest-inline: 100vw;
+    --_ready-rest-block: auto;
+    --_ready-rest-align: none end;
+    --_enter-x: -100%;
+    --_enter-y: 0px;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: 0;
+    --_timeline-axis: inline;
+    --_timeline-direction: reverse;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+  .ss[data-ss~='sm:center'] {
+    --_display: grid;
+    --_direction: row;
+    --_overflow: hidden;
+    --_snap: none;
+    --_panel-inline: var(--_dialog-size);
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - 2rem);
+    --_panel-radius: var(--_radius);
+    --_panel-align: none;
+    --_rest-display: none;
+    --_ready-rest-block: 0;
+    --_ready-rest-inline: 0;
+    --_ready-rest-align: none;
+    --_enter-x: 0px;
+    --_enter-y: 1.5rem;
+    --_enter-opacity: 0;
+    --_css-motion: 1;
+    --_align: center;
+    --_panel-pad: 0px;
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: 0;
+    --_timeline-axis: block;
+    --_timeline-direction: normal;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+}
+@media (min-width: 48rem) {
+  .ss[data-ss~='md:bottom'] {
+    --_display: flex;
+    --_direction: column-reverse;
+    --_overflow: hidden auto;
+    --_snap: y mandatory;
+    --_panel-inline: 100%;
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+    --_panel-radius: var(--_radius) var(--_radius) 0 0;
+    --_panel-align: end none;
+    --_rest-display: block;
+    --_rest-inline: auto;
+    --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+    --_rest-align: none;
+    --_ready-rest-inline: auto;
+    --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+    --_ready-rest-align: start none;
+    --_enter-x: 0px;
+    --_enter-y: 100%;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    --_panel-max-inline: var(--_sheet-max-size);
+    --_snap-display: block;
+    --_handle-display: block;
+    --_ready-direction: column;
+    --_ready-rest-order: -1;
+    --_timeline-axis: block;
+    --_timeline-direction: normal;
+    --_collapsed-body: hidden;
+    --_panel-clip: inset(-100vh -100vw 0 -100vw);
+  }
+  .ss[data-ss~='md:end'] {
+    --_display: flex;
+    --_direction: row-reverse;
+    --_overflow: auto hidden;
+    --_snap: x mandatory;
+    --_panel-inline: var(--_drawer-size);
+    --_panel-block: var(--ss-viewport-height, 100dvh);
+    --_panel-max-block: none;
+    --_panel-radius: var(--_radius) 0 0 var(--_radius);
+    --_panel-align: none end;
+    --_rest-display: block;
+    --_rest-inline: calc(100vw - var(--_peek));
+    --_rest-block: auto;
+    --_rest-align: none;
+    --_ready-rest-inline: 100vw;
+    --_ready-rest-block: auto;
+    --_ready-rest-align: none start;
+    --_enter-x: 100%;
+    --_enter-y: 0px;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: -1;
+    --_timeline-axis: inline;
+    --_timeline-direction: normal;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+  .ss[data-ss~='md:start'] {
+    --_display: flex;
+    --_direction: row;
+    --_overflow: auto hidden;
+    --_snap: x mandatory;
+    --_panel-inline: var(--_drawer-size);
+    --_panel-block: var(--ss-viewport-height, 100dvh);
+    --_panel-max-block: none;
+    --_panel-radius: 0 var(--_radius) var(--_radius) 0;
+    --_panel-align: none start;
+    --_rest-display: block;
+    --_rest-inline: calc(100vw - var(--_peek));
+    --_rest-block: auto;
+    --_rest-align: none;
+    --_ready-rest-inline: 100vw;
+    --_ready-rest-block: auto;
+    --_ready-rest-align: none end;
+    --_enter-x: -100%;
+    --_enter-y: 0px;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: 0;
+    --_timeline-axis: inline;
+    --_timeline-direction: reverse;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+  .ss[data-ss~='md:center'] {
+    --_display: grid;
+    --_direction: row;
+    --_overflow: hidden;
+    --_snap: none;
+    --_panel-inline: var(--_dialog-size);
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - 2rem);
+    --_panel-radius: var(--_radius);
+    --_panel-align: none;
+    --_rest-display: none;
+    --_ready-rest-block: 0;
+    --_ready-rest-inline: 0;
+    --_ready-rest-align: none;
+    --_enter-x: 0px;
+    --_enter-y: 1.5rem;
+    --_enter-opacity: 0;
+    --_css-motion: 1;
+    --_align: center;
+    --_panel-pad: 0px;
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: 0;
+    --_timeline-axis: block;
+    --_timeline-direction: normal;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+}
+@media (min-width: 64rem) {
+  .ss[data-ss~='lg:bottom'] {
+    --_display: flex;
+    --_direction: column-reverse;
+    --_overflow: hidden auto;
+    --_snap: y mandatory;
+    --_panel-inline: 100%;
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+    --_panel-radius: var(--_radius) var(--_radius) 0 0;
+    --_panel-align: end none;
+    --_rest-display: block;
+    --_rest-inline: auto;
+    --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+    --_rest-align: none;
+    --_ready-rest-inline: auto;
+    --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+    --_ready-rest-align: start none;
+    --_enter-x: 0px;
+    --_enter-y: 100%;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    --_panel-max-inline: var(--_sheet-max-size);
+    --_snap-display: block;
+    --_handle-display: block;
+    --_ready-direction: column;
+    --_ready-rest-order: -1;
+    --_timeline-axis: block;
+    --_timeline-direction: normal;
+    --_collapsed-body: hidden;
+    --_panel-clip: inset(-100vh -100vw 0 -100vw);
+  }
+  .ss[data-ss~='lg:end'] {
+    --_display: flex;
+    --_direction: row-reverse;
+    --_overflow: auto hidden;
+    --_snap: x mandatory;
+    --_panel-inline: var(--_drawer-size);
+    --_panel-block: var(--ss-viewport-height, 100dvh);
+    --_panel-max-block: none;
+    --_panel-radius: var(--_radius) 0 0 var(--_radius);
+    --_panel-align: none end;
+    --_rest-display: block;
+    --_rest-inline: calc(100vw - var(--_peek));
+    --_rest-block: auto;
+    --_rest-align: none;
+    --_ready-rest-inline: 100vw;
+    --_ready-rest-block: auto;
+    --_ready-rest-align: none start;
+    --_enter-x: 100%;
+    --_enter-y: 0px;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: -1;
+    --_timeline-axis: inline;
+    --_timeline-direction: normal;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+  .ss[data-ss~='lg:start'] {
+    --_display: flex;
+    --_direction: row;
+    --_overflow: auto hidden;
+    --_snap: x mandatory;
+    --_panel-inline: var(--_drawer-size);
+    --_panel-block: var(--ss-viewport-height, 100dvh);
+    --_panel-max-block: none;
+    --_panel-radius: 0 var(--_radius) var(--_radius) 0;
+    --_panel-align: none start;
+    --_rest-display: block;
+    --_rest-inline: calc(100vw - var(--_peek));
+    --_rest-block: auto;
+    --_rest-align: none;
+    --_ready-rest-inline: 100vw;
+    --_ready-rest-block: auto;
+    --_ready-rest-align: none end;
+    --_enter-x: -100%;
+    --_enter-y: 0px;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: 0;
+    --_timeline-axis: inline;
+    --_timeline-direction: reverse;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+  .ss[data-ss~='lg:center'] {
+    --_display: grid;
+    --_direction: row;
+    --_overflow: hidden;
+    --_snap: none;
+    --_panel-inline: var(--_dialog-size);
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - 2rem);
+    --_panel-radius: var(--_radius);
+    --_panel-align: none;
+    --_rest-display: none;
+    --_ready-rest-block: 0;
+    --_ready-rest-inline: 0;
+    --_ready-rest-align: none;
+    --_enter-x: 0px;
+    --_enter-y: 1.5rem;
+    --_enter-opacity: 0;
+    --_css-motion: 1;
+    --_align: center;
+    --_panel-pad: 0px;
+    --_panel-max-inline: none;
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: row;
+    --_ready-rest-order: 0;
+    --_timeline-axis: block;
+    --_timeline-direction: normal;
+    --_panel-clip: none;
+    --_collapsed-body: auto;
+  }
+}
+
+/* ---- The dialog: a transparent scroller over the whole viewport ---------------------------- */
+
+.ss {
+  /* The keyboard plugin sets --ss-viewport-top and --ss-viewport-height to the visible part of
+     the page while the on-screen keyboard is up (iOS moves or shrinks the visual viewport). */
+  position: fixed;
+  inset: var(--ss-viewport-top, 0px) 0 auto;
+  width: 100%;
+  max-width: none;
+  height: var(--ss-viewport-height, 100dvh);
+  max-height: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--_fg);
+  overflow: var(--_overflow);
+  overscroll-behavior: contain;
+  scroll-snap-type: var(--_snap);
+  scrollbar-width: none;
+  align-items: var(--_align);
+  justify-items: center;
+  outline: none;
+}
+.ss::-webkit-scrollbar {
+  display: none;
+}
+.ss[open] {
+  display: var(--_display);
+  flex-direction: var(--_direction);
+}
+/* With the script, the layout runs in its normal direction (spacer first for bottom sheets and end
+   drawers): the script sets the start position itself, and scroll offsets and scroll timelines
+   then mean the same in every engine. */
+.ss[data-ss-ready][open] {
+  flex-direction: var(--_ready-direction);
+}
+.ss[data-ss-ready] > .ss-rest {
+  order: var(--_ready-rest-order);
+}
+.ss::backdrop {
+  background: var(--_backdrop);
+}
+
+.ss-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--_panel-inline);
+  max-inline-size: var(--_panel-max-inline);
+  block-size: var(--_panel-block);
+  max-block-size: var(--_panel-max-block);
+  margin-inline: auto;
+  padding: var(--_panel-pad);
+  background: var(--_bg);
+  border-radius: var(--_panel-radius);
+  box-shadow: var(--_shadow);
+  /* A bottom sheet's shadow stops at the bottom edge, which stays visible under a floating
+     browser toolbar. */
+  clip-path: var(--_panel-clip);
+  scroll-snap-align: var(--_panel-align);
+  scroll-snap-stop: always;
+}
+
+/* The spacer: the room the panel moves into when it is dragged away. Taps on it reach the
+   dialog itself, which the script treats as a tap on the dimmed area. */
+.ss-rest {
+  display: var(--_rest-display);
+  flex: none;
+  inline-size: var(--_rest-inline);
+  block-size: var(--_rest-block);
+  scroll-snap-align: var(--_rest-align);
+  pointer-events: none;
+}
+/* With the script attached, the panel can leave completely; the script then closes the dialog. */
+.ss[data-ss-ready] > .ss-rest {
+  inline-size: var(--_ready-rest-inline);
+  block-size: var(--_ready-rest-block);
+  scroll-snap-align: var(--_ready-rest-align);
+}
+
+/* Snap points of a bottom sheet: <i class="ss-snap" style="--ss-at: 50dvh"></i> inside the
+   panel, where --ss-at is how much of the sheet shows. data-ss-initial opens there. The marker
+   is 1px high: WebKit ignores empty snap areas when a scroller has several. */
+.ss-snap {
+  display: var(--_snap-display);
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: calc(min(var(--ss-at, 100%), 100%) - 1px);
+  inline-size: 1px;
+  block-size: 1px;
+  scroll-snap-align: end none;
+  pointer-events: none;
+}
+
+.ss-handle {
+  display: var(--_handle-display);
+  flex: none;
+  inline-size: 2.25rem;
+  block-size: 0.3rem;
+  margin: 0.5rem auto 0;
+  border-radius: 1rem;
+  background: currentColor;
+  opacity: 0.2;
+}
+
+.ss-header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem var(--_padding);
+}
+.ss-header > :is(h1, h2, h3, h4, p):first-of-type {
+  flex: 1;
+  margin: 0;
+}
+.ss-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow: auto;
+  /* At its top the next drag moves the sheet down, like a native sheet. */
+  overscroll-behavior-block: auto;
+  padding: 0 var(--_padding) var(--_padding);
+}
+/* Below its full height a drag on the content moves the sheet, not the content. */
+.ss[data-ss-ready]:not([data-ss-expanded]) > .ss-panel > .ss-body {
+  overflow: var(--_collapsed-body, auto);
+}
+/* The footer stays at the bottom edge while a bottom sheet rests lower than its full height. */
+.ss-footer {
+  position: sticky;
+  inset-block-end: 0;
+  flex: none;
+  padding: 0.75rem var(--_padding);
+  background: var(--_bg);
+}
+
+/* ---- Enter and exit ------------------------------------------------------------------------- */
+
+.ss > .ss-panel {
+  transition:
+    translate var(--_duration) var(--_easing),
+    opacity var(--_duration) var(--_easing);
+}
+/* Without script the panel slides in with a transition. With the script, sheets and drawers
+   move by scrolling instead (a transform would move their snap points); only the centred dialog
+   keeps the transition. */
+.ss {
+  --_motion: 1;
+}
+.ss[data-ss-ready] {
+  --_motion: var(--_css-motion);
+}
+@starting-style {
+  .ss[open] > .ss-panel {
+    translate: calc(var(--_enter-x) * var(--_flip, 1) * var(--_motion)) calc(var(--_enter-y) * var(--_motion));
+    opacity: var(--_enter-opacity, 1);
+  }
+}
+/* The script's exit for the centred dialog: it fades and moves while still modal, then closes. */
+.ss[data-ss-closing] > .ss-panel {
+  translate: calc(var(--_enter-x) * var(--_flip, 1) * var(--_motion)) calc(var(--_enter-y) * var(--_motion));
+  opacity: var(--_enter-opacity, 1);
+}
+.ss::backdrop {
+  transition: opacity var(--_duration) ease;
+}
+@starting-style {
+  .ss[open]::backdrop {
+    opacity: 0;
+  }
+}
+.ss[data-ss-closing]::backdrop {
+  opacity: 0;
+}
+/* Exit without script where the browser can keep the dialog in the top layer while it animates.
+   With the script, sheets slide out by scrolling to their closed position first. */
+@supports (overlay: auto) {
+  .ss {
+    transition:
+      display var(--_duration) allow-discrete,
+      overlay var(--_duration) allow-discrete;
+  }
+  .ss:not([open]) > .ss-panel {
+    translate: calc(var(--_enter-x) * var(--_flip, 1)) var(--_enter-y);
+    opacity: var(--_enter-opacity, 1);
+  }
+  .ss:not([open])::backdrop {
+    opacity: 0;
+  }
+}
+/* The backdrop follows the sheet while it is dragged, where scroll-driven animations exist. */
+@keyframes ss-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  .ss[data-ss-ready] {
+    scroll-timeline: --ss-travel var(--_timeline-axis);
+  }
+  .ss[data-ss-ready]::backdrop {
+    animation: ss-backdrop linear both var(--_timeline-direction);
+    animation-timeline: --ss-travel;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ss,
+  .ss > .ss-panel,
+  .ss::backdrop {
+    transition: none;
+  }
+}
+
+/* Right to left: drawers slide in from their own edge. */
+.ss:dir(rtl) {
+  --_flip: -1;
+}

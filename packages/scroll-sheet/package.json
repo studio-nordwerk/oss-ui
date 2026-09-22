@@ -1,0 +1,111 @@
+{
+  "name": "@nordwerk/scroll-sheet",
+  "version": "0.1.0",
+  "description": "Bottom sheets, side drawers and dialogs on a native modal <dialog> and CSS scroll snap: open and close without script, drag, snap points and focus return as progressive enhancement.",
+  "keywords": [
+    "accessibility",
+    "astro",
+    "bottom-sheet",
+    "dialog",
+    "drawer",
+    "modal",
+    "preact",
+    "progressive-enhancement",
+    "react",
+    "scroll-snap"
+  ],
+  "homepage": "https://www.nordwerk.studio/oss/scroll-sheet",
+  "bugs": "https://github.com/studio-nordwerk/oss-ui/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/studio-nordwerk/oss-ui.git",
+    "directory": "packages/scroll-sheet"
+  },
+  "files": [
+    "dist",
+    "src/astro",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "docs/migration.md"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "history": [
+        "./dist/history.d.ts"
+      ],
+      "keyboard": [
+        "./dist/keyboard.d.ts"
+      ],
+      "react": [
+        "./dist/react.d.ts"
+      ],
+      "preact": [
+        "./dist/preact.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./history": {
+      "types": "./dist/history.d.ts",
+      "default": "./dist/history.js"
+    },
+    "./keyboard": {
+      "types": "./dist/keyboard.d.ts",
+      "default": "./dist/keyboard.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "default": "./dist/react.js"
+    },
+    "./preact": {
+      "types": "./dist/preact.d.ts",
+      "default": "./dist/preact.js"
+    },
+    "./astro": "./src/astro/Sheet.astro",
+    "./sheet.css": "./dist/sheet.css",
+    "./sheet.layer.css": "./dist/sheet.layer.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "prepublishOnly": "vp pack"
+  },
+  "devDependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.3.3",
+    "class-variance-authority": "^0.7.1",
+    "cn": "^0.3.2",
+    "preact": "^10.29.8",
+    "preact-render-to-string": "6.7.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "peerDependencies": {
+    "preact": ">=10",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  }
+}
