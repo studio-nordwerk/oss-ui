@@ -175,7 +175,7 @@ document.addEventListener('click', (event) => {
     return;
   }
   // Storefront links go nowhere here; the toast proves a click arrived (or did not, after a drag).
-  const link = event.target.closest('a[href^="/"]');
+  const link = event.target.closest('main a[href^="/"]');
   if (link) {
     event.preventDefault();
     say(`Link followed: ${link.textContent.trim().replace(/\s+/g, ' ')}`);
@@ -243,14 +243,6 @@ document.querySelector('[data-snap-choice]').addEventListener('change', (event) 
   phone.querySelector('[data-sc-track]').style.setProperty('--sc-snap', event.target.value);
   getCarousel(phone)?.update();
 });
-
-// --- Header -----------------------------------------------------------------------------------
-
-// The sheen runs through the band once, on the first scroll (as on www.nordwerk.studio).
-const band = document.querySelector('.band');
-const syncBand = () => band.classList.toggle('is-scrolled', window.scrollY > 24);
-syncBand();
-window.addEventListener('scroll', syncBand, { passive: true });
 
 // --- Tailwind example -------------------------------------------------------------------------
 

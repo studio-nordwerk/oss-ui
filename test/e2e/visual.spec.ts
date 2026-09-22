@@ -25,7 +25,7 @@ for (const width of [390, 768, 1280]) {
       // Show only this example, so its position does not depend on text elsewhere on the page:
       // sub-pixel offsets from prose above would otherwise change the rounded screenshot size.
       const isolate = await page.addStyleTag({
-        content: `.band, .intro, .bench-bar, .case-head, .readout, .api, .code, .foot, .pattern > h3, .pattern > p, .wf-table-wrap { display: none !important; }
+        content: `.intro, .bench-bar, .case-head, .readout, .api, .code, .closing, .pattern > h3, .pattern > p, .wf-table-wrap { display: none !important; }
           main > section:not(:has(${selector})), .pattern:not(:has(${selector})) { display: none !important; }`,
       });
       await page.waitForTimeout(100);

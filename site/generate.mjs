@@ -308,23 +308,12 @@ const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="
 
 const GITHUB = 'https://github.com/studio-nordwerk/scroll-carousel';
 const NPM = 'https://www.npmjs.com/package/@nordwerk/scroll-carousel';
-// Absolute on purpose: relative links would resolve against <base href>.
-const STUDIO = 'https://www.nordwerk.studio';
 
 const body = `${sprite}
 <div class="sheet">
-<header class="band">
-  <nav class="band-pill" aria-label="Site">
-    <a class="brand" href="${STUDIO}"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk</a>
-    <div class="band-links">
-      <a class="optional" href="#hero">Examples</a>
-      <a class="optional" href="#patterns-title">Patterns</a>
-      <a class="nw-btn" href="${GITHUB}">GitHub</a>
-    </div>
-  </nav>
-</header>
+<!--nw:header-->
 <div class="page">
-  <section class="intro" aria-labelledby="page-title">
+  <section class="intro" data-hero aria-labelledby="page-title">
     <span class="nw-badge">Open source, MIT</span>
     <h1 id="page-title">scroll-carousel</h1>
     <p class="lede">A carousel that is a native horizontal scroller first. The layout is plain CSS with scroll snap, so the server markup is already the final layout. A small script adds arrows, dots, paging and an API; drag and autoplay are opt-in. No runtime dependencies.</p>
@@ -353,43 +342,19 @@ const body = `${sprite}
     ${wireframeSection()}
   </main>
 
+  <section class="closing" aria-labelledby="closing-title">
+    <h2 id="closing-title">scroll-carousel ${pkg.version}</h2>
+    <p>MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
+    <ul class="closing-links">
+      <li><a href="${GITHUB}">Source on GitHub</a></li>
+      <li><a href="${NPM}">Package on npm</a></li>
+      <li><a href="${GITHUB}/blob/main/CHANGELOG.md">Changelog</a></li>
+      <li><a href="${GITHUB}/blob/main/docs/migration.md">Replacing a library carousel</a></li>
+    </ul>
+  </section>
 </div>
 </div>
-<footer class="foot">
-  <div class="foot-inner">
-    <div class="foot-grid">
-      <div class="foot-brand">
-        <a class="brand" href="${STUDIO}"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk</a>
-        <p>scroll-carousel ${pkg.version}, MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
-      </div>
-      <div>
-        <div class="foot-label">Package</div>
-        <ul>
-          <li><a href="${GITHUB}">Source on GitHub</a></li>
-          <li><a href="${NPM}">Package on npm</a></li>
-          <li><a href="${GITHUB}/blob/main/CHANGELOG.md">Changelog</a></li>
-          <li><a href="${GITHUB}/blob/main/docs/migration.md">Replacing a library carousel</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="foot-label">Studio</div>
-        <ul>
-          <li><a href="${STUDIO}/oss">Open Source</a></li>
-          <li><a href="${STUDIO}">nordwerk.studio</a></li>
-          <li><a href="mailto:hello@nordwerk.studio">hello@nordwerk.studio</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="foot-label">Legal</div>
-        <ul>
-          <li><a href="${STUDIO}/impressum" hreflang="de">Impressum</a></li>
-          <li><a href="${STUDIO}/datenschutz" hreflang="de">Datenschutz</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="foot-base">© ${new Date().getFullYear()} Studio Nordwerk UG (haftungsbeschränkt)</div>
-  </div>
-</footer>
+<!--nw:footer-->
 <p class="toast" role="status"></p>`;
 
 const page = `<!doctype html>

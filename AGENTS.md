@@ -87,7 +87,13 @@ JavaScript, never move slides with transforms, never clone slides.
 - `site/`: the documentation site (`generate.mjs` writes `_site/`), including the wireframe
   patterns in `wireframes.mjs`. Content there is fictional. CI publishes it to GitHub Pages;
   www.nordwerk.studio/oss/scroll-carousel serves the same files through a proxy that rewrites
-  `<base href>`, so every link in the site must stay relative to `<base>`.
+  `<base href>`, so every link in the site must stay relative to `<base>`. The proxy also puts the
+  studio site's own header and footer in place of `<!--nw:header-->` (first child of `.sheet`)
+  and `<!--nw:footer-->` (right after `.sheet`); keep both, keep `<html lang="en">` and `<body>`
+  free of other attributes, keep `data-hero` on the introduction, and never style the studio's
+  class names (band, pill, brand, brand-mark, links, link, cta, foot, grid, brand-col, tag, label,
+  base) or set `--wrap` in the site CSS. Locally and on GitHub Pages the site has no header or
+  footer.
 - `test/unit/`: node's test runner on the TypeScript sources.
 - `test/e2e/`: Playwright against `_site/` and the adapter fixtures from `scripts/fixtures.mjs`.
 
