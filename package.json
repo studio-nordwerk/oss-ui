@@ -22,6 +22,8 @@
   "sideEffects": [
     "*.css"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -52,6 +54,15 @@
     "./carousel.layer.css": "./dist/carousel.layer.css",
     "./package.json": "./package.json"
   },
+  "typesVersions": {
+    "*": {
+      "drag": ["./dist/drag.d.ts"],
+      "autoplay": ["./dist/autoplay.d.ts"],
+      "markup": ["./dist/markup.d.ts"],
+      "react": ["./dist/react.d.ts"],
+      "preact": ["./dist/preact.d.ts"]
+    }
+  },
   "files": [
     "dist",
     "src/astro",
@@ -71,8 +82,9 @@
     "fixtures": "node scripts/fixtures.mjs",
     "test:e2e": "playwright test",
     "serve": "node scripts/serve.mjs",
-    "check": "pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm fixtures && pnpm test:e2e",
-    "prepublishOnly": "node scripts/build.mjs"
+    "check": "pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm lint:package && pnpm fixtures && pnpm test:e2e",
+    "prepublishOnly": "node scripts/build.mjs",
+    "lint:package": "publint --strict && attw --pack . --exclude-entrypoints astro carousel.css carousel.layer.css --ignore-rules cjs-resolves-to-esm"
   },
   "peerDependencies": {
     "preact": ">=10",
@@ -87,6 +99,7 @@
     }
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
     "@axe-core/playwright": "4.13.0",
     "@base-ui/react": "^1.8.0",
     "@fontsource-variable/geist": "^5.3.0",
@@ -101,14 +114,19 @@
     "esbuild": "0.28.2",
     "preact": "^10.29.8",
     "preact-render-to-string": "6.7.0",
+    "publint": "0.3.24",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "shadcn": "4.21.0",
     "tailwindcss": "4.3.3",
     "typescript": "^7.0.2"
   },
-  "engines": {
-    "node": ">=22"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22",
+      "onFail": "error"
+    }
   },
   "packageManager": "pnpm@12.5.1"
 }

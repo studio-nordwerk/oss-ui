@@ -261,7 +261,7 @@ not supported (true infinite loop, vertical, effects, virtual slides, synced thu
 
 ```sh
 pnpm install
-pnpm check      # typecheck, unit tests, build, size budget, site, fixtures, browser tests
+pnpm check      # typecheck, unit tests, build, size budget, package lint, site, fixtures, browser tests
 pnpm serve      # the site on http://localhost:4173 after pnpm site
 ```
 

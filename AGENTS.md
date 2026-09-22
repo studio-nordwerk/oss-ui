@@ -117,6 +117,7 @@ pnpm typecheck
 pnpm test                 # unit tests, no build needed
 pnpm build                # dist/: esbuild modules plus tsc declarations
 pnpm size                 # fails when an entry exceeds its gzip budget
+pnpm lint:package         # publint and arethetypeswrong on the packed tarball, after a build
 pnpm site                 # build, then _site/
 node scripts/fixtures.mjs # React, Preact and Astro fixtures into _site/fixtures/
 pnpm test:e2e             # Chromium, WebKit and Firefox

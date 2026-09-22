@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4
+
+- Types resolve in TypeScript projects still on `moduleResolution: "node"`, which ignores
+  `exports`: `main`, `types` and `typesVersions` point at the same files.
+- No `engines` field any more: it asked consumers for Node 22 although the package runs in the
+  browser. The Node version for working on the repository is in `devEngines`.
+- Released from GitHub Actions through npm trusted publishing, with provenance.
+
 ## 0.1.3 (2026-09-22)
 
 - `carousel.layer.css`: the stylesheet inside Tailwind's components layer, with Tailwind's layer

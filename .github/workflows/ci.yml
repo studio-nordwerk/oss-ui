@@ -32,6 +32,8 @@ jobs:
         env:
           SITE_REDIRECT: '1'
       - run: pnpm size
+      # publint and arethetypeswrong on the packed tarball: exports, types and files as published.
+      - run: pnpm lint:package
       - run: pnpm fixtures
       - run: pnpm exec playwright install --with-deps chromium webkit firefox
       - run: pnpm test:e2e

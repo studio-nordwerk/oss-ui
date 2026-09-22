@@ -27,7 +27,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Tag and package version agree
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
-      - run: pnpm typecheck && pnpm test && pnpm build && pnpm size
+      - run: pnpm typecheck && pnpm test && pnpm build && pnpm size && pnpm lint:package
       - name: Publish unless this version is on npm already
         run: |
           if npm view "$(node -p "require('./package.json').name")@${GITHUB_REF_NAME#v}" version >/dev/null 2>&1; then
