@@ -172,9 +172,6 @@ importers:
       '@axe-core/playwright':
         specifier: 4.13.0
         version: 4.13.0(playwright-core@1.61.1)
-      '@base-ui/react':
-        specifier: ^1.8.0
-        version: 1.8.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@fontsource-variable/geist':
         specifier: ^5.3.0
         version: 5.3.0
@@ -187,6 +184,27 @@ importers:
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.6
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
+      publint:
+        specifier: 0.3.24
+        version: 0.3.24
+      shadcn:
+        specifier: 4.21.0
+        version: 4.21.0(supports-color@7.2.0)(typescript@7.0.2)
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
+  packages/scroll-carousel:
+    devDependencies:
+      '@base-ui/react':
+        specifier: ^1.8.0
+        version: 1.8.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -202,33 +220,18 @@ importers:
       cn:
         specifier: ^0.3.2
         version: 0.3.2
-      esbuild:
-        specifier: 0.28.2
-        version: 0.28.2
       preact:
         specifier: ^10.29.8
         version: 10.29.8(preact-render-to-string@6.7.0)
       preact-render-to-string:
         specifier: 6.7.0
         version: 6.7.0(preact@10.29.8)
-      publint:
-        specifier: 0.3.24
-        version: 0.3.24
       react:
         specifier: ^19.3.0
         version: 19.3.0
       react-dom:
         specifier: ^19.3.0
         version: 19.3.0(react@19.3.0)
-      shadcn:
-        specifier: 4.21.0
-        version: 4.21.0(supports-color@7.2.0)(typescript@7.0.2)
-      tailwindcss:
-        specifier: 4.3.3
-        version: 4.3.3
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
 
 packages:
 

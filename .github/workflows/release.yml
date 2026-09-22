@@ -1,12 +1,15 @@
-# Publishes to npm and creates a GitHub release when a version tag is pushed:
-#   pnpm version patch && git push --follow-tags
-# npm authenticates this workflow as a trusted publisher (OIDC), so no token is stored; the
-# package's settings on npmjs.com name this repository and this workflow file.
+# Publishes one package to npm and creates its GitHub release when a tag <name>@<version> is
+# pushed, e.g. scroll-carousel@0.1.5 for packages/scroll-carousel:
+#   (bump packages/<name>/package.json and its CHANGELOG.md, commit)
+#   git tag -a <name>@<version> -m "<name> <version>" && git push --follow-tags
+# npm authenticates this workflow as a trusted publisher (OIDC), so no token is stored; each
+# package's settings on npmjs.com name this repository and this workflow file. The first version
+# of a new package is published by hand, as npm only trusts a publisher for an existing package.
 name: Release
 
 on:
   push:
-    tags: ['v*']
+    tags: ['*@*']
 
 permissions:
   contents: write
@@ -25,12 +28,20 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
-      - name: Tag and package version agree
-        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - name: Tag names a package and its version
+        id: tag
+        run: |
+          name="${GITHUB_REF_NAME%@*}"
+          version="${GITHUB_REF_NAME##*@}"
+          test -f "packages/$name/package.json"
+          test "$(node -p "require('./packages/$name/package.json').version")" = "$version"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - run: pnpm typecheck && pnpm test && pnpm build && pnpm size && pnpm lint:package
       - name: Publish unless this version is on npm already
+        working-directory: packages/${{ steps.tag.outputs.name }}
         run: |
-          if npm view "$(node -p "require('./package.json').name")@${GITHUB_REF_NAME#v}" version >/dev/null 2>&1; then
+          if npm view "$(node -p "require('./package.json').name")@${{ steps.tag.outputs.version }}" version >/dev/null 2>&1; then
             echo "Already published"
           else
             npm publish --provenance
@@ -38,6 +49,8 @@ jobs:
       - name: GitHub release with the changelog entry
         env:
           GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.tag.outputs.name }}
+          VERSION: ${{ steps.tag.outputs.version }}
         run: |
-          awk -v v="${GITHUB_REF_NAME#v}" '$0 ~ "^## " v {on=1; next} /^## /{on=0} on' CHANGELOG.md > notes.md
-          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
+          awk -v v="$VERSION" '$0 ~ "^## " v {on=1; next} /^## /{on=0} on' "packages/$NAME/CHANGELOG.md" > notes.md
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "$NAME $VERSION" --notes-file notes.md

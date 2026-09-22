@@ -10,7 +10,7 @@ const patterns = ['teasers', 'products', 'stage', 'gallery', 'belt'];
 
 for (const script of [true, false]) {
   test(`axe finds no violations in any example, script ${script ? 'attached' : 'detached'}`, async ({ page }) => {
-    await page.goto(script ? '/' : '/?nojs');
+    await page.goto(script ? '/scroll-carousel/' : '/scroll-carousel/?nojs');
     if (script) await ready(page);
     for (const name of [...examples, ...patterns]) {
       const selector = `[data-case="${name}"], [data-wire="${name}"]`;

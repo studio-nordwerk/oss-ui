@@ -11,7 +11,7 @@
 | React, Preact and Astro: server markup equals hydrated markup apart from what the core manages, no hydration errors, the initial slide is in place before any script runs and does not move, no layout shift, arrows work | `test/e2e/adapters.spec.ts` | Chromium, WebKit, Firefox |
 | axe on every example and pattern, with and without script | `test/e2e/a11y.spec.ts` | Chromium |
 | Screenshots of every example at 390, 768 and 1280 px | `test/e2e/visual.spec.ts` | Chromium, baselines per platform |
-| Size budget per entry | `scripts/size.mjs` | CI |
+| Size budget per entry | `budgets.json`, checked by `scripts/size.mjs` at the repository root | CI |
 
 Firefox is not run locally on the maintainer's machine (Playwright's Firefox does not start
 there); it runs in CI. Visual baselines exist for macOS only so far, so CI on Linux skips them.

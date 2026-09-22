@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { call, changes, ready, settled, state } from './helpers.ts';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/scroll-carousel/');
   await ready(page);
   await page.mouse.move(2, 2);
 });
@@ -129,7 +129,7 @@ test.describe('date strip', () => {
 });
 
 test('right to left', async ({ page }) => {
-  await page.goto('/?dir=rtl');
+  await page.goto('/scroll-carousel/?dir=rtl');
   await ready(page);
   expect(await state(page, 'dates')).toMatchObject({ index: 20, page: 3 });
   expect((await state(page, 'dates')).left).toBeLessThan(0);
@@ -193,7 +193,7 @@ test.describe('autoplay', () => {
 });
 
 test('without the script every row still scrolls and no control is shown', async ({ page }) => {
-  await page.goto('/?nojs');
+  await page.goto('/scroll-carousel/?nojs');
   await page.waitForTimeout(300);
   const baseline = await page.evaluate(() => ({
     controls: [...document.querySelectorAll('.sc-nav, .sc-play')].filter((b) => {
@@ -214,7 +214,7 @@ test('attaching causes no layout shift, even when the script arrives late', asyn
     await new Promise((resolve) => setTimeout(resolve, 600));
     await route.continue();
   });
-  await page.goto('/');
+  await page.goto('/scroll-carousel/');
   await ready(page);
   const shift = await page.evaluate(
     () =>

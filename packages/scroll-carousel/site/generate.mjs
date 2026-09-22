@@ -1,9 +1,9 @@
-// Builds the documentation site into _site/: one static page with a live example per
-// configuration, storefront patterns as wireframes, and the package itself from dist/.
-// Run after the package build: pnpm site
+// The scroll-carousel documentation page: a live example per configuration, the Tailwind and
+// shadcn previews, storefront patterns as wireframes, and the package itself from dist/.
+// Called by scripts/site.mjs at the repository root after the build: pnpm site
 
 import { build } from 'esbuild';
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
@@ -12,17 +12,11 @@ import { arrows, card, categories, days, esc, guide, guides, heroSlide, heroes, 
 import { wireframeSection } from './wireframes.mjs';
 import * as tailwind from './tailwind-example.mjs';
 import { execFileSync } from 'node:child_process';
+import { copyFrame, page } from '../../../site/frame.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-// The page links everything relative to <base href>. GitHub Pages serves it under
-// /scroll-carousel/; www.nordwerk.studio serves it under /oss/scroll-carousel/ and rewrites this
-// one attribute on the way through, so the same files work in both places.
-const BASE = process.env.SITE_BASE || '/scroll-carousel/';
-const CANONICAL = 'https://www.nordwerk.studio/oss/scroll-carousel';
-// Once nordwerk.studio serves the page, visitors of the GitHub Pages address are sent there.
-const REDIRECT = process.env.SITE_REDIRECT == '1';
 const root = join(here, '..');
-const out = join(root, '_site');
+const bin = (name) => join(root, '../../node_modules/.bin', name);
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 
 // --- Sizes: bundled, minified, gzip level 9 ---------------------------------------------------
@@ -321,8 +315,8 @@ const shadcnSection = () => `<section class="case" id="shadcn" aria-labelledby="
         <p>The component has the structure of shadcn's Carousel, on native scrolling: <code>ScrollCarousel</code>, <code>ScrollCarouselContent</code>, <code>ScrollCarouselItem</code>, <code>ScrollCarouselPrevious</code> and <code>ScrollCarouselNext</code>, plus <code>ScrollCarouselDots</code>, <code>ScrollCarouselPlay</code> and <code>useScrollCarousel()</code>. It uses your theme and shadcn's Button, and installs straight from the GitHub repository. Below are the five blocks as <code>shadcn add</code> installs them, with shadcn's default theme; the storefront patterns further down are the same five as wireframes.</p>
       </div>
       <iframe class="tw-preview sh-preview" src="shadcn-preview.html" title="Live preview of the shadcn blocks" loading="lazy"></iframe>
-      ${copyBlock('shadcn-add', 'Add the component', 'npx shadcn@latest add studio-nordwerk/scroll-carousel/scroll-carousel')}
-      ${copyBlock('shadcn-blocks', 'Or a block, which brings the component along', ['product-row', 'brand-teasers', 'hero-autoplay', 'image-gallery', 'logo-belt'].map((name) => `npx shadcn@latest add studio-nordwerk/scroll-carousel/${name}`).join('\n'))}
+      ${copyBlock('shadcn-add', 'Add the component', 'npx shadcn@latest add studio-nordwerk/oss-ui/scroll-carousel')}
+      ${copyBlock('shadcn-blocks', 'Or a block, which brings the component along', ['product-row', 'brand-teasers', 'hero-autoplay', 'image-gallery', 'logo-belt'].map((name) => `npx shadcn@latest add studio-nordwerk/oss-ui/${name}`).join('\n'))}
       ${copyBlock('shadcn-usage', 'Use it', shadcnUsage)}
     </section>`;
 
@@ -339,20 +333,18 @@ const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="
       ${snippet(c.code)}
     </section>`;
 
-const GITHUB = 'https://github.com/studio-nordwerk/scroll-carousel';
+const GITHUB = 'https://github.com/studio-nordwerk/oss-ui';
+const SOURCE = `${GITHUB}/tree/main/packages/scroll-carousel`;
+const FILES = `${GITHUB}/blob/main/packages/scroll-carousel`;
 const NPM = 'https://www.npmjs.com/package/@nordwerk/scroll-carousel';
 
-const body = `${sprite}
-<div class="sheet">
-<!--nw:header-->
-<div class="page">
-  <section class="intro" data-hero aria-labelledby="page-title">
+const body = `<section class="intro" data-hero aria-labelledby="page-title">
     <span class="nw-badge">Open source, MIT</span>
     <h1 id="page-title">scroll-carousel</h1>
     <p class="lede">A carousel that is a native horizontal scroller first. The layout is plain CSS with scroll snap, so the server markup is already the final layout. A small script adds arrows, dots, paging and an API; drag and autoplay are opt-in. No runtime dependencies.</p>
     <div class="actions">
-      <a class="nw-btn" href="${GITHUB}#readme">Read the documentation</a>
-      <a class="nw-btn nw-btn-line" href="${GITHUB}/blob/main/AGENTS.md">Guide for coding agents</a>
+      <a class="nw-btn" href="${SOURCE}#readme">Read the documentation</a>
+      <a class="nw-btn nw-btn-line" href="${FILES}/AGENTS.md">Guide for coding agents</a>
     </div>
     <p class="install"><code>pnpm add @nordwerk/scroll-carousel</code></p>
     <p class="sizes">Core <b>${sizes.core}</b>, drag <b>+${sizes.drag}</b>, autoplay <b>+${sizes.autoplay}</b>, stylesheet <b>${sizes.css}</b>, gzip and minified. React, Preact and Astro adapters included.</p>
@@ -380,72 +372,58 @@ const body = `${sprite}
     <h2 id="closing-title">scroll-carousel ${pkg.version}</h2>
     <p>MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
     <ul class="closing-links">
-      <li><a href="${GITHUB}">Source on GitHub</a></li>
+      <li><a href="${SOURCE}">Source on GitHub</a></li>
       <li><a href="${NPM}">Package on npm</a></li>
-      <li><a href="${GITHUB}/blob/main/CHANGELOG.md">Changelog</a></li>
-      <li><a href="${GITHUB}/blob/main/docs/migration.md">Replacing a library carousel</a></li>
+      <li><a href="${FILES}/CHANGELOG.md">Changelog</a></li>
+      <li><a href="${FILES}/docs/migration.md">Replacing a library carousel</a></li>
     </ul>
-  </section>
-</div>
-</div>
-<!--nw:footer-->
-<p class="toast" role="status"></p>`;
+  </section>`;
 
-const page = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>scroll-carousel</title>
-<base href="${BASE}">
-${REDIRECT ? `<script>if (location.hostname.endsWith('github.io')) location.replace('${CANONICAL}' + location.search + location.hash);</script>\n<link rel="canonical" href="${CANONICAL}">` : ''}
-<meta name="description" content="${esc(pkg.description)}">
-<link rel="preload" href="fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="lib/carousel.css">
-<link rel="stylesheet" href="demo.css">
-<script type="module" src="demo.js"></script>
-</head>
-<body>
-${body}
-</body>
-</html>
-`;
-
-rmSync(out, { recursive: true, force: true });
-mkdirSync(out, { recursive: true });
-cpSync(join(root, 'dist'), join(out, 'lib'), { recursive: true, filter: (src) => !src.endsWith('.d.ts') });
-cpSync(join(here, 'demo.css'), join(out, 'demo.css'));
-mkdirSync(join(out, 'fonts'));
-for (const subset of ['latin', 'latin-ext']) {
-  const file = `geist-${subset}-wght-normal.woff2`;
-  cpSync(join(root, 'node_modules/@fontsource-variable/geist/files', file), join(out, 'fonts', file));
-}
-cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
-cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
-writeFileSync(join(out, 'index.html'), page);
-// The shadcn blocks as a live preview: the registry files with shadcn's own Button, Badge and
-// theme (site/shadcn-preview), bundled by esbuild and compiled by Tailwind.
-const preview = join(here, 'shadcn-preview');
-await build({
-  entryPoints: { 'shadcn-preview': join(preview, 'main.tsx') },
-  outdir: out,
-  bundle: true,
-  format: 'esm',
-  minify: true,
-  jsx: 'automatic',
-  define: { 'process.env.NODE_ENV': '"production"' },
-  alias: {
-    '@/components/ui/scroll-carousel': join(root, 'registry/ui/scroll-carousel.tsx'),
-    '@/components/ui/button': join(preview, 'components/ui/button.tsx'),
-    '@/components/ui/badge': join(preview, 'components/ui/badge.tsx'),
-    '@/lib/utils': join(preview, 'lib/utils.ts'),
-  },
-  logLevel: 'warning',
-});
-execFileSync(join(root, 'node_modules/.bin/tailwindcss'), ['-i', join(preview, 'index.css'), '-o', join(out, 'shadcn-preview.tailwind.css'), '--minify'], { stdio: 'pipe' });
-writeFileSync(
-  join(out, 'shadcn-preview.html'),
-  `<!doctype html>
+/** Writes the page into `out`; `base` is its <base href>, `canonical` its address on nordwerk.studio. */
+export default async function generate({ out, base, canonical, redirect }) {
+  mkdirSync(out, { recursive: true });
+  copyFrame(out);
+  cpSync(join(root, 'dist'), join(out, 'lib'), { recursive: true, filter: (src) => !src.endsWith('.d.ts') });
+  cpSync(join(here, 'demo.css'), join(out, 'demo.css'));
+  cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
+  cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
+  writeFileSync(
+    join(out, 'index.html'),
+    page({
+      title: 'scroll-carousel',
+      description: pkg.description,
+      base,
+      canonical,
+      redirect,
+      styles: ['lib/carousel.css'],
+      head: '<link rel="stylesheet" href="demo.css">\n<script type="module" src="demo.js"></script>',
+      before: sprite,
+      body,
+    }),
+  );
+  // The shadcn blocks as a live preview: the registry files with shadcn's own Button, Badge and
+  // theme (site/shadcn-preview), bundled by esbuild and compiled by Tailwind.
+  const preview = join(here, 'shadcn-preview');
+  await build({
+    entryPoints: { 'shadcn-preview': join(preview, 'main.tsx') },
+    outdir: out,
+    bundle: true,
+    format: 'esm',
+    minify: true,
+    jsx: 'automatic',
+    define: { 'process.env.NODE_ENV': '"production"' },
+    alias: {
+      '@/components/ui/scroll-carousel': join(root, 'registry/ui/scroll-carousel.tsx'),
+      '@/components/ui/button': join(preview, 'components/ui/button.tsx'),
+      '@/components/ui/badge': join(preview, 'components/ui/badge.tsx'),
+      '@/lib/utils': join(preview, 'lib/utils.ts'),
+    },
+    logLevel: 'warning',
+  });
+  execFileSync(bin('tailwindcss'), ['-i', join(preview, 'index.css'), '-o', join(out, 'shadcn-preview.tailwind.css'), '--minify'], { stdio: 'pipe' });
+  writeFileSync(
+    join(out, 'shadcn-preview.html'),
+    `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -460,11 +438,9 @@ writeFileSync(
 </body>
 </html>
 `,
-);
-// The shadcn registry as built JSON, installable by URL as well as by GitHub address.
-execFileSync(join(root, 'node_modules/.bin/shadcn'), ['build', join(root, 'registry.json'), '--output', join(out, 'r'), '--cwd', root], { stdio: 'pipe' });
-// The Tailwind preview: write the page, then let Tailwind compile exactly the classes it uses.
-writeFileSync(join(out, 'tailwind-example.html'), tailwind.previewPage);
-execFileSync(join(root, 'node_modules/.bin/tailwindcss'), ['-i', join(here, 'tailwind.css'), '-o', join(out, 'tailwind-example.css'), '--minify'], { stdio: 'pipe' });
-writeFileSync(join(out, '.nojekyll'), '');
-console.log(`_site/ written. Core ${sizes.core}, drag +${sizes.drag}, autoplay +${sizes.autoplay}, CSS ${sizes.css}`);
+  );
+  // The Tailwind preview: write the page, then let Tailwind compile exactly the classes it uses.
+  writeFileSync(join(out, 'tailwind-example.html'), tailwind.previewPage);
+  execFileSync(bin('tailwindcss'), ['-i', join(here, 'tailwind.css'), '-o', join(out, 'tailwind-example.css'), '--minify'], { stdio: 'pipe' });
+  console.log(`${out} written. Core ${sizes.core}, drag +${sizes.drag}, autoplay +${sizes.autoplay}, CSS ${sizes.css}`);
+}

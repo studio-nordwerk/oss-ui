@@ -1,0 +1,4 @@
+/* Compiles the preview of the Tailwind example. It scans only the module that holds its markup. */
+@import "tailwindcss" source(none);
+@import "../dist/carousel.css" layer(components);
+@source "./tailwind-example.mjs";

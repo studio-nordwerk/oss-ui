@@ -69,7 +69,7 @@ export const previewPage = `<!doctype html>
   for (const root of document.querySelectorAll('.sc')) attach(root, { plugins: [drag()] });
   // Tell the page around the iframe how tall this is, so it never needs its own scrollbar.
   // The body's own height: the document's scroll height never drops below the iframe's.
-  const report = () => parent.postMessage({ tailwindExampleHeight: document.body.getBoundingClientRect().height }, '*');
+  const report = () => parent.postMessage({ frameHeight: document.body.getBoundingClientRect().height }, '*');
   new ResizeObserver(report).observe(document.body);
   document.addEventListener('click', (event) => event.target.closest('a[href="#"]') && event.preventDefault());
 </script>

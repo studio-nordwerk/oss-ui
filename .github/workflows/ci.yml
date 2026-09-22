@@ -15,7 +15,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -26,13 +26,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
-      # The published site sends visitors of the GitHub Pages address to www.nordwerk.studio,
-      # which serves the same files under /oss/scroll-carousel.
+      # GitHub Pages publishes _site/ under /oss-ui/ and sends its visitors to www.nordwerk.studio,
+      # which shows each package's page at /oss/<name>.
       - run: pnpm site
         env:
+          SITE_BASE: /oss-ui/
           SITE_REDIRECT: '1'
       - run: pnpm size
-      # publint and arethetypeswrong on the packed tarball: exports, types and files as published.
+      # publint and arethetypeswrong on the packed tarballs: exports, types and files as published.
       - run: pnpm lint:package
       - run: pnpm fixtures
       - run: pnpm exec playwright install --with-deps chromium webkit firefox
@@ -45,13 +46,13 @@ jobs:
           retention-days: 7
       # The fixtures are for the tests only; the rest of _site is the documentation site.
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: rm -rf _site/fixtures
+        run: rm -rf _site/*/fixtures
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
-  # A fresh shadcn project installs the registry items through the CLI, builds and renders them.
+  # A fresh shadcn project installs every registry item through the CLI, builds and renders them.
   shadcn:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -64,7 +65,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: node scripts/shadcn-smoke.mjs
+      - run: pnpm test:shadcn
 
   pages:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

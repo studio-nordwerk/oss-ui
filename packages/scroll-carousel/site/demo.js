@@ -2,6 +2,7 @@
 import { attach, getCarousel } from './lib/index.js';
 import { drag } from './lib/drag.js';
 import { autoplay } from './lib/autoplay.js';
+import { say } from './frame.js';
 
 const main = document.querySelector('main');
 const settings = { drag: true, rewind: 'fade', script: true };
@@ -140,15 +141,6 @@ if (PerformanceObserver.supportedEntryTypes?.includes('layout-shift')) {
 
 // --- Storefront behaviour ---------------------------------------------------------------------
 
-const toast = document.querySelector('.toast');
-let toastTimer = 0;
-function say(text) {
-  toast.textContent = text;
-  toast.classList.add('is-shown');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('is-shown'), 1800);
-}
-
 document.addEventListener('click', (event) => {
   const wish = event.target.closest('.wish');
   if (wish) {
@@ -162,16 +154,6 @@ document.addEventListener('click', (event) => {
     for (const other of document.querySelectorAll('.day[aria-pressed="true"]')) other.setAttribute('aria-pressed', 'false');
     day.setAttribute('aria-pressed', 'true');
     document.querySelector('.pickup-choice').textContent = `Pick-up on ${day.getAttribute('aria-label').replace(', today', '')}`;
-    return;
-  }
-  // www.nordwerk.studio serves this page at /oss/scroll-carousel, without the slash that
-  // <base href> ends in, so "#hero" would point at another address and reload the page.
-  const anchor = event.target.closest('a[href^="#"]');
-  if (anchor && !event.defaultPrevented && !(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) {
-    event.preventDefault();
-    const hash = anchor.getAttribute('href');
-    if (location.hash === hash) document.getElementById(hash.slice(1))?.scrollIntoView();
-    else location.hash = hash;
     return;
   }
   // Storefront links go nowhere here; the toast proves a click arrived (or did not, after a drag).
@@ -242,26 +224,6 @@ const phone = document.querySelector('[data-case="phone"]');
 document.querySelector('[data-snap-choice]').addEventListener('change', (event) => {
   phone.querySelector('[data-sc-track]').style.setProperty('--sc-snap', event.target.value);
   getCarousel(phone)?.update();
-});
-
-// --- Tailwind example -------------------------------------------------------------------------
-
-// The example iframes report their height, so they grow to their content instead of scrolling.
-window.addEventListener('message', (event) => {
-  const height = event.data?.tailwindExampleHeight || event.data?.shadcnPreviewHeight;
-  const frame = [...document.querySelectorAll('iframe.tw-preview')].find((iframe) => iframe.contentWindow == event.source);
-  if (frame && height) frame.style.height = `${Math.ceil(height)}px`;
-});
-document.addEventListener('click', async (event) => {
-  const button = event.target.closest('[data-copy]');
-  if (!button) return;
-  try {
-    await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
-    button.textContent = 'Copied';
-  } catch {
-    button.textContent = 'Select and copy';
-  }
-  setTimeout(() => (button.textContent = 'Copy'), 1600);
 });
 
 // --- Start ------------------------------------------------------------------------------------

@@ -140,7 +140,7 @@ export const wireframeSection = () => `<section class="patterns" aria-labelledby
     <p>${pattern.text}</p>
     <div class="stage wf">${pattern.carousel}</div>
     <div class="wf-table-wrap">${table(pattern.rows)}</div>
-    <p class="block-install">As a shadcn block: <code>npx shadcn@latest add studio-nordwerk/scroll-carousel/${pattern.block}</code></p>
+    <p class="block-install">As a shadcn block: <code>npx shadcn@latest add studio-nordwerk/oss-ui/${pattern.block}</code></p>
   </article>`,
     )
     .join('\n')}

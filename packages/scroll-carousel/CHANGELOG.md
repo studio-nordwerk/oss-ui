@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- The repository is now [studio-nordwerk/oss-ui](https://github.com/studio-nordwerk/oss-ui), with
+  the package in `packages/scroll-carousel`. shadcn items install from
+  `studio-nordwerk/oss-ui/<item>`.
+
 ## 0.1.4 (2026-09-22)
 
 - Types resolve in TypeScript projects still on `moduleResolution: "node"`, which ignores

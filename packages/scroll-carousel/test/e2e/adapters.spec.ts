@@ -2,9 +2,9 @@ import { expect, test, type Page } from '@playwright/test';
 
 // Built by scripts/fixtures.mjs: the same product row rendered on the server by each adapter.
 const fixtures = [
-  { name: 'React', url: '/fixtures/react.html' },
-  { name: 'Preact', url: '/fixtures/preact.html' },
-  { name: 'Astro', url: '/fixtures/astro/' },
+  { name: 'React', url: '/scroll-carousel/fixtures/react.html' },
+  { name: 'Preact', url: '/scroll-carousel/fixtures/preact.html' },
+  { name: 'Astro', url: '/scroll-carousel/fixtures/astro/' },
 ];
 
 /** Attributes and children the core manages; everything else must match the server markup. */

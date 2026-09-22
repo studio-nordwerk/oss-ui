@@ -1,4 +1,0 @@
-/* Compiles the preview of the Tailwind example. It scans only the preview page. */
-@import "tailwindcss" source(none);
-@import "../dist/carousel.css" layer(components);
-@source "../_site/tailwind-example.html";

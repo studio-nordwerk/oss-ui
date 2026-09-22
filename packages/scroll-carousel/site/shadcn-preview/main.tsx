@@ -31,7 +31,7 @@ function Preview() {
 createRoot(document.getElementById("root")!).render(<Preview />)
 
 // Tell the page around the iframe how tall this is, so it never needs its own scrollbar.
-const report = () => parent.postMessage({ shadcnPreviewHeight: document.body.getBoundingClientRect().height }, "*")
+const report = () => parent.postMessage({ frameHeight: document.body.getBoundingClientRect().height }, "*")
 new ResizeObserver(report).observe(document.body)
 document.addEventListener("click", (event) => {
   if ((event.target as Element).closest('a[href="#"]')) event.preventDefault()

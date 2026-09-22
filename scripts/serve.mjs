@@ -1,4 +1,7 @@
 // Serves _site/ for local preview and the browser tests. Usage: node scripts/serve.mjs [port]
+// Each package's page is in _site/<name>/. GitHub Pages publishes the site under /oss-ui/ and
+// www.nordwerk.studio shows the pages under /oss/<name>; locally both prefixes work, as does
+// the root.
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
@@ -12,14 +15,13 @@ const types = {
   '.txt': 'text/plain; charset=utf-8',
   '.json': 'application/json',
   '.svg': 'image/svg+xml',
+  '.woff2': 'font/woff2',
 };
 
 createServer(async (request, response) => {
-  // The page is published under /scroll-carousel/ and /oss/scroll-carousel/; locally it is served
-  // at both of those and at the root.
   const path = normalize(decodeURIComponent(new URL(request.url, 'http://localhost').pathname))
     .replace(/^(\.\.[/\\])+/, '')
-    .replace(/^\/(oss\/)?scroll-carousel(?=\/|$)/, '') || '/';
+    .replace(/^\/(oss-ui|oss)(?=\/|$)/, '') || '/';
   let file = join(root, path);
   try {
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html');

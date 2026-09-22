@@ -1,0 +1,105 @@
+{
+  "name": "@nordwerk/scroll-carousel",
+  "version": "0.1.4",
+  "description": "A dependency-free carousel on native scrolling: CSS scroll snap first, arrows, dots, paging and an API as progressive enhancement.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/studio-nordwerk/oss-ui.git",
+    "directory": "packages/scroll-carousel"
+  },
+  "homepage": "https://www.nordwerk.studio/oss/scroll-carousel",
+  "keywords": [
+    "carousel",
+    "slider",
+    "scroll-snap",
+    "progressive-enhancement",
+    "accessibility",
+    "react",
+    "preact",
+    "astro"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./drag": {
+      "types": "./dist/drag.d.ts",
+      "default": "./dist/drag.js"
+    },
+    "./autoplay": {
+      "types": "./dist/autoplay.d.ts",
+      "default": "./dist/autoplay.js"
+    },
+    "./markup": {
+      "types": "./dist/markup.d.ts",
+      "default": "./dist/markup.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "default": "./dist/react.js"
+    },
+    "./preact": {
+      "types": "./dist/preact.d.ts",
+      "default": "./dist/preact.js"
+    },
+    "./astro": "./src/astro/Carousel.astro",
+    "./carousel.css": "./dist/carousel.css",
+    "./carousel.layer.css": "./dist/carousel.layer.css",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "drag": ["./dist/drag.d.ts"],
+      "autoplay": ["./dist/autoplay.d.ts"],
+      "markup": ["./dist/markup.d.ts"],
+      "react": ["./dist/react.d.ts"],
+      "preact": ["./dist/preact.d.ts"]
+    }
+  },
+  "files": [
+    "dist",
+    "src/astro",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "docs/migration.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "node ../../scripts/build.mjs scroll-carousel"
+  },
+  "peerDependencies": {
+    "preact": ">=10",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "bugs": "https://github.com/studio-nordwerk/oss-ui/issues",
+  "devDependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.3.3",
+    "class-variance-authority": "^0.7.1",
+    "cn": "^0.3.2",
+    "preact": "^10.29.8",
+    "preact-render-to-string": "6.7.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  }
+}
