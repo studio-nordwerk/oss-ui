@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.4
+## 0.1.4 (2026-09-22)
 
 - Types resolve in TypeScript projects still on `moduleResolution: "node"`, which ignores
   `exports`: `main`, `types` and `typesVersions` point at the same files.
