@@ -232,7 +232,7 @@ test('attaching causes no layout shift, even when the script arrives late', asyn
 test('the Tailwind example works as compiled by Tailwind', async ({ page }) => {
   const section = page.locator('#tailwind');
   await section.scrollIntoViewIfNeeded();
-  const frame = page.frameLocator('iframe.tw-preview');
+  const frame = page.frameLocator('#tailwind iframe');
   await expect(frame.locator('.sc[data-sc-ready][data-sc-overflow]')).toBeVisible();
   // The host's own arrows appear through the Tailwind variant on the state attribute.
   const next = frame.locator('[data-sc-next]');
@@ -242,6 +242,19 @@ test('the Tailwind example works as compiled by Tailwind', async ({ page }) => {
   await expect.poll(() => track.evaluate((element) => Math.abs(element.scrollLeft))).toBeGreaterThan(100);
   await expect(frame.locator('[data-sc-prev]')).toHaveAttribute('aria-disabled', 'false');
   // The iframe grows to its content instead of scrolling.
-  const height = await page.locator('iframe.tw-preview').evaluate((element) => element.getBoundingClientRect().height);
+  const height = await page.locator('#tailwind iframe').evaluate((element) => element.getBoundingClientRect().height);
   expect(height).toBeGreaterThan(300);
+});
+
+test('the shadcn blocks render in the docs as shadcn installs them', async ({ page }) => {
+  await page.locator('#shadcn').scrollIntoViewIfNeeded();
+  const frame = page.frameLocator('iframe.sh-preview');
+  await expect(frame.locator('.sc[data-sc-ready]')).toHaveCount(5);
+  const row = frame.locator('[aria-label="Bestsellers"]');
+  await row.scrollIntoViewIfNeeded();
+  await row.locator('[data-slot=scroll-carousel-next]').click();
+  await expect.poll(() => row.locator('[data-sc-track]').evaluate((element) => Math.abs(element.scrollLeft))).toBeGreaterThan(100);
+  await expect(row.locator('[data-slot=scroll-carousel-dots] button[aria-current=true]')).toHaveCount(1);
+  const height = await page.locator('iframe.sh-preview').evaluate((element) => element.getBoundingClientRect().height);
+  expect(height).toBeGreaterThan(1200);
 });

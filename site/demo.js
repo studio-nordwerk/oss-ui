@@ -246,10 +246,11 @@ document.querySelector('[data-snap-choice]').addEventListener('change', (event) 
 
 // --- Tailwind example -------------------------------------------------------------------------
 
-const preview = document.querySelector('.tw-preview');
+// The example iframes report their height, so they grow to their content instead of scrolling.
 window.addEventListener('message', (event) => {
-  const height = event.data?.tailwindExampleHeight;
-  if (event.source == preview?.contentWindow && height) preview.style.height = `${Math.ceil(height)}px`;
+  const height = event.data?.tailwindExampleHeight || event.data?.shadcnPreviewHeight;
+  const frame = [...document.querySelectorAll('iframe.tw-preview')].find((iframe) => iframe.contentWindow == event.source);
+  if (frame && height) frame.style.height = `${Math.ceil(height)}px`;
 });
 document.addEventListener('click', async (event) => {
   const button = event.target.closest('[data-copy]');

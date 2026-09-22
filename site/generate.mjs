@@ -318,8 +318,9 @@ const shadcnUsage = `import {
 const shadcnSection = () => `<section class="case" id="shadcn" aria-labelledby="case-shadcn">
       <div class="case-head">
         <h2 id="case-shadcn">shadcn/ui: a component and five blocks</h2>
-        <p>The component has the structure of shadcn's Carousel, on native scrolling: <code>ScrollCarousel</code>, <code>ScrollCarouselContent</code>, <code>ScrollCarouselItem</code>, <code>ScrollCarouselPrevious</code> and <code>ScrollCarouselNext</code>, plus <code>ScrollCarouselDots</code>, <code>ScrollCarouselPlay</code> and <code>useScrollCarousel()</code>. It uses your theme and shadcn's Button, and installs straight from the GitHub repository; the storefront patterns further down install as blocks.</p>
+        <p>The component has the structure of shadcn's Carousel, on native scrolling: <code>ScrollCarousel</code>, <code>ScrollCarouselContent</code>, <code>ScrollCarouselItem</code>, <code>ScrollCarouselPrevious</code> and <code>ScrollCarouselNext</code>, plus <code>ScrollCarouselDots</code>, <code>ScrollCarouselPlay</code> and <code>useScrollCarousel()</code>. It uses your theme and shadcn's Button, and installs straight from the GitHub repository. Below are the five blocks as <code>shadcn add</code> installs them, with shadcn's default theme; the storefront patterns further down are the same five as wireframes.</p>
       </div>
+      <iframe class="tw-preview sh-preview" src="shadcn-preview.html" title="Live preview of the shadcn blocks" loading="lazy"></iframe>
       ${copyBlock('shadcn-add', 'Add the component', 'npx shadcn@latest add studio-nordwerk/scroll-carousel/scroll-carousel')}
       ${copyBlock('shadcn-blocks', 'Or a block, which brings the component along', ['product-row', 'brand-teasers', 'hero-autoplay', 'image-gallery', 'logo-belt'].map((name) => `npx shadcn@latest add studio-nordwerk/scroll-carousel/${name}`).join('\n'))}
       ${copyBlock('shadcn-usage', 'Use it', shadcnUsage)}
@@ -422,6 +423,44 @@ for (const subset of ['latin', 'latin-ext']) {
 cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
 cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
 writeFileSync(join(out, 'index.html'), page);
+// The shadcn blocks as a live preview: the registry files with shadcn's own Button, Badge and
+// theme (site/shadcn-preview), bundled by esbuild and compiled by Tailwind.
+const preview = join(here, 'shadcn-preview');
+await build({
+  entryPoints: { 'shadcn-preview': join(preview, 'main.tsx') },
+  outdir: out,
+  bundle: true,
+  format: 'esm',
+  minify: true,
+  jsx: 'automatic',
+  define: { 'process.env.NODE_ENV': '"production"' },
+  alias: {
+    '@/components/ui/scroll-carousel': join(root, 'registry/ui/scroll-carousel.tsx'),
+    '@/components/ui/button': join(preview, 'components/ui/button.tsx'),
+    '@/components/ui/badge': join(preview, 'components/ui/badge.tsx'),
+    '@/lib/utils': join(preview, 'lib/utils.ts'),
+  },
+  logLevel: 'warning',
+});
+execFileSync(join(root, 'node_modules/.bin/tailwindcss'), ['-i', join(preview, 'index.css'), '-o', join(out, 'shadcn-preview.tailwind.css'), '--minify'], { stdio: 'pipe' });
+writeFileSync(
+  join(out, 'shadcn-preview.html'),
+  `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shadcn blocks</title>
+<link rel="stylesheet" href="shadcn-preview.tailwind.css">
+<link rel="stylesheet" href="shadcn-preview.css">
+<script type="module" src="shadcn-preview.js"></script>
+</head>
+<body>
+<div id="root"></div>
+</body>
+</html>
+`,
+);
 // The shadcn registry as built JSON, installable by URL as well as by GitHub address.
 execFileSync(join(root, 'node_modules/.bin/shadcn'), ['build', join(root, 'registry.json'), '--output', join(out, 'r'), '--cwd', root], { stdio: 'pipe' });
 // The Tailwind preview: write the page, then let Tailwind compile exactly the classes it uses.
