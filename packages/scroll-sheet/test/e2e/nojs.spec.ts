@@ -49,3 +49,21 @@ test('without script a sheet cannot be dragged away completely', async ({ page }
   expect(panel!.y).toBeLessThan(page.viewportSize()!.height - 40);
   expect(await isOpen(page, 'size-sheet')).toBe(true);
 });
+
+test('while a sheet slides out, it keeps its direction instead of jumping to the other end', async ({ page }) => {
+  await page.goto(PAGE);
+  for (const [id, trigger] of [
+    ['filter-sheet', '[commandfor="filter-sheet"][command="show-modal"]'],
+    ['size-sheet', '#sizes .tile-btn'],
+  ]) {
+    await page.locator(trigger).first().scrollIntoViewIfNeeded();
+    await page.locator(trigger).first().click();
+    await page.waitForTimeout(500);
+    const direction = (dialog: HTMLDialogElement) => getComputedStyle(dialog).flexDirection;
+    const open = await page.locator(`#${id}`).evaluate(direction);
+    await press(page, `#${id} .ss-close`);
+    expect(await isOpen(page, id)).toBe(false);
+    expect(await page.locator(`#${id}`).evaluate(direction), id).toBe(open);
+    await page.waitForTimeout(500);
+  }
+});

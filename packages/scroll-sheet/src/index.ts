@@ -5,6 +5,7 @@
  *   area, dragging the sheet away), with an exit animation that keeps the dialog modal until it ends;
  * - opening at a snap point, and events and an API for frameworks and stores;
  * - focus back to the element that opened the sheet (Safari does not focus tapped buttons);
+ * - the handle as a button (command="--ss-cycle"): each press moves to the next snap point;
  * - a fallback for browsers without invoker commands.
  * The script reads layout and scrolls; positions come from CSS scroll snap.
  */
@@ -325,7 +326,7 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
     } else if (event.command == 'close' || event.command == 'request-close') {
       event.preventDefault();
       void sheet.requestClose('button');
-    }
+    } else if (event.command == '--ss-cycle') cycle(sheet);
   });
   // Escape, the Android back gesture and requestClose() arrive as a cancelable cancel event.
   listen(dialog, 'cancel', (event: Event) => {
@@ -382,6 +383,12 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
   return sheet;
 }
 
+/** Up to the next snap point, from the full height back to the lowest; like the handle of a native sheet. */
+const cycle = (sheet: Sheet) => {
+  const { snap, snapPoints } = sheet.state;
+  if (snapPoints.length > 1) sheet.snapTo((snap + 1) % snapPoints.length);
+};
+
 /** The sheet attached to a dialog, if any. */
 export const getSheet = (dialog: HTMLDialogElement) => sheets.get(dialog);
 
@@ -412,6 +419,7 @@ function installFallback() {
     if (!sheet) return;
     if (command == 'show-modal') sheet.open({ invoker: button });
     else if (command == 'close' || command == 'request-close') void sheet.requestClose('button');
+    else if (command == '--ss-cycle') cycle(sheet);
   });
 }
 

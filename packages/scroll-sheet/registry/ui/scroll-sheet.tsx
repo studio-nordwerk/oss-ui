@@ -298,12 +298,17 @@ function ScrollSheetContent({
   )
 }
 
-function ScrollSheetHandle({ className, ...props }: React.ComponentProps<"span">) {
+/** Each press moves the sheet to its next snap point, from the full height back to the lowest. */
+function ScrollSheetHandle({ className, ...props }: React.ComponentProps<"button">) {
+  const { id } = useScrollSheet()
+  const command = { commandfor: id, command: "--ss-cycle" } as Record<string, string>
   return (
-    <span
-      aria-hidden="true"
+    <button
+      type="button"
+      aria-label="Change height"
       data-slot="scroll-sheet-handle"
       className={cn("ss-handle", className)}
+      {...command}
       {...props}
     />
   )

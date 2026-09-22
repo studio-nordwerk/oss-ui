@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { drag } from "@nordwerk/scroll-sheet/drag"
 import { keyboard } from "@nordwerk/scroll-sheet/keyboard"
 
 import { Button } from "@/components/ui/button"
@@ -17,7 +18,7 @@ import {
 } from "@/components/ui/scroll-sheet"
 
 // Made outside the component, so every render passes the same plugins.
-const plugins = [keyboard()]
+const plugins = [keyboard(), drag()]
 
 const sizes = [
   { label: "30 ml", price: "19.95 €" },

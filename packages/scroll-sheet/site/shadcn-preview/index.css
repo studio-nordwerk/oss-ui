@@ -6,6 +6,7 @@
 @import "shadcn/tailwind.css";
 @source "../../registry/ui";
 @source "../../registry/blocks";
+@source "../../../scroll-carousel/registry/ui";
 @source "./";
 
 @font-face {

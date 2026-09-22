@@ -39,6 +39,9 @@ const size = {
 
 // --- Page pieces -----------------------------------------------------------------------------
 
+const chevron = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${d}"/></svg>`;
+const chevrons = `<button class="sc-nav sc-prev" type="button" data-sc-prev aria-label="Previous shade">${chevron('m15 18-6-6 6-6')}</button><button class="sc-nav sc-next" type="button" data-sc-next aria-label="Next shade">${chevron('m9 6 6 6-6 6')}</button>`;
+
 const radios = (name, legend, options, checked) =>
   `<fieldset class="seg"><legend>${legend}</legend>${options
     .map(
@@ -62,7 +65,7 @@ import '@nordwerk/scroll-sheet/sheet.css';`;
 const sizesSheet = `<dialog class="ss" id="size-sheet" aria-labelledby="size-sheet-title" data-case-sheet="sizes">
           <div class="ss-panel">
             <i class="ss-snap" style="--ss-at: 50dvh" data-ss-initial></i>
-            <span class="ss-handle" aria-hidden="true"></span>
+            <button class="ss-handle" type="button" commandfor="size-sheet" command="--ss-cycle" aria-label="Change height"></button>
             <header class="ss-header"><h2 id="size-sheet-title">Choose a size</h2>${closeButton('size-sheet')}</header>
             <div class="ss-body">
               <fieldset class="size-list">
@@ -79,7 +82,7 @@ ${sizes.map(([label, price], i) => `                <label><input type="radio" n
         </dialog>
         <dialog class="ss" id="guide-sheet" aria-labelledby="guide-sheet-title" data-case-sheet="guide">
           <div class="ss-panel">
-            <span class="ss-handle" aria-hidden="true"></span>
+            <button class="ss-handle" type="button" commandfor="guide-sheet" command="--ss-cycle" aria-label="Change height"></button>
             <header class="ss-header"><h2 id="guide-sheet-title">Size guide</h2>${closeButton('guide-sheet')}</header>
             <div class="ss-body">
               <p>30 ml lasts about six weeks with two sprays a day, 100 ml about five months. The travel sizes fit hand luggage.</p>
@@ -105,7 +108,7 @@ ${[0, 1, 2, 3].map(tile).join('\n')}
 <dialog class="ss" id="size-sheet" aria-labelledby="size-sheet-title">
   <div class="ss-panel">
     <i class="ss-snap" style="--ss-at: 50dvh" data-ss-initial></i>
-    <span class="ss-handle" aria-hidden="true"></span>
+    <button class="ss-handle" type="button" commandfor="size-sheet" command="--ss-cycle" aria-label="Change height"></button>
     <header class="ss-header">
       <h2 id="size-sheet-title">Choose a size</h2>
       <button class="ss-close" type="button" commandfor="size-sheet" command="close" aria-label="Close">…</button>
@@ -133,7 +136,7 @@ enhance(document, { plugins: [history(), keyboard()] });`,
     body: `<div class="toolbar"><span class="muted">128 products</span><button class="nw-btn nw-btn-line" type="button" commandfor="filter-sheet" command="show-modal">Filter and sort</button></div>
         <dialog class="ss" data-ss="bottom md:end" id="filter-sheet" aria-labelledby="filter-sheet-title" data-case-sheet="filter">
           <div class="ss-panel">
-            <span class="ss-handle" aria-hidden="true"></span>
+            <button class="ss-handle" type="button" commandfor="filter-sheet" command="--ss-cycle" aria-label="Change height"></button>
             <header class="ss-header"><h2 id="filter-sheet-title">Filter and sort</h2>${closeButton('filter-sheet')}</header>
             <div class="ss-body">
               <p><label class="field">Search brands <input type="search" name="brand-search" autocomplete="off"></label></p>
@@ -233,7 +236,7 @@ ${bag.map(([name, detail, price]) => `              <li><span class="bag-img"></
           <div class="ss-panel">
             <i class="ss-snap" style="--ss-at: 32dvh" data-ss-initial></i>
             <i class="ss-snap" style="--ss-at: 66dvh"></i>
-            <span class="ss-handle" aria-hidden="true"></span>
+            <button class="ss-handle" type="button" commandfor="store-sheet" command="--ss-cycle" aria-label="Change height"></button>
             <header class="ss-header"><h2 id="store-sheet-title">Stores near you</h2>${closeButton('store-sheet')}</header>
             <div class="ss-body"><ul class="store-list">
 ${stores.map(([street, town, distance, hours]) => `              <li><b>${street}</b>, ${town}<br><span class="muted">${distance} · ${hours}</span></li>`).join('\n')}
@@ -254,21 +257,56 @@ ${stores.map(([street, town, distance, hours]) => `              <li><b>${street
   },
   {
     id: 'lightbox',
-    title: 'Lightbox: a full-screen dialog with a native scroller',
-    text: 'The centred presentation stretched to the whole screen, dark, with a horizontal scroll-snap strip of images inside. Escape or the close button end it; the page does not move.',
+    title: 'Lightbox: a full-screen dialog with a carousel inside',
+    text: 'The centred presentation stretched to the whole screen, dark, with a <a href="../scroll-carousel">scroll-carousel</a> inside: arrows, dots, arrow keys, and it opens at the image you picked. Escape or the close button end it; the page does not move. The two packages do not depend on each other; the page uses both.',
     body: `<ul class="thumbs">
-${shades.map((name, i) => `          <li><button class="thumb" type="button" commandfor="lightbox-sheet" command="show-modal" style="--hue: ${i * 50 + 10}" aria-label="Open image of shade ${name}"></button></li>`).join('\n')}
+${shades.map((name, i) => `          <li><button class="thumb" type="button" commandfor="lightbox-sheet" command="show-modal" data-slide="${i}" style="--hue: ${i * 50 + 10}" aria-label="Open image of shade ${name}"></button></li>`).join('\n')}
         </ul>
         <dialog class="ss lightbox" data-ss="center" id="lightbox-sheet" aria-label="Shades" data-case-sheet="lightbox">
           <div class="ss-panel">
             <header class="ss-header"><p>Shades</p>${closeButton('lightbox-sheet')}</header>
-            <ul class="strip" tabindex="0" aria-label="Shades, scroll sideways">
-${shades.map((name, i) => `              <li><figure><span class="swatch" style="--hue: ${i * 50 + 10}"></span><figcaption>${name}</figcaption></figure></li>`).join('\n')}
-            </ul>
+            <div class="sc strip" role="region" aria-roledescription="carousel" aria-label="Shades">
+              <ul class="sc-track" data-sc-track tabindex="0" aria-label="Shades">
+${shades.map((name, i) => `                <li aria-label="${i + 1} of ${shades.length}"><figure><span class="swatch" style="--hue: ${i * 50 + 10}"></span><figcaption>${name}</figcaption></figure></li>`).join('\n')}
+              </ul>
+              ${chevrons}
+              <div class="sc-dots" data-sc-dots></div>
+              <p class="sc-status" data-sc-status aria-live="polite"></p>
+            </div>
           </div>
           <div class="ss-rest"></div>
         </dialog>`,
     code: [
+      [
+        'html',
+        `<dialog class="ss lightbox" data-ss="center" id="lightbox" aria-label="Shades">
+  <div class="ss-panel">
+    <header class="ss-header">…</header>
+    <div class="sc">
+      <ul class="sc-track" data-sc-track tabindex="0" aria-label="Shades">…</ul>
+      <button class="sc-nav sc-prev" type="button" data-sc-prev aria-label="Previous shade">…</button>
+      <button class="sc-nav sc-next" type="button" data-sc-next aria-label="Next shade">…</button>
+      <div class="sc-dots" data-sc-dots></div>
+    </div>
+  </div>
+  <div class="ss-rest"></div>
+</dialog>`,
+      ],
+      [
+        'js',
+        `import { attach as attachSheet } from '@nordwerk/scroll-sheet';
+import { attach as attachCarousel } from '@nordwerk/scroll-carousel';
+
+const dialog = document.getElementById('lightbox');
+attachSheet(dialog);
+const carousel = attachCarousel(dialog.querySelector('.sc'));
+// Open at the image whose thumbnail was pressed (data-slide on it).
+dialog.addEventListener('ss:open', (event) => {
+  const index = Number(event.detail.invoker?.dataset.slide ?? 0);
+  carousel.update(); // measured while closed
+  carousel.slideTo(index, { instant: true });
+});`,
+      ],
       [
         'css',
         `.lightbox { --ss-dialog-size: 100vw; --ss-radius: 0; --ss-bg: #111; --ss-fg: #fff; }
@@ -427,6 +465,11 @@ export default async function generate({ out, base, canonical, redirect }) {
   mkdirSync(out, { recursive: true });
   copyFrame(out);
   cpSync(join(root, 'dist'), join(out, 'lib'), { recursive: true, filter: (src) => !src.endsWith('.d.ts') });
+  // The lightbox example uses scroll-carousel; the packages do not depend on each other.
+  cpSync(join(root, '../scroll-carousel/dist'), join(out, 'carousel'), {
+    recursive: true,
+    filter: (src) => !src.endsWith('.d.ts'),
+  });
   cpSync(join(here, 'demo.css'), join(out, 'demo.css'));
   cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
   cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
@@ -438,7 +481,7 @@ export default async function generate({ out, base, canonical, redirect }) {
       base,
       canonical,
       redirect,
-      styles: ['lib/sheet.css'],
+      styles: ['lib/sheet.css', 'carousel/carousel.css'],
       head: '<link rel="stylesheet" href="demo.css">\n<script type="module" src="demo.js"></script>',
       body,
     }),
@@ -456,6 +499,8 @@ export default async function generate({ out, base, canonical, redirect }) {
     define: { 'process.env.NODE_ENV': '"production"' },
     alias: {
       '@/components/ui/scroll-sheet': join(root, 'registry/ui/scroll-sheet.tsx'),
+      // The lightbox block holds a scroll-carousel.
+      '@/components/ui/scroll-carousel': join(root, '../scroll-carousel/registry/ui/scroll-carousel.tsx'),
       '@/components/ui/button': join(preview, 'components/ui/button.tsx'),
       '@/lib/utils': join(preview, 'lib/utils.ts'),
     },

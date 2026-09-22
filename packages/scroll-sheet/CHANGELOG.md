@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 (2026-09-22)
+
+- The handle can be a button: `<button class="ss-handle" commandfor="ID" command="--ss-cycle">`
+  moves the sheet up to its next snap point on each press, from the full height back to the lowest,
+  by mouse, touch and keyboard. `SheetHandle` (React, Preact) and `ScrollSheetHandle` (shadcn)
+  render it. A `<span>` handle stays a bar to look at.
+- New `drag()` plugin (`@nordwerk/scroll-sheet/drag`, Astro: `drag`): a mouse drags a sheet or
+  drawer by its handle and header, with a throw to the next snap point or away to close.
+- Fix, without script: while a sheet slid out, the dialog lost its flex direction, so a bottom
+  sheet jumped to the top and a drawer to the other edge before sliding out.
+
 ## 0.1.1 (2026-09-22)
 
 - Fix: in Chromium a sheet or drawer closed with its exit animation showed in full once more and

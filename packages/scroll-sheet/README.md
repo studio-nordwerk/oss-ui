@@ -4,8 +4,9 @@ Bottom sheets, side drawers and dialogs on a native modal `<dialog>`. The dialog
 the top layer and is itself a scroller: the sheet's position is plain scrolling with CSS scroll
 snap, so dragging, momentum and snap points come from the browser, and buttons with `commandfor`
 open and close it before any script runs. A small script adds closing by dragging away, a tap on
-the dimmed area, opening at a snap point and focus return; the back button and the iOS on-screen
-keyboard are opt-in plugins. No runtime dependencies.
+the dimmed area, opening at a snap point, a handle that steps through the snap points and focus
+return; the back button, the iOS on-screen keyboard and dragging with a mouse are opt-in plugins.
+No runtime dependencies.
 
 **Live examples:** https://www.nordwerk.studio/oss/scroll-sheet (size picker, filter, menu, mini
 cart, contact form, store finder, lightbox, each with its code; switch the script off to see what
@@ -16,6 +17,7 @@ the browser does alone).
 | Core: one close path, snap points, focus return, stacking, events, API | 2.5 kB |
 | History plugin: back button and back swipe close the top sheet | +0.7 kB |
 | Keyboard plugin: sheets above the iOS on-screen keyboard | +0.7 kB |
+| Drag plugin: drag by the handle and header with a mouse | +1.1 kB |
 | Stylesheet: bottom sheet, drawers, dialog, breakpoints | 2.1 kB |
 
 Adapters for React, Preact and Astro are included; they render the markup and attach the core.
@@ -40,7 +42,7 @@ React and Preact are optional peer dependencies; the Astro component compiles in
 <dialog class="ss" id="sizes" aria-labelledby="sizes-title">
   <div class="ss-panel">
     <i class="ss-snap" style="--ss-at: 50dvh" data-ss-initial></i>
-    <span class="ss-handle" aria-hidden="true"></span>
+    <button class="ss-handle" type="button" commandfor="sizes" command="--ss-cycle" aria-label="Change height"></button>
     <header class="ss-header">
       <h2 id="sizes-title">Choose a size</h2>
       <button class="ss-close" type="button" commandfor="sizes" command="close" aria-label="Close">×</button>
@@ -95,13 +97,13 @@ a sheet held closed, a `<form method="dialog">` closing one held open) is report
 import Sheet from '@nordwerk/scroll-sheet/astro';
 ---
 <button type="button" commandfor="sizes" command="show-modal">Choose a size</button>
-<Sheet id="sizes" snapPoints={['50dvh']} initialSnap={0} history keyboard>
+<Sheet id="sizes" snapPoints={['50dvh']} initialSnap={0} history keyboard drag>
   <header class="ss-header"><h2 id="sizes-title">Choose a size</h2>…</header>
   <div class="ss-body">…</div>
 </Sheet>
 ```
 
-The history and keyboard plugins load only on pages whose sheets ask for them.
+The history, keyboard and drag plugins load only on pages whose sheets ask for them.
 
 ### Tailwind CSS
 
@@ -144,6 +146,7 @@ Router; it renders on the server and attaches in the browser.
 | `.ss-snap` in the panel | no | A snap point of a bottom sheet; `--ss-at` is how much of the sheet shows, `data-ss-initial` opens there |
 | `.ss-handle`, `.ss-header`, `.ss-body`, `.ss-footer` | no | Default layout: the body scrolls, the footer sticks to the bottom edge at every height |
 | `button[commandfor][command]` | no | `show-modal` opens, `close` or `request-close` closes, anywhere on the page |
+| `button.ss-handle` with `command="--ss-cycle"` | no | Each press moves the sheet up to its next snap point, from the full height back to the lowest (with the script). A `<span class="ss-handle" aria-hidden="true">` is only a bar to look at |
 | `[data-ss-replace]` on the dialog | no | Close other open sheets when this one opens |
 | `[data-ss-scroll-root]` anywhere | no | An element that scrolls instead of the document (an app shell); it is locked too. Give it `scrollbar-gutter: stable`, so locking it shifts nothing where scrollbars take space |
 
@@ -226,6 +229,11 @@ toasts and popovers that must stay usable while the sheet is open.
   on-screen keyboard moves or shrinks it, puts it back on its snap point, scrolls the focused field
   into view inside the sheet, and puts the page behind back where it was. Android with
   `interactive-widget=resizes-content` needs no script.
+- **`drag({ area, threshold })`**: a mouse drags the sheet by its handle and header (`area`, a
+  selector), as touch and pen already do natively. It follows the pointer; on release it goes to the
+  snap point the drag and its speed point at, or closes when it ends below half of the lowest one.
+  The click after a drag is swallowed. The mouse wheel and trackpad still move a sheet as they
+  scroll any scroller.
 
 ## iOS notes
 

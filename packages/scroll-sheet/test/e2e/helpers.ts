@@ -38,8 +38,9 @@ export const state = (page: Page, id: string) =>
       },
       scrollY: Math.round(scrollY),
       expanded: dialog.hasAttribute('data-ss-expanded'),
-      // Between a scroll and its scrollend (WebKitGTK pauses smooth scrolls without any event).
-      scrolling: !!(window as any).__scrolling?.has(id),
+      // Between a scroll and its scrollend (WebKitGTK pauses smooth scrolls without any event). Only
+      // while open: WebKit sends a scroll but no scrollend for the reset right before close().
+      scrolling: dialog.open && !!(window as any).__scrolling?.has(id),
     };
   }, id);
 

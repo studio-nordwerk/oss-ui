@@ -603,12 +603,16 @@
 }
 .ss[open] {
   display: var(--_display);
+}
+/* The direction holds while closed too: the exit transition without script keeps the dialog on
+   screen after [open] is gone, and a changed direction would throw the panel to the other end. */
+.ss {
   flex-direction: var(--_direction);
 }
 /* With the script, the layout runs in its normal direction (spacer first for bottom sheets and end
    drawers): the script sets the start position itself, and scroll offsets and scroll timelines
    then mean the same in every engine. */
-.ss[data-ss-ready][open] {
+.ss[data-ss-ready] {
   flex-direction: var(--_ready-direction);
 }
 .ss[data-ss-ready] > .ss-rest {
@@ -680,6 +684,36 @@
   border-radius: 1rem;
   background: currentColor;
   opacity: 0.2;
+}
+/* The handle as a button (command="--ss-cycle"): a bar to look at, a larger area to hit. It does
+   something only with the script, so only then does it look pressable. */
+button.ss-handle {
+  position: relative;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+button.ss-handle::after {
+  content: '';
+  position: absolute;
+  inset: -0.75rem -1.5rem;
+}
+.ss[data-ss-ready]:not([data-ss-drag]) button.ss-handle {
+  cursor: pointer;
+}
+button.ss-handle:focus-visible {
+  opacity: 0.6;
+  outline: 2px solid;
+  outline-offset: 4px;
+}
+/* The drag plugin: handle and header can be dragged with a mouse. */
+.ss[data-ss-drag] :is(.ss-handle, .ss-header) {
+  cursor: grab;
+  user-select: none;
+}
+.ss[data-ss-dragging],
+.ss[data-ss-dragging] * {
+  cursor: grabbing;
 }
 
 .ss-header {

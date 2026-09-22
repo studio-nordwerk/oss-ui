@@ -3,6 +3,8 @@
 import { attach, getSheet } from './lib/index.js';
 import { history } from './lib/history.js';
 import { keyboard } from './lib/keyboard.js';
+import { drag } from './lib/drag.js';
+import { attach as attachCarousel } from './carousel/index.js';
 import { say } from './frame.js';
 
 const params = new URLSearchParams(location.search);
@@ -14,7 +16,7 @@ const caseOf = (dialog) => dialog.closest('.case')?.id;
 
 function mount(dialog) {
   getSheet(dialog)?.destroy();
-  const plugins = [...(settings.history ? [history()] : []), keyboard()];
+  const plugins = [...(settings.history ? [history()] : []), keyboard(), drag()];
   attach(dialog, { plugins });
 }
 
@@ -98,6 +100,23 @@ if (!settings.history) document.querySelector('input[name="history"][value="off"
 if (!settings.script) document.querySelector('input[name="script"][value="off"]').checked = true;
 else dialogs.forEach(mount);
 for (const section of document.querySelectorAll('.case[id]')) show(section.id);
+
+// The lightbox holds a scroll-carousel, opened at the image whose thumbnail was pressed.
+const lightbox = document.getElementById('lightbox-sheet');
+if (settings.script && lightbox) {
+  const carousel = attachCarousel(lightbox.querySelector('.sc'), {
+    labels: {
+      page: (n, count) => `Shade ${n} of ${count}`,
+      status: (first, last, count) => `Shade ${first} of ${count}`,
+    },
+  });
+  lightbox.addEventListener('ss:open', (event) => {
+    const index = Number(event.detail.invoker?.dataset.slide ?? 0);
+    // Measured while the dialog was closed: measure again now that it shows, then jump.
+    carousel.update();
+    carousel.slideTo(index, { instant: true });
+  });
+}
 
 // The shadcn preview is a page of its own in an iframe (same origin): it takes the height of its
 // content, so nothing scrolls inside it.

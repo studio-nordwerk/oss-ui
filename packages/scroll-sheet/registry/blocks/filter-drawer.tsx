@@ -3,6 +3,8 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
+import { drag } from "@nordwerk/scroll-sheet/drag"
+
 import {
   ScrollSheet,
   ScrollSheetBody,
@@ -30,6 +32,9 @@ const brands = [
   "Linden Works",
 ]
 
+// Made outside the component, so every render passes the same plugins.
+const plugins = [drag()]
+
 export function FilterDrawer() {
   const [chosen, setChosen] = React.useState<string[]>([])
   const toggle = (brand: string) =>
@@ -38,7 +43,7 @@ export function FilterDrawer() {
     )
   return (
     // A bottom sheet on phones, a drawer from the end edge from 48rem on.
-    <ScrollSheet presentation="bottom md:end">
+    <ScrollSheet presentation="bottom md:end" plugins={plugins}>
       <ScrollSheetTrigger asChild>
         <Button variant="outline">Filter{chosen.length ? ` (${chosen.length})` : ""}</Button>
       </ScrollSheetTrigger>

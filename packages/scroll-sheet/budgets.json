@@ -6,5 +6,6 @@
   },
   { "name": "history plugin (back button and back swipe)", "entry": "dist/history.js", "max": 800 },
   { "name": "keyboard plugin (iOS on-screen keyboard)", "entry": "dist/keyboard.js", "max": 800 },
+  { "name": "drag plugin (mouse drag on handle and header)", "entry": "dist/drag.js", "max": 1200 },
   { "name": "stylesheet (bottom sheet, drawers, dialog, breakpoints)", "entry": "dist/sheet.css", "max": 2300 }
 ]

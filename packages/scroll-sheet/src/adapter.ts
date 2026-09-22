@@ -212,7 +212,13 @@ export function createAdapter(framework: Framework) {
       'aria-label': 'Close',
     })),
     SheetTitle: part('h2', 'ss-title', (id) => ({ id: `${id}-title` })),
-    SheetHandle: part('span', 'ss-handle', () => ({ 'aria-hidden': 'true' })),
+    // A button: each press moves the sheet to its next snap point (the core's --ss-cycle command).
+    SheetHandle: part('button', 'ss-handle', (id) => ({
+      type: 'button',
+      commandfor: id,
+      command: '--ss-cycle',
+      'aria-label': 'Change height',
+    })),
     SheetHeader: part('header', 'ss-header'),
     SheetBody: part('div', 'ss-body'),
     SheetFooter: part('footer', 'ss-footer'),

@@ -1,9 +1,15 @@
 // What scripts/shadcn-smoke.mjs checks for this package's blocks in the fresh shadcn project:
 // every carousel attaches, and the product row's controls work.
 export async function check(page) {
-  await page.waitForFunction(() => document.querySelectorAll('.sc[data-sc-ready]').length == 5, null, {
-    timeout: 15000,
-  });
+  // Its five blocks, and carousels other packages' blocks hold (the scroll-sheet lightbox).
+  await page.waitForFunction(
+    () => {
+      const all = [...document.querySelectorAll('.sc')];
+      return all.length >= 5 && all.every((carousel) => carousel.hasAttribute('data-sc-ready'));
+    },
+    null,
+    { timeout: 15000 },
+  );
   const row = page.locator('[aria-label="Bestsellers"]');
   await row.scrollIntoViewIfNeeded();
   await row.locator('[data-slot=scroll-carousel-next]').click();

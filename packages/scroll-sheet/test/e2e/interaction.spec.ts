@@ -127,6 +127,40 @@ test.describe('bottom sheet', () => {
       .toEqual(['close size-sheet swipe']);
   });
 
+  test('the handle moves up to the next snap point on each press, from the top back down', async ({ page }) => {
+    await openWith(page, tileButton(page), 'size-sheet');
+    const handle = page.locator('#size-sheet .ss-handle');
+    await handle.click();
+    expect((await settled(page, 'size-sheet')).snap).toBe(1);
+    await handle.click();
+    expect((await settled(page, 'size-sheet')).snap).toBe(0);
+    await handle.focus();
+    await page.keyboard.press('Enter');
+    expect((await settled(page, 'size-sheet')).snap).toBe(1);
+  });
+
+  test('with the drag plugin, a mouse drags it by the handle: up to expand, down to close', async ({ page }) => {
+    const opened = await openWith(page, tileButton(page), 'size-sheet');
+    const handle = (await page.locator('#size-sheet .ss-handle').boundingBox())!;
+    const x = handle.x + handle.width / 2;
+    const y = handle.y + handle.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x, y - 300, { steps: 12 });
+    await page.mouse.up();
+    const up = await settled(page, 'size-sheet');
+    expect(up.snap).toBe(1);
+    expect(up.panel.top).toBeLessThan(opened.panel.top);
+    // A drag that ends on the handle does not also press it.
+    const top = (await page.locator('#size-sheet .ss-handle').boundingBox())!;
+    await page.mouse.move(x, top.y + top.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(x, top.y + 800, { steps: 12 });
+    await page.mouse.up();
+    expect((await settled(page, 'size-sheet')).open).toBe(false);
+    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close size-sheet swipe']);
+  });
+
   test('nested sheets stack and return focus step by step', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
@@ -202,6 +236,17 @@ test.describe('presentations', () => {
         .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
         .toEqual(['close menu-sheet swipe']);
     }
+  });
+
+  test('with the drag plugin, a mouse drags a drawer by its header towards its edge to close it', async ({ page }) => {
+    await openWith(page, page.locator('[commandfor="filter-sheet"][command="show-modal"]'), 'filter-sheet');
+    const title = (await page.locator('#filter-sheet .ss-header h2').boundingBox())!;
+    await page.mouse.move(title.x + 10, title.y + title.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(title.x + 360, title.y + title.height / 2, { steps: 12 });
+    await page.mouse.up();
+    expect((await settled(page, 'filter-sheet')).open).toBe(false);
+    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close filter-sheet swipe']);
   });
 
   test('replace closes the open sheet before opening another', async ({ page }) => {

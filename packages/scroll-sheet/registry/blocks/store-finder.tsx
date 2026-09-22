@@ -1,6 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { drag } from "@nordwerk/scroll-sheet/drag"
+
 import {
   ScrollSheet,
   ScrollSheetBody,
@@ -20,10 +22,13 @@ const stores = [
   { street: "Riverside Mall", town: "Osterfeld", distance: "7.5 km", hours: "Open until 20:00" },
 ]
 
+// Made outside the component, so every render passes the same plugins.
+const plugins = [drag()]
+
 export function StoreFinder() {
   return (
     // Rests at a third, two thirds or the full height; opens low so the map above stays visible.
-    <ScrollSheet snapPoints={["32dvh", "66dvh"]} initialSnap={0}>
+    <ScrollSheet snapPoints={["32dvh", "66dvh"]} initialSnap={0} plugins={plugins}>
       <ScrollSheetTrigger asChild>
         <Button variant="outline">Find a store</Button>
       </ScrollSheetTrigger>

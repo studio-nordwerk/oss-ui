@@ -416,25 +416,40 @@
   color: #fff;
 }
 
-.strip {
+/* The carousel fills the panel below the header: the track takes the height, the dots sit below. */
+.lightbox .strip {
+  --sc-per-view: 1.15;
+  --sc-align: center;
+  --sc-centered: 1;
+  --sc-gap: 12px;
+  --sc-control-bg: rgb(255 255 255 / 0.14);
+  --sc-control-fg: #fff;
+  --sc-control-border: transparent;
+  --sc-nav-inset: 16px;
+  --sc-dot: #fff;
   display: flex;
   flex: 1;
+  flex-direction: column;
   gap: 12px;
-  margin: 0;
-  padding: 0 16px 16px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  list-style: none;
+  min-block-size: 0;
+  padding-block-end: 16px;
 }
 
-.strip li {
+@container sc (min-width: 900px) {
+  .lightbox .sc-track {
+    --sc-per-view: 1.6;
+  }
+}
+
+.lightbox .sc-track {
+  flex: 1;
+}
+
+.lightbox .sc-track > li {
   display: grid;
-  flex: 0 0 min(88vw, 720px);
-  scroll-snap-align: center;
 }
 
-.strip figure {
+.lightbox figure {
   display: grid;
   grid-template-rows: 1fr auto;
   gap: 8px;

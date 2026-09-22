@@ -33,7 +33,9 @@ never give a sheet a z-index: the top layer is above everything.
    `--ss-at` is how much of the sheet shows. `data-ss-initial` on one of them opens there. The full
    height is always a snap point.
 6. Use `.ss-header`, `.ss-body` (scrolls) and `.ss-footer` (sticks to the bottom edge at every
-   height) for the default layout, `.ss-handle` for the grab bar.
+   height) for the default layout. The grab bar is `<button class="ss-handle" type="button"
+   commandfor="ID" command="--ss-cycle" aria-label="…">`: each press moves the sheet to its next
+   snap point. For dragging with a mouse add the `drag()` plugin (`@nordwerk/scroll-sheet/drag`).
 7. Attach once: `enhance(document, { plugins })` or `attach(dialog, options)`; the sheet reads
    layout from CSS and needs no re-attach on resize.
 8. Back button: add the `history()` plugin for sheets on phones. Native app shells call
@@ -83,7 +85,8 @@ never give a sheet a z-index: the top layer is above everything.
 ### Layout
 
 - `src/index.ts`: the core, `attach()` and `enhance()`. Framework-free.
-- `src/history.ts`, `src/keyboard.ts`: plugins; a plugin gets the sheet and returns its cleanup.
+- `src/history.ts`, `src/keyboard.ts`, `src/drag.ts`: plugins; a plugin gets the sheet and returns
+  its cleanup.
 - `src/adapter.ts`: the React and Preact adapter against a small `Framework` interface;
   `src/react.ts` and `src/preact.ts` only bind it.
 - `src/astro/Sheet.astro`: shipped as source.
@@ -123,6 +126,13 @@ never give a sheet a z-index: the top layer is above everything.
   gives it its mode back (`ssMode` in its state) after it was reached again: Safari on iOS keeps
   the scroll position it saved the first time an entry was left, so stepping back over a second
   sheet's entry jumped the page. Only visible in the iOS simulator or on a device.
+- The exit transition of `display` and `overlay` applies only without the script. With it the
+  exit has run before `close()`, and the scroller is back at its open position: kept in the top
+  layer, the panel would show in full once more (Chromium).
+- The flex direction sits on `.ss`, not `.ss[open]`: without script the exit transition keeps the
+  dialog on screen after `[open]` is gone.
+- The drag plugin turns snapping off while the mouse drags and back on at the next `scrollend`
+  after the release, listened for from the next frame on (the drag's own last step sends one).
 - `open()` right after a close whose `close` event is still queued ends that close first
   (`ss:close`, promise settled), so a sheet reopened in the same task never waits on a dead close.
 - The core keeps two page-wide listeners for its lifetime (the `commandfor` fallback and the history
