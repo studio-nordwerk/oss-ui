@@ -21,11 +21,11 @@ const blocks = [
 
 function Preview() {
   return (
-    <main className="mx-auto grid max-w-4xl gap-8 p-4 sm:grid-cols-2 sm:p-6">
+    <main className="grid gap-4 p-7 sm:grid-cols-2">
       {blocks.map(([name, Block]) => (
         <section
           key={name}
-          className="flex flex-col items-start gap-3 rounded-xl border p-4"
+          className="flex flex-col items-start gap-3 rounded-xl border bg-card p-4"
           aria-label={name}
         >
           <p className="font-mono text-xs text-muted-foreground">{name}</p>

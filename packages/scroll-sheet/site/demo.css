@@ -224,6 +224,7 @@
 .preview {
   display: block;
   width: 100%;
+  /* Until it has loaded; site/demo.js then fits it to its content. */
   height: 520px;
   border: 0;
   border-radius: 24px;

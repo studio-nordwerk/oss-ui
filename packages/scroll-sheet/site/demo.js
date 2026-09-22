@@ -98,3 +98,14 @@ if (!settings.history) document.querySelector('input[name="history"][value="off"
 if (!settings.script) document.querySelector('input[name="script"][value="off"]').checked = true;
 else dialogs.forEach(mount);
 for (const section of document.querySelectorAll('.case[id]')) show(section.id);
+
+// The shadcn preview is a page of its own in an iframe (same origin): it takes the height of its
+// content, so nothing scrolls inside it.
+const preview = document.querySelector('iframe.preview');
+preview?.addEventListener('load', () => {
+  const page = preview.contentDocument?.documentElement;
+  if (!page) return;
+  const fit = () => (preview.style.height = `${page.scrollHeight}px`);
+  new ResizeObserver(fit).observe(page);
+  fit();
+});

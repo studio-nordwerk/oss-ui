@@ -81,3 +81,9 @@
     @apply font-sans;
   }
 }
+
+/* On the docs page the preview sits on the page's grey stage, with white cards like the other
+   examples; the iframe grows with it (site/demo.js). */
+body {
+  background: transparent;
+}
