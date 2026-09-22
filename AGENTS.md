@@ -111,6 +111,8 @@ JavaScript, never move slides with transforms, never clone slides.
 
 ### Commands
 
+Working on the repository needs Node 22 or later and the pnpm version in `packageManager`.
+
 ```sh
 pnpm install
 pnpm typecheck

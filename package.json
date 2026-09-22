@@ -121,12 +121,5 @@
     "tailwindcss": "4.3.3",
     "typescript": "^7.0.2"
   },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": ">=22",
-      "onFail": "error"
-    }
-  },
   "packageManager": "pnpm@12.5.1"
 }
