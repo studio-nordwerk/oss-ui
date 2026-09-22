@@ -49,9 +49,24 @@ jobs:
         with:
           path: _site
 
+  # A fresh shadcn project installs the registry items through the CLI, builds and renders them.
+  shadcn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: node scripts/shadcn-smoke.mjs
+
   pages:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: check
+    needs: [check, shadcn]
     runs-on: ubuntu-latest
     permissions:
       pages: write

@@ -28,4 +28,11 @@ for (const file of readdirSync('dist').filter((name) => name.endsWith('.d.ts')))
 // a client module. esbuild drops module directives when bundling; put it back on the entry.
 writeFileSync('dist/react.js', `'use client';\n${readFileSync('dist/react.js', 'utf8')}`);
 copyFileSync('src/carousel.css', 'dist/carousel.css');
+// The same rules in Tailwind's components layer, for projects whose utilities must be able to
+// override them. The order statement matches Tailwind's, so load order does not matter: the
+// base layer (preflight) never beats the layout, and utilities always win.
+writeFileSync(
+  'dist/carousel.layer.css',
+  `@layer theme, base, components, utilities;\n\n@layer components {\n${readFileSync('src/carousel.css', 'utf8')}\n}\n`,
+);
 console.log('dist/ built');

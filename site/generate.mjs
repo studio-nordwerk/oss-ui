@@ -293,6 +293,38 @@ const tailwindSection = () => `<section class="case" id="tailwind" aria-labelled
       ${copyBlock('tw-js', 'JavaScript', tailwind.script)}
     </section>`;
 
+const shadcnUsage = `import {
+  ScrollCarousel,
+  ScrollCarouselContent,
+  ScrollCarouselItem,
+  ScrollCarouselPrevious,
+  ScrollCarouselNext,
+  ScrollCarouselDots,
+} from "@/components/ui/scroll-carousel"
+
+<ScrollCarousel aria-label="Bestsellers">
+  <ScrollCarouselContent className="[--sc-group:page] [--sc-per-view:1.4] @md:[--sc-per-view:3] @4xl:[--sc-per-view:4]">
+    {products.map((product) => (
+      <ScrollCarouselItem key={product.id}>
+        <ProductCard {...product} />
+      </ScrollCarouselItem>
+    ))}
+  </ScrollCarouselContent>
+  <ScrollCarouselPrevious />
+  <ScrollCarouselNext />
+  <ScrollCarouselDots />
+</ScrollCarousel>`;
+
+const shadcnSection = () => `<section class="case" id="shadcn" aria-labelledby="case-shadcn">
+      <div class="case-head">
+        <h2 id="case-shadcn">shadcn/ui: a component and five blocks</h2>
+        <p>The component has the structure of shadcn's Carousel, on native scrolling: <code>ScrollCarousel</code>, <code>ScrollCarouselContent</code>, <code>ScrollCarouselItem</code>, <code>ScrollCarouselPrevious</code> and <code>ScrollCarouselNext</code>, plus <code>ScrollCarouselDots</code>, <code>ScrollCarouselPlay</code> and <code>useScrollCarousel()</code>. It uses your theme and shadcn's Button, and installs straight from the GitHub repository; the storefront patterns further down install as blocks.</p>
+      </div>
+      ${copyBlock('shadcn-add', 'Add the component', 'npx shadcn@latest add studio-nordwerk/scroll-carousel/scroll-carousel')}
+      ${copyBlock('shadcn-blocks', 'Or a block, which brings the component along', ['product-row', 'brand-teasers', 'hero-autoplay', 'image-gallery', 'logo-belt'].map((name) => `npx shadcn@latest add studio-nordwerk/scroll-carousel/${name}`).join('\n'))}
+      ${copyBlock('shadcn-usage', 'Use it', shadcnUsage)}
+    </section>`;
+
 const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="case-${c.id}">
       <div class="case-head">
         <h2 id="case-${c.id}">${c.title}</h2>
@@ -339,6 +371,7 @@ const body = `${sprite}
     <script>if (/[?&]dir=rtl/.test(location.search)) document.currentScript.parentElement.dir = 'rtl';</script>
     ${cases.map(caseSection).join('\n    ')}
     ${tailwindSection()}
+    ${shadcnSection()}
     ${wireframeSection()}
   </main>
 
@@ -389,6 +422,8 @@ for (const subset of ['latin', 'latin-ext']) {
 cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
 cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
 writeFileSync(join(out, 'index.html'), page);
+// The shadcn registry as built JSON, installable by URL as well as by GitHub address.
+execFileSync(join(root, 'node_modules/.bin/shadcn'), ['build', join(root, 'registry.json'), '--output', join(out, 'r'), '--cwd', root], { stdio: 'pipe' });
 // The Tailwind preview: write the page, then let Tailwind compile exactly the classes it uses.
 writeFileSync(join(out, 'tailwind-example.html'), tailwind.previewPage);
 execFileSync(join(root, 'node_modules/.bin/tailwindcss'), ['-i', join(here, 'tailwind.css'), '-o', join(out, 'tailwind-example.css'), '--minify'], { stdio: 'pipe' });

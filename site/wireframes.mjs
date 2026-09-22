@@ -41,6 +41,7 @@ const code = (text) => `<code>${esc(text)}</code>`;
 export const patterns = [
   {
     id: 'teasers',
+    block: 'brand-teasers',
     title: 'Brand teasers',
     text: 'Three teasers per view with an image, a logo tile over its corner and a dark text panel; all the same height, dots on top of the panels. On phones one teaser and part of the next.',
     carousel: `<div class="sc wf-teasers" data-wire="teasers">
@@ -58,6 +59,7 @@ export const patterns = [
   },
   {
     id: 'products',
+    block: 'product-row',
     title: 'Product recommendations',
     text: 'Product tiles two pixels apart with a badge and a wish-list heart. Square arrows at the edges, centred on the images; no dots.',
     carousel: `<div class="sc wf-products" data-wire="products">
@@ -74,6 +76,7 @@ export const patterns = [
   },
   {
     id: 'stage',
+    block: 'hero-autoplay',
     title: 'Stage with autoplay',
     text: 'Full-width banners that move on every 5 seconds. After the last banner the first one fades in again instead of an endless loop of cloned slides.',
     carousel: `<section class="sc wf-stages" data-wire="stage" aria-roledescription="carousel" aria-label="Stage">
@@ -91,6 +94,7 @@ export const patterns = [
   },
   {
     id: 'gallery',
+    block: 'image-gallery',
     title: 'Image gallery with a peek',
     text: 'One image at a time in the centre, the neighbours showing at both sides, a dot per image, opening on the third one.',
     carousel: `<div class="sc wf-gallery" data-wire="gallery">
@@ -107,6 +111,7 @@ export const patterns = [
   },
   {
     id: 'belt',
+    block: 'logo-belt',
     title: 'Logo belt in free mode',
     text: 'Logos as wide as they are, scrolled freely without snapping. No controls on narrow rows.',
     carousel: `<div class="sc wf-belt" data-wire="belt">
@@ -135,6 +140,7 @@ export const wireframeSection = () => `<section class="patterns" aria-labelledby
     <p>${pattern.text}</p>
     <div class="stage wf">${pattern.carousel}</div>
     <div class="wf-table-wrap">${table(pattern.rows)}</div>
+    <p class="block-install">As a shadcn block: <code>npx shadcn@latest add studio-nordwerk/scroll-carousel/${pattern.block}</code></p>
   </article>`,
     )
     .join('\n')}

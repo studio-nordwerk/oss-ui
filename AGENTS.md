@@ -45,6 +45,12 @@ JavaScript, never move slides with transforms, never clone slides.
     `aria-disabled:opacity-30`). Copyable example: the `#tailwind` section of the docs site.
 12. Next.js App Router: import `<Carousel>` from `@nordwerk/scroll-carousel/react` in a Server
     Component as is; the entry carries `'use client'`.
+13. shadcn/ui projects: `npx shadcn@latest add studio-nordwerk/scroll-carousel/scroll-carousel`, or a
+    block (`product-row`, `brand-teasers`, `hero-autoplay`, `image-gallery`, `logo-belt`). Compose
+    `ScrollCarousel` > `ScrollCarouselContent` > `ScrollCarouselItem`, with `ScrollCarouselPrevious`,
+    `ScrollCarouselNext`, `ScrollCarouselDots` and `ScrollCarouselPlay` inside `ScrollCarousel`;
+    layout as custom properties on the content. Pass plugins made outside the component, and mark
+    the file `"use client"` when it creates them.
 
 ### Recipes (CSS on the root or track, options in attach)
 
@@ -83,7 +89,13 @@ JavaScript, never move slides with transforms, never clone slides.
 - `src/adapter.ts`: the React and Preact adapter, written once against a small `Framework`
   interface; `src/react.ts` and `src/preact.ts` only bind it.
 - `src/astro/Carousel.astro`: shipped as source.
-- `src/carousel.css`: all layout and the default controls.
+- `src/carousel.css`: all layout and the default controls. The build also writes
+  `carousel.layer.css`, the same rules inside Tailwind's components layer.
+- `registry.json` and `registry/`: the shadcn registry, read by the shadcn CLI straight from this
+  public repository (`studio-nordwerk/scroll-carousel/<item>`). `registry/ui` is the component,
+  `registry/blocks` the blocks, `registry/shims` stand-ins that only exist for the type check.
+  `node scripts/shadcn-smoke.mjs` installs everything into a fresh shadcn project, builds and
+  renders it; CI runs it on every push.
 - `site/`: the documentation site (`generate.mjs` writes `_site/`), including the wireframe
   patterns in `wireframes.mjs`. Content there is fictional. CI publishes it to GitHub Pages;
   www.nordwerk.studio/oss/scroll-carousel serves the same files through a proxy that rewrites

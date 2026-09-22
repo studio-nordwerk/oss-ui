@@ -126,6 +126,24 @@ set the layout with arbitrary properties and container-query variants:
 The complete example to copy, with a live preview compiled by Tailwind, is on the
 [documentation site](https://www.nordwerk.studio/oss/scroll-carousel#tailwind).
 
+### shadcn/ui
+
+A component with the structure of shadcn's Carousel, on native scrolling, and five blocks
+(product row, brand teasers, hero with autoplay, image gallery, logo belt), straight from this
+repository:
+
+```sh
+npx shadcn@latest add studio-nordwerk/scroll-carousel/scroll-carousel
+npx shadcn@latest add studio-nordwerk/scroll-carousel/product-row
+```
+
+`ScrollCarousel`, `ScrollCarouselContent`, `ScrollCarouselItem`, `ScrollCarouselPrevious` and
+`ScrollCarouselNext` match shadcn's names with the `Scroll` prefix, plus `ScrollCarouselDots`,
+`ScrollCarouselPlay` and `useScrollCarousel()`. Size slides with `[--sc-per-view:3]` on the content
+(or `basis-*` on items); spacing comes from `--sc-gap`, so the `-ml-4`/`pl-4` pair of the Embla
+version is not needed. The component imports `@nordwerk/scroll-carousel/carousel.layer.css`, the
+stylesheet inside Tailwind's components layer.
+
 ### Next.js
 
 The React entry is marked `'use client'`, so `<Carousel>` can be used directly in Server

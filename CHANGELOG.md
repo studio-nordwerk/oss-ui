@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3 (2026-09-22)
+
+- `carousel.layer.css`: the stylesheet inside Tailwind's components layer, with Tailwind's layer
+  order declared, so utilities override it and preflight never does, whatever the load order.
+- shadcn/ui registry in the repository: the `scroll-carousel` component (the structure of shadcn's
+  Carousel, on native scrolling) and five blocks, `product-row`, `brand-teasers`,
+  `hero-autoplay`, `image-gallery` and `logo-belt`. Install with
+  `npx shadcn@latest add studio-nordwerk/scroll-carousel/<item>`.
+
 ## 0.1.2 (2026-09-22)
 
 - React entry marked `'use client'`: `<Carousel>` now works in Next.js App Router Server

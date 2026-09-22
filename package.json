@@ -1,6 +1,6 @@
 {
   "name": "@nordwerk/scroll-carousel",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A dependency-free carousel on native scrolling: CSS scroll snap first, arrows, dots, paging and an API as progressive enhancement.",
   "license": "MIT",
   "type": "module",
@@ -49,6 +49,7 @@
     },
     "./astro": "./src/astro/Carousel.astro",
     "./carousel.css": "./dist/carousel.css",
+    "./carousel.layer.css": "./dist/carousel.layer.css",
     "./package.json": "./package.json"
   },
   "files": [
@@ -63,7 +64,7 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p registry/tsconfig.json",
     "test": "node --test \"test/unit/*.test.ts\"",
     "size": "node scripts/size.mjs",
     "site": "node scripts/build.mjs && node site/generate.mjs",
@@ -99,6 +100,7 @@
     "preact-render-to-string": "6.7.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "shadcn": "4.21.0",
     "tailwindcss": "4.3.3",
     "typescript": "^7.0.2"
   },

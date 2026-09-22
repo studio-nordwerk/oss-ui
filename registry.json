@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "scroll-carousel",
+  "homepage": "https://www.nordwerk.studio/oss/scroll-carousel",
+  "items": [
+    {
+      "name": "scroll-carousel",
+      "type": "registry:ui",
+      "title": "Scroll Carousel",
+      "description": "A carousel on native scrolling with CSS scroll snap: the structure of shadcn's Carousel, no layout script, 3.4 kB for the core.",
+      "dependencies": ["@nordwerk/scroll-carousel@^0.1.3"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/ui/scroll-carousel.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "docs": "Docs and live examples: https://www.nordwerk.studio/oss/scroll-carousel"
+    },
+    {
+      "name": "product-row",
+      "type": "registry:block",
+      "title": "Product Row",
+      "description": "Product tiles, 1.4 to 4 per view by container width, paged by view, arrows, dots and mouse drag.",
+      "dependencies": ["@nordwerk/scroll-carousel@^0.1.3"],
+      "registryDependencies": ["studio-nordwerk/scroll-carousel/scroll-carousel", "badge"],
+      "files": [
+        {
+          "path": "registry/blocks/product-row.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["carousel", "ecommerce"]
+    },
+    {
+      "name": "brand-teasers",
+      "type": "registry:block",
+      "title": "Brand Teasers",
+      "description": "Teasers with an image, a logo tile over its corner and a dark text panel, three per view, two pixels apart.",
+      "dependencies": ["@nordwerk/scroll-carousel@^0.1.3"],
+      "registryDependencies": ["studio-nordwerk/scroll-carousel/scroll-carousel"],
+      "files": [
+        {
+          "path": "registry/blocks/brand-teasers.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["carousel", "marketing"]
+    },
+    {
+      "name": "hero-autoplay",
+      "type": "registry:block",
+      "title": "Hero with Autoplay",
+      "description": "Full-width slides that move on every 5 seconds, with a pause button, dots, and a fade back to the first slide after the last.",
+      "dependencies": ["@nordwerk/scroll-carousel@^0.1.3"],
+      "registryDependencies": ["studio-nordwerk/scroll-carousel/scroll-carousel", "button"],
+      "files": [
+        {
+          "path": "registry/blocks/hero-autoplay.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["carousel", "hero"]
+    },
+    {
+      "name": "image-gallery",
+      "type": "registry:block",
+      "title": "Image Gallery",
+      "description": "One image in the centre with the neighbours showing, a dot per image, opening on the third.",
+      "dependencies": ["@nordwerk/scroll-carousel@^0.1.3"],
+      "registryDependencies": ["studio-nordwerk/scroll-carousel/scroll-carousel"],
+      "files": [
+        {
+          "path": "registry/blocks/image-gallery.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["carousel", "ecommerce"]
+    },
+    {
+      "name": "logo-belt",
+      "type": "registry:block",
+      "title": "Logo Belt",
+      "description": "Logos as wide as they are, scrolled freely without snapping, draggable with a mouse.",
+      "dependencies": ["@nordwerk/scroll-carousel@^0.1.3"],
+      "registryDependencies": ["studio-nordwerk/scroll-carousel/scroll-carousel"],
+      "files": [
+        {
+          "path": "registry/blocks/logo-belt.tsx",
+          "type": "registry:block"
+        }
+      ],
+      "categories": ["carousel", "marketing"]
+    }
+  ]
+}
