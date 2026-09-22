@@ -422,7 +422,7 @@ const body = `<section class="intro" data-hero aria-labelledby="page-title">
     </div>
     <p class="install"><code>pnpm add @nordwerk/scroll-carousel</code></p>
     <p class="sizes">Core <b>${sizes.core}</b>, drag <b>+${sizes.drag}</b>, autoplay <b>+${sizes.autoplay}</b>, stylesheet <b>${sizes.css}</b>, gzip and minified. React, Preact and Astro adapters included.</p>
-    <p class="note">Every example below is live. Its readout shows the carousel's state; the change counter goes up by exactly one per settled move, however long the swipe. Switch the script off in the bar to see what ships before any JavaScript runs. All products and names are made up.</p>
+    <p class="note">Every example below is live. Its readout shows the carousel's state; the change counter goes up by exactly one per settled move, however long the swipe. Switch JavaScript off in the bar to see what ships before any JavaScript runs. All products and names are made up.</p>
   </section>
 
   <div class="bench-bar">
@@ -457,10 +457,10 @@ const body = `<section class="intro" data-hero aria-labelledby="page-title">
     )}
     ${radios(
       'script',
-      'Script',
+      'JavaScript',
       [
-        ['on', 'Attached'],
-        ['off', 'Detached'],
+        ['on', 'On'],
+        ['off', 'Off, HTML and CSS only'],
       ],
       'on',
     )}

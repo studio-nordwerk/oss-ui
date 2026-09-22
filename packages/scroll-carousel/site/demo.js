@@ -57,7 +57,7 @@ function show(root) {
   if (!out) return;
   const carousel = getCarousel(root);
   if (!carousel) {
-    out.innerHTML = '<span>Script detached: native scrolling only</span>';
+    out.innerHTML = '<span>JavaScript off: native scrolling only</span>';
     return;
   }
   const s = carousel.state;

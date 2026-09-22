@@ -24,7 +24,7 @@ function show(id) {
   const dialog = document.querySelector(`.case#${id} dialog.ss`);
   const sheet = dialog && getSheet(dialog);
   if (!sheet) {
-    out.innerHTML = '<span>Script detached: the browser opens and closes the sheet on its own</span>';
+    out.innerHTML = '<span>JavaScript off: the browser opens and closes the sheet on its own</span>';
     return;
   }
   const state = sheet.state;

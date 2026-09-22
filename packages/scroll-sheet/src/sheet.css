@@ -753,9 +753,11 @@
   opacity: 0;
 }
 /* Exit without script where the browser can keep the dialog in the top layer while it animates.
-   With the script, sheets slide out by scrolling to their closed position first. */
+   With the script the exit has run before the dialog closes, and the script puts the scroller back
+   at its open position in that same task: kept in the top layer, the panel would show in full once
+   more and slide out a second time. */
 @supports (overlay: auto) {
-  .ss {
+  .ss:not([data-ss-ready]) {
     transition:
       display var(--_duration) allow-discrete,
       overlay var(--_duration) allow-discrete;

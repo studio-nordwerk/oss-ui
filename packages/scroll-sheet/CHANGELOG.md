@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (2026-09-22)
+
+- Fix: in Chromium a sheet or drawer closed with its exit animation showed in full once more and
+  slid out a second time. The stylesheet's exit transition for pages without the script now only
+  applies there; with the script the exit has already run when the dialog closes.
+
 ## 0.1.0 (2026-09-22)
 
 First release.

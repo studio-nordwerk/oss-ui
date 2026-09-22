@@ -339,7 +339,7 @@ const shadcnSection = () => `<section class="case" id="shadcn" aria-labelledby="
 const platformSection = () => `<section class="case" id="platform" aria-labelledby="case-platform">
       <div class="case-head">
         <h2 id="case-platform">What the browser does, what the script adds</h2>
-        <p>Switch the script off in the bar above: every sheet still opens and closes with its buttons and Escape, sits in the top layer above everything else, keeps the page behind inert and in place, snaps while you drag, and returns focus in Chrome and Firefox. The script adds the rest.</p>
+        <p>Switch JavaScript off in the bar above: every sheet still opens and closes with its buttons and Escape, sits in the top layer above everything else, keeps the page behind inert and in place, snaps while you drag, and returns focus in Chrome and Firefox. The script adds the rest.</p>
       </div>
       <table class="layers">
         <thead><tr><th scope="col">Behaviour</th><th scope="col">Without script</th><th scope="col">With the script</th></tr></thead>
@@ -371,16 +371,16 @@ const body = `<section class="intro" data-hero aria-labelledby="page-title">
     </div>
     <p class="install"><code>pnpm add @nordwerk/scroll-sheet</code></p>
     <p class="sizes">Core <b>${size.core}</b>, history <b>+${size.history}</b>, keyboard <b>+${size.keyboard}</b>, stylesheet <b>${size.css}</b>, gzip and minified. React, Preact and Astro adapters included.</p>
-    <p class="note">Every example below is live. Switch the script off in the bar to see what works before any JavaScript runs. All products, stores and names are made up.</p>
+    <p class="note">Every example below is live. Switch JavaScript off in the bar to see what works before any JavaScript runs. All products, stores and names are made up.</p>
   </section>
 
   <div class="bench-bar">
     ${radios(
       'script',
-      'Script',
+      'JavaScript',
       [
-        ['on', 'Attached'],
-        ['off', 'Detached'],
+        ['on', 'On'],
+        ['off', 'Off, HTML and CSS only'],
       ],
       'on',
     )}

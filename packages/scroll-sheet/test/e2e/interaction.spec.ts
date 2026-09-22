@@ -284,6 +284,24 @@ test.describe('lifecycle', () => {
     await expect.poll(async () => (await events(page)).filter((e) => e.startsWith('close'))).toEqual([]);
   });
 
+  test('after its exit a closed sheet is gone at once, it does not slide out a second time', async ({ page }) => {
+    for (const [id, trigger] of [
+      ['store-sheet', storeTrigger(page)],
+      ['cart-sheet', page.locator('[commandfor="cart-sheet"][command="show-modal"]')],
+    ] as const) {
+      await openWith(page, trigger, id);
+      await page.waitForTimeout(800);
+      const shown = await page.evaluate(async (id) => {
+        const { getSheet } = await import(new URL('lib/index.js', document.baseURI).href);
+        const dialog = document.getElementById(id) as HTMLDialogElement;
+        await getSheet(dialog).requestClose();
+        await new Promise(requestAnimationFrame);
+        return getComputedStyle(dialog).display;
+      }, id);
+      expect(shown, id).toBe('none');
+    }
+  });
+
   test('an immediate close ends an animated one, and a later opening stays open', async ({ page }) => {
     await openWith(page, storeTrigger(page), 'store-sheet');
     const closed = await page.evaluate(async () => {

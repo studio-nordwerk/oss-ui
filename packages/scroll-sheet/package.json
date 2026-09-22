@@ -1,6 +1,6 @@
 {
   "name": "@nordwerk/scroll-sheet",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Bottom sheets, side drawers and dialogs on a native modal <dialog> and CSS scroll snap: open and close without script, drag, snap points and focus return as progressive enhancement.",
   "keywords": [
     "accessibility",
