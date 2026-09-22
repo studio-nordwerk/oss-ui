@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.5 (2026-09-22)
 
 - The repository is now [studio-nordwerk/oss-ui](https://github.com/studio-nordwerk/oss-ui), with
   the package in `packages/scroll-carousel`. shadcn items install from

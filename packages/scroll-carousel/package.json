@@ -1,6 +1,6 @@
 {
   "name": "@nordwerk/scroll-carousel",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A dependency-free carousel on native scrolling: CSS scroll snap first, arrows, dots, paging and an API as progressive enhancement.",
   "keywords": [
     "accessibility",
