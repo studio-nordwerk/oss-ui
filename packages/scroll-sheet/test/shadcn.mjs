@@ -16,7 +16,8 @@ export async function check(page) {
         open: dialog.open,
         top: Math.round(panel.top),
         right: Math.round(panel.right),
-        width: innerWidth,
+        // The dialog ends at the scrollbar gutter the locked page keeps (Linux, Windows).
+        width: Math.round(dialog.getBoundingClientRect().width),
         height: innerHeight,
       };
     }, text);

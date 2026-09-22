@@ -152,7 +152,9 @@ State attributes, for styling: `[open]`, `data-ss-ready` (script attached), `dat
 
 While a sheet is open the page keeps its scrollbar space (`scrollbar-gutter: stable`), so nothing
 shifts; on a page too short to scroll the script leaves the gutter out, as there is no scrollbar
-to replace.
+to replace. Where scrollbars take space (Windows, Linux) the sheet and its backdrop end at that
+space, like any fixed element; `--ss-gutter: auto` on `:root` lets them reach the edge, and the
+page then shifts when its scrollbar goes.
 
 ## Presentations
 

@@ -78,13 +78,22 @@ for (const { name, url, controlled } of fixtures) {
       // commandfor works without any script: the browser opens the dialog itself.
       await page.locator('#open-fixture').click();
       expect(await sheetOpen(page, 'fixture-sheet')).toBe(true);
-      // Drag it down to its 50dvh snap point, still before any script runs.
-      await page.waitForTimeout(500);
+      // Drag it down to its 50dvh snap point, still before any script runs, once the CSS enter
+      // transition is over (its transform stretches the scroll range; slow in CI).
+      await page.waitForFunction(() => !document.querySelector('#fixture-sheet .ss-panel')!.getAnimations().length);
       await page.locator('#fixture-sheet').evaluate((dialog) => {
         const top = dialog.querySelector('.ss-panel')!.getBoundingClientRect().top;
         dialog.scrollBy({ top: -(innerHeight / 2 - top), behavior: 'instant' });
       });
-      await page.waitForTimeout(300);
+      let previous = '';
+      await expect
+        .poll(async () => {
+          const now = JSON.stringify(await where(page));
+          const stable = now == previous;
+          previous = now;
+          return stable;
+        })
+        .toBe(true);
       const before = await where(page);
       expect(Math.abs(before.top - before.height / 2)).toBeLessThan(4);
       release();

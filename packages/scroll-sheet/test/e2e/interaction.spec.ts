@@ -56,7 +56,9 @@ test.describe('bottom sheet', () => {
     expect(await page.evaluate(() => document.activeElement == document.querySelectorAll('#sizes .tile-btn')[2])).toBe(
       true,
     );
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close size-sheet escape']);
+    await expect
+      .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+      .toEqual(['close size-sheet escape']);
   });
 
   test('keeps Tab inside the open sheet', async ({ page, browserName }) => {
@@ -92,7 +94,9 @@ test.describe('bottom sheet', () => {
     await page.mouse.click(40, 40);
     await expect.poll(async () => (await state(page, 'size-sheet')).open).toBe(false);
     expect(await page.evaluate(() => (window as any).__pageClicks)).toBe(0);
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close size-sheet backdrop']);
+    await expect
+      .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+      .toEqual(['close size-sheet backdrop']);
   });
 
   test('a press on the panel that ends on the dimmed area does not close it', async ({ page }) => {
@@ -118,7 +122,9 @@ test.describe('bottom sheet', () => {
     expect(back.snap).toBe(0);
     await dragAway(page, 'size-sheet');
     await expect.poll(async () => (await state(page, 'size-sheet')).open).toBe(false);
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close size-sheet swipe']);
+    await expect
+      .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+      .toEqual(['close size-sheet swipe']);
   });
 
   test('nested sheets stack and return focus step by step', async ({ page }) => {
@@ -179,7 +185,7 @@ test.describe('presentations', () => {
     );
     expect(narrow.panel.bottom).toBe(narrow.viewport.height);
     expect(narrow.panel.left).toBe(0);
-    expect(narrow.panel.right).toBe(390);
+    expect(narrow.panel.right).toBe(narrow.viewport.width);
   });
 
   test('drawers close when dragged towards their edge, left to right and right to left', async ({ page }) => {
@@ -192,7 +198,9 @@ test.describe('presentations', () => {
       else expect(menu.panel.right).toBe(menu.viewport.width);
       await dragAway(page, 'menu-sheet');
       await expect.poll(async () => (await state(page, 'menu-sheet')).open).toBe(false);
-      expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close menu-sheet swipe']);
+      await expect
+        .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+        .toEqual(['close menu-sheet swipe']);
     }
   });
 
@@ -205,7 +213,7 @@ test.describe('presentations', () => {
     await settled(page, 'cart-sheet');
     expect((await state(page, 'size-sheet')).open).toBe(false);
     expect((await state(page, 'cart-sheet')).open).toBe(true);
-    expect(await events(page)).toContain('close size-sheet replaced');
+    await expect.poll(() => events(page)).toContain('close size-sheet replaced');
   });
 
   test('a form with method="dialog" closes the dialog with its return value', async ({ page }) => {
@@ -224,7 +232,9 @@ test.describe('history plugin', () => {
     await page.goBack();
     await expect.poll(async () => (await state(page, 'size-sheet')).open).toBe(false);
     expect(await page.evaluate(() => location.href)).toBe(before);
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close size-sheet history']);
+    await expect
+      .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+      .toEqual(['close size-sheet history']);
   });
 
   test('a sheet closed by its button removes its history entry', async ({ page }) => {
@@ -271,7 +281,7 @@ test.describe('lifecycle', () => {
     expect(closed).toBe(false);
     await page.waitForTimeout(800);
     expect((await settled(page, 'store-sheet')).open).toBe(true);
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual([]);
+    await expect.poll(async () => (await events(page)).filter((e) => e.startsWith('close'))).toEqual([]);
   });
 
   test('an immediate close ends an animated one, and a later opening stays open', async ({ page }) => {
@@ -288,7 +298,9 @@ test.describe('lifecycle', () => {
     expect(closed).toBe(true);
     await page.waitForTimeout(800);
     expect((await settled(page, 'store-sheet')).open).toBe(true);
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual(['close store-sheet api']);
+    await expect
+      .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+      .toEqual(['close store-sheet api']);
   });
 
   test('reopened in the same task as a close, the sheet stays usable', async ({ page }) => {
@@ -307,10 +319,9 @@ test.describe('lifecycle', () => {
       return Promise.race([result, new Promise((resolve) => setTimeout(() => resolve('stuck'), 3000))]);
     });
     expect(closed).toBe(true);
-    expect((await events(page)).filter((e) => e.startsWith('close'))).toEqual([
-      'close store-sheet api',
-      'close store-sheet api',
-    ]);
+    await expect
+      .poll(async () => (await events(page)).filter((e) => e.startsWith('close')))
+      .toEqual(['close store-sheet api', 'close store-sheet api']);
   });
 
   test('focus the app moves elsewhere right after a close stays there', async ({ page }) => {
@@ -397,7 +408,7 @@ test.describe('lifecycle', () => {
     expect(partial.expanded).toBe(false);
     await page.setViewportSize({ width: 1280, height: 800 });
     const drawer = await settled(page, 'store-sheet');
-    expect(drawer.panel.right).toBe(1280);
+    expect(drawer.panel.right).toBe(drawer.viewport.width);
     expect(drawer.expanded).toBe(true);
     await page.setViewportSize({ width: 390, height: 844 });
     // Back on the phone it shows in full, as the drawer did.

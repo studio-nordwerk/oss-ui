@@ -2,9 +2,19 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 export const PAGE = '/scroll-sheet/';
 
-/** Waits until the script has attached to every sheet on the page. */
-export const ready = (page: Page) =>
-  page.waitForFunction(() => [...document.querySelectorAll('dialog.ss')].every((d) => d.hasAttribute('data-ss-ready')));
+/** Waits until the script has attached to every sheet on the page; tracks which sheets scroll. */
+export async function ready(page: Page) {
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('dialog.ss')].every((d) => d.hasAttribute('data-ss-ready')),
+  );
+  await page.evaluate(() => {
+    const scrolling = ((window as any).__scrolling = new Set<string>());
+    for (const dialog of document.querySelectorAll('dialog.ss')) {
+      dialog.addEventListener('scroll', () => scrolling.add(dialog.id));
+      dialog.addEventListener('scrollend', () => scrolling.delete(dialog.id));
+    }
+  });
+}
 
 /** A sheet's state, its panel's box and the page's scroll position. */
 export const state = (page: Page, id: string) =>
@@ -20,9 +30,16 @@ export const state = (page: Page, id: string) =>
         left: Math.round(box.left),
         right: Math.round(box.right),
       },
-      viewport: { width: innerWidth, height: innerHeight },
+      // The width the dialog gets: it ends at the scrollbar gutter the locked page keeps where
+      // scrollbars take space (Linux, Windows).
+      viewport: {
+        width: Math.round(dialog.open ? dialog.getBoundingClientRect().width : innerWidth),
+        height: innerHeight,
+      },
       scrollY: Math.round(scrollY),
       expanded: dialog.hasAttribute('data-ss-expanded'),
+      // Between a scroll and its scrollend (WebKitGTK pauses smooth scrolls without any event).
+      scrolling: !!(window as any).__scrolling?.has(id),
     };
   }, id);
 
@@ -32,8 +49,12 @@ export async function settled(page: Page, id: string) {
   await expect
     .poll(
       async () => {
-        const current = JSON.stringify(await state(page, id));
-        const stable = current == previous;
+        const now = await state(page, id);
+        const current = JSON.stringify(now);
+        // An open sheet with snap points but at none of them is still on its way (WebKitGTK does
+        // not animate smooth scrolling: it jumps after a pause without any scroll event).
+        const moving = now.scrolling || (now.open && now.snapPoints.length > 0 && now.snap < 0);
+        const stable = current == previous && !moving;
         previous = current;
         return stable;
       },
