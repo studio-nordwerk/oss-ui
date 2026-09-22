@@ -27,7 +27,9 @@ for (const { name, dir } of pages) {
   await generate({ out: join(site, name), base: `${prefix}${name}/`, canonical: `${overview}/${name}`, redirect });
 }
 
-execFileSync(bin('shadcn'), ['build', join(root, 'registry.json'), '--output', join(site, 'r'), '--cwd', root], { stdio: 'pipe' });
+execFileSync(bin('shadcn'), ['build', join(root, 'registry.json'), '--output', join(site, 'r'), '--cwd', root], {
+  stdio: 'pipe',
+});
 
 writeFileSync(
   join(site, 'index.html'),

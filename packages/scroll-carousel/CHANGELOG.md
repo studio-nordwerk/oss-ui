@@ -5,6 +5,10 @@
 - The repository is now [studio-nordwerk/oss-ui](https://github.com/studio-nordwerk/oss-ui), with
   the package in `packages/scroll-carousel`. shadcn items install from
   `studio-nordwerk/oss-ui/<item>`.
+- Built with Vite+ (`vp pack`, on tsdown) instead of esbuild and tsc; the output and its sizes
+  are unchanged.
+- React and Preact adapters, and the shadcn component: the latest options are kept in an effect
+  instead of being written to a ref during render, as React's rules require.
 
 ## 0.1.4 (2026-09-22)
 

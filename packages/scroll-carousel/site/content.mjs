@@ -1,7 +1,11 @@
 // Fictional storefront content and the markup helpers that render it. All names are made up.
 
 export const esc = (text) => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-export const slug = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+export const slug = (text) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 const euro = (value) => `€${value.toFixed(2)}`;
 
 export const icons = {
@@ -23,55 +27,261 @@ export const icons = {
 };
 
 export const products = [
-  { brand: 'Harlow & Pine', name: 'Gooseneck kettle, 0.9 l', price: 64, rating: 4.6, reviews: 212, badge: 'Bestseller', icon: 'kettle', tint: '#e6dccf' },
-  { brand: 'Ostmark', name: 'Hand grinder with conical steel burrs and 40 grind settings', price: 89, was: 109, rating: 4.8, reviews: 1043, icon: 'grinder', tint: '#d9e2e6' },
-  { brand: 'Fjordware', name: 'Stoneware mug, 350 ml', price: 18.5, rating: 4.7, reviews: 96, badge: 'New', icon: 'mug', tint: '#ecd9d2' },
-  { brand: 'Kiln Coffee Co.', name: 'Espresso roast, whole beans, 1 kg', price: 27.9, rating: 4.5, reviews: 2310, icon: 'bag', tint: '#e3d9c6' },
-  { brand: 'Ostmark', name: 'Paper filters, size 02, 100 pieces', price: 5.9, rating: 4.4, reviews: 388, icon: 'filter', tint: '#ece6d8' },
-  { brand: 'Harlow & Pine', name: 'Glass carafe, 600 ml', price: 32, rating: 4.3, reviews: 57, icon: 'carafe', tint: '#d8e4df' },
-  { brand: 'Tarekit', name: 'Brewing scale with timer, 0.1 g steps', price: 39, was: 49, rating: 4.6, reviews: 640, icon: 'scale', tint: '#dcdfe8' },
-  { brand: 'Fjordware', name: 'Airtight bean canister, 500 g', price: 24, rating: 4.7, reviews: 175, icon: 'canister', tint: '#e2e6d6' },
-  { brand: 'Tarekit', name: 'Handheld milk frother', price: 45, rating: 4.1, reviews: 83, icon: 'frother', tint: '#e8dfe8' },
-  { brand: 'Kiln Coffee Co.', name: 'Decaf filter roast, 250 g', price: 9.4, rating: 4.6, reviews: 412, badge: 'New', icon: 'bag', tint: '#dfe6e0' },
-  { brand: 'Harlow & Pine', name: 'Cold brew bottle, 1 l', price: 29, rating: 4.2, reviews: 120, icon: 'bottle', tint: '#d6e1ea' },
-  { brand: 'Fjordware', name: 'Espresso cups, set of 2', price: 22, rating: 4.9, reviews: 64, icon: 'cups', tint: '#eadbd2' },
+  {
+    brand: 'Harlow & Pine',
+    name: 'Gooseneck kettle, 0.9 l',
+    price: 64,
+    rating: 4.6,
+    reviews: 212,
+    badge: 'Bestseller',
+    icon: 'kettle',
+    tint: '#e6dccf',
+  },
+  {
+    brand: 'Ostmark',
+    name: 'Hand grinder with conical steel burrs and 40 grind settings',
+    price: 89,
+    was: 109,
+    rating: 4.8,
+    reviews: 1043,
+    icon: 'grinder',
+    tint: '#d9e2e6',
+  },
+  {
+    brand: 'Fjordware',
+    name: 'Stoneware mug, 350 ml',
+    price: 18.5,
+    rating: 4.7,
+    reviews: 96,
+    badge: 'New',
+    icon: 'mug',
+    tint: '#ecd9d2',
+  },
+  {
+    brand: 'Kiln Coffee Co.',
+    name: 'Espresso roast, whole beans, 1 kg',
+    price: 27.9,
+    rating: 4.5,
+    reviews: 2310,
+    icon: 'bag',
+    tint: '#e3d9c6',
+  },
+  {
+    brand: 'Ostmark',
+    name: 'Paper filters, size 02, 100 pieces',
+    price: 5.9,
+    rating: 4.4,
+    reviews: 388,
+    icon: 'filter',
+    tint: '#ece6d8',
+  },
+  {
+    brand: 'Harlow & Pine',
+    name: 'Glass carafe, 600 ml',
+    price: 32,
+    rating: 4.3,
+    reviews: 57,
+    icon: 'carafe',
+    tint: '#d8e4df',
+  },
+  {
+    brand: 'Tarekit',
+    name: 'Brewing scale with timer, 0.1 g steps',
+    price: 39,
+    was: 49,
+    rating: 4.6,
+    reviews: 640,
+    icon: 'scale',
+    tint: '#dcdfe8',
+  },
+  {
+    brand: 'Fjordware',
+    name: 'Airtight bean canister, 500 g',
+    price: 24,
+    rating: 4.7,
+    reviews: 175,
+    icon: 'canister',
+    tint: '#e2e6d6',
+  },
+  {
+    brand: 'Tarekit',
+    name: 'Handheld milk frother',
+    price: 45,
+    rating: 4.1,
+    reviews: 83,
+    icon: 'frother',
+    tint: '#e8dfe8',
+  },
+  {
+    brand: 'Kiln Coffee Co.',
+    name: 'Decaf filter roast, 250 g',
+    price: 9.4,
+    rating: 4.6,
+    reviews: 412,
+    badge: 'New',
+    icon: 'bag',
+    tint: '#dfe6e0',
+  },
+  {
+    brand: 'Harlow & Pine',
+    name: 'Cold brew bottle, 1 l',
+    price: 29,
+    rating: 4.2,
+    reviews: 120,
+    icon: 'bottle',
+    tint: '#d6e1ea',
+  },
+  {
+    brand: 'Fjordware',
+    name: 'Espresso cups, set of 2',
+    price: 22,
+    rating: 4.9,
+    reviews: 64,
+    icon: 'cups',
+    tint: '#eadbd2',
+  },
 ];
 
 export const heroes = [
-  { title: 'Autumn roasts are in', text: 'Four single origins, roasted this week and shipped within two days.', cta: 'Shop the roasts', href: '/c/autumn-roasts', icon: 'bag', bg: '#1e3a30', fg: '#f4f1e8', tint: '#a9c7a4' },
-  { title: 'Free shipping from €40', text: 'On every order to Germany, Austria and the Netherlands.', cta: 'See delivery options', href: '/help/delivery', icon: 'canister', bg: '#1f2f52', fg: '#f1f4fb', tint: '#9fb5e0' },
-  { title: 'Hand grinders, 20% off', text: 'Every burr grinder in the range, until Sunday night.', cta: 'Shop grinders', href: '/c/grinders', icon: 'grinder', bg: '#43264a', fg: '#f8f0f8', tint: '#d3a6d6' },
-  { title: 'Pour-over class on Saturday', text: '10:00 in our Hamburg store. Six places left, beans included.', cta: 'Book a place', href: '/events/pour-over', icon: 'kettle', bg: '#553a10', fg: '#fbf3e3', tint: '#e0b867' },
-  { title: 'Gift cards from €15', text: 'Delivered by email within minutes, valid for three years.', cta: 'Buy a gift card', href: '/gift-cards', icon: 'mug', bg: '#2a2d2c', fg: '#f2f3f2', tint: '#c9ccc9' },
+  {
+    title: 'Autumn roasts are in',
+    text: 'Four single origins, roasted this week and shipped within two days.',
+    cta: 'Shop the roasts',
+    href: '/c/autumn-roasts',
+    icon: 'bag',
+    bg: '#1e3a30',
+    fg: '#f4f1e8',
+    tint: '#a9c7a4',
+  },
+  {
+    title: 'Free shipping from €40',
+    text: 'On every order to Germany, Austria and the Netherlands.',
+    cta: 'See delivery options',
+    href: '/help/delivery',
+    icon: 'canister',
+    bg: '#1f2f52',
+    fg: '#f1f4fb',
+    tint: '#9fb5e0',
+  },
+  {
+    title: 'Hand grinders, 20% off',
+    text: 'Every burr grinder in the range, until Sunday night.',
+    cta: 'Shop grinders',
+    href: '/c/grinders',
+    icon: 'grinder',
+    bg: '#43264a',
+    fg: '#f8f0f8',
+    tint: '#d3a6d6',
+  },
+  {
+    title: 'Pour-over class on Saturday',
+    text: '10:00 in our Hamburg store. Six places left, beans included.',
+    cta: 'Book a place',
+    href: '/events/pour-over',
+    icon: 'kettle',
+    bg: '#553a10',
+    fg: '#fbf3e3',
+    tint: '#e0b867',
+  },
+  {
+    title: 'Gift cards from €15',
+    text: 'Delivered by email within minutes, valid for three years.',
+    cta: 'Buy a gift card',
+    href: '/gift-cards',
+    icon: 'mug',
+    bg: '#2a2d2c',
+    fg: '#f2f3f2',
+    tint: '#c9ccc9',
+  },
 ];
 
 export const guides = [
-  { title: 'Dial in a hand grinder', text: 'Start coarse, taste, then go finer in small steps.', read: 6, icon: 'grinder', tint: '#d9e2e6' },
-  { title: 'Why water matters more than beans', text: 'Hardness, temperature and what a filter jug changes.', read: 8, icon: 'carafe', tint: '#d8e4df' },
-  { title: 'Pour-over in five steps', text: 'Bloom, pour, wait, pour again, and when to stop.', read: 4, icon: 'kettle', tint: '#e6dccf' },
-  { title: 'Storing beans: what actually helps', text: 'Air, light and heat, ranked by how much they matter.', read: 5, icon: 'canister', tint: '#e2e6d6' },
-  { title: 'Milk texture without a steam wand', text: 'A frother, a jar and the right temperature.', read: 7, icon: 'frother', tint: '#e8dfe8' },
-  { title: 'Cold brew that keeps for a week', text: 'Ratio, grind and a clean bottle.', read: 5, icon: 'bottle', tint: '#d6e1ea' },
-  { title: 'Descaling: how often, with what', text: 'Citric acid, vinegar or a descaler, and why it matters.', read: 3, icon: 'kettle', tint: '#ece6d8' },
+  {
+    title: 'Dial in a hand grinder',
+    text: 'Start coarse, taste, then go finer in small steps.',
+    read: 6,
+    icon: 'grinder',
+    tint: '#d9e2e6',
+  },
+  {
+    title: 'Why water matters more than beans',
+    text: 'Hardness, temperature and what a filter jug changes.',
+    read: 8,
+    icon: 'carafe',
+    tint: '#d8e4df',
+  },
+  {
+    title: 'Pour-over in five steps',
+    text: 'Bloom, pour, wait, pour again, and when to stop.',
+    read: 4,
+    icon: 'kettle',
+    tint: '#e6dccf',
+  },
+  {
+    title: 'Storing beans: what actually helps',
+    text: 'Air, light and heat, ranked by how much they matter.',
+    read: 5,
+    icon: 'canister',
+    tint: '#e2e6d6',
+  },
+  {
+    title: 'Milk texture without a steam wand',
+    text: 'A frother, a jar and the right temperature.',
+    read: 7,
+    icon: 'frother',
+    tint: '#e8dfe8',
+  },
+  {
+    title: 'Cold brew that keeps for a week',
+    text: 'Ratio, grind and a clean bottle.',
+    read: 5,
+    icon: 'bottle',
+    tint: '#d6e1ea',
+  },
+  {
+    title: 'Descaling: how often, with what',
+    text: 'Citric acid, vinegar or a descaler, and why it matters.',
+    read: 3,
+    icon: 'kettle',
+    tint: '#ece6d8',
+  },
 ];
 
 export const categories = [
-  ['All coffee', 214], ['Espresso', 86], ['Filter', 71], ['Decaf', 12], ['Single origin', 58], ['Blends', 27],
-  ['Kettles', 19], ['Hand grinders', 23], ['Electric grinders', 31], ['Scales', 14], ['Filters and papers', 42],
-  ['Mugs', 64], ['Cups and saucers', 38], ['Storage', 22], ['Cleaning', 17], ['Gift cards', 6], ['Sale', 48],
+  ['All coffee', 214],
+  ['Espresso', 86],
+  ['Filter', 71],
+  ['Decaf', 12],
+  ['Single origin', 58],
+  ['Blends', 27],
+  ['Kettles', 19],
+  ['Hand grinders', 23],
+  ['Electric grinders', 31],
+  ['Scales', 14],
+  ['Filters and papers', 42],
+  ['Mugs', 64],
+  ['Cups and saucers', 38],
+  ['Storage', 22],
+  ['Cleaning', 17],
+  ['Gift cards', 6],
+  ['Sale', 48],
 ];
 
 // --- Markup helpers --------------------------------------------------------------------------
 
-export const sprite = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${Object.entries(icons)
+export const sprite = `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${Object.entries(
+  icons,
+)
   .filter(([, body]) => body)
   .map(([id, body]) => `<symbol id="i-${id}" viewBox="0 0 100 100" fill="currentColor">${body}</symbol>`)
   .join('')}</defs></svg>`;
 
-export const pic = (icon, cls) => `<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#i-${icon}"></use></svg>`;
+export const pic = (icon, cls) =>
+  `<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#i-${icon}"></use></svg>`;
 export const chevron = (dir) =>
   `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${dir === 'prev' ? 'm15 18-6-6 6-6' : 'm9 6 6 6-6 6'}"/></svg>`;
-const heart = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>';
+const heart =
+  '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>';
 
 export const arrows = (what) =>
   `<button class="sc-nav sc-prev" type="button" data-sc-prev aria-label="Previous ${what}">${chevron('prev')}</button>` +
@@ -132,4 +342,3 @@ function day(time) {
 }
 const short = (date) => date.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short' });
 export const days = Array.from({ length: 41 }, (_, i) => day(Date.UTC(2026, 8, 1) + i * DAY)).join('\n');
-

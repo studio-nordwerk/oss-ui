@@ -39,7 +39,10 @@ const page = (framework, markup) => `<!doctype html>
 </html>
 `;
 
-writeFileSync(join(out, 'react.html'), page('react', renderToString(createElement(App, { h: createElement, Carousel: ReactCarousel }))));
+writeFileSync(
+  join(out, 'react.html'),
+  page('react', renderToString(createElement(App, { h: createElement, Carousel: ReactCarousel }))),
+);
 writeFileSync(join(out, 'preact.html'), page('preact', renderPreact(h(App, { h, Carousel: PreactCarousel }))));
 
 await build({
@@ -52,5 +55,7 @@ await build({
   logLevel: 'warning',
 });
 
-execFileSync(join(here, '../../node_modules/.bin/astro'), ['build', '--root', join(here, 'astro')], { stdio: 'inherit' });
+execFileSync(join(here, '../../node_modules/.bin/astro'), ['build', '--root', join(here, 'astro')], {
+  stdio: 'inherit',
+});
 console.log('fixtures built');

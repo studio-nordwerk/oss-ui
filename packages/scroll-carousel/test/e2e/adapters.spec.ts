@@ -12,9 +12,20 @@ const normalize = (page: Page, html: string) =>
   page.evaluate((html) => {
     const template = document.createElement('template');
     template.innerHTML = html;
-    const managed = ['data-sc-ready', 'data-sc-overflow', 'data-sc-start', 'data-sc-end', 'data-sc-drag', 'data-sc-snap-off', 'aria-disabled', 'tabindex'];
-    for (const element of template.content.querySelectorAll('*')) for (const name of managed) element.removeAttribute(name);
-    for (const element of template.content.querySelectorAll('[data-sc-dots], [data-sc-status]')) element.replaceChildren();
+    const managed = [
+      'data-sc-ready',
+      'data-sc-overflow',
+      'data-sc-start',
+      'data-sc-end',
+      'data-sc-drag',
+      'data-sc-snap-off',
+      'aria-disabled',
+      'tabindex',
+    ];
+    for (const element of template.content.querySelectorAll('*'))
+      for (const name of managed) element.removeAttribute(name);
+    for (const element of template.content.querySelectorAll('[data-sc-dots], [data-sc-status]'))
+      element.replaceChildren();
     return template.innerHTML;
   }, html);
 

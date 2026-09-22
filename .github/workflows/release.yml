@@ -37,7 +37,8 @@ jobs:
           test "$(node -p "require('./packages/$name/package.json').version")" = "$version"
           echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
-      - run: pnpm typecheck && pnpm test && pnpm build && pnpm size && pnpm lint:package
+      # vp pack also runs publint and arethetypeswrong on each package.
+      - run: pnpm typecheck && pnpm test && pnpm build && pnpm size
       - name: Publish unless this version is on npm already
         working-directory: packages/${{ steps.tag.outputs.name }}
         run: |

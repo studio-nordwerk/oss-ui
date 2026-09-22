@@ -1,5 +1,15 @@
 packages:
   - packages/*
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@^0.3.3
+  vite-plus: ^0.3.3
+overrides:
+  vite: 'catalog:'
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: '*'
 allowBuilds:
   '@parcel/watcher': false
   esbuild: false

@@ -8,7 +8,21 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import { PRE_POSITION } from '../dist/markup.js';
-import { arrows, card, categories, days, esc, guide, guides, heroSlide, heroes, products, slug, sprite, status } from './content.mjs';
+import {
+  arrows,
+  card,
+  categories,
+  days,
+  esc,
+  guide,
+  guides,
+  heroSlide,
+  heroes,
+  products,
+  slug,
+  sprite,
+  status,
+} from './content.mjs';
 import { wireframeSection } from './wireframes.mjs';
 import * as tailwind from './tailwind-example.mjs';
 import { execFileSync } from 'node:child_process';
@@ -22,7 +36,14 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 // --- Sizes: bundled, minified, gzip level 9 ---------------------------------------------------
 
 async function gzipSize(entry) {
-  const result = await build({ entryPoints: [join(root, entry)], bundle: true, minify: true, format: 'esm', write: false, logLevel: 'silent' });
+  const result = await build({
+    entryPoints: [join(root, entry)],
+    bundle: true,
+    minify: true,
+    format: 'esm',
+    write: false,
+    logLevel: 'silent',
+  });
   return gzipSync(result.outputFiles[0].contents, { level: 9 }).length;
 }
 const kb = (bytes) => `${(bytes / 1024).toFixed(1)} kB`;
@@ -37,7 +58,10 @@ const sizes = {
 
 const radios = (name, legend, options, checked) =>
   `<fieldset class="seg"><legend>${legend}</legend>${options
-    .map(([value, label]) => `<label><input type="radio" name="${name}" value="${value}"${value === checked ? ' checked' : ''}>${label}</label>`)
+    .map(
+      ([value, label]) =>
+        `<label><input type="radio" name="${name}" value="${value}"${value === checked ? ' checked' : ''}>${label}</label>`,
+    )
     .join('')}</fieldset>`;
 
 const PRESETS = [
@@ -78,7 +102,9 @@ ${heroes.map(heroSlide).join('\n')}
           ${status}
         </section>`,
     code: [
-      ['html', `<section class="sc hero" aria-roledescription="carousel" aria-label="Current offers">
+      [
+        'html',
+        `<section class="sc hero" aria-roledescription="carousel" aria-label="Current offers">
   <button class="sc-play" data-sc-play>…</button>
   <div class="sc-dots" data-sc-dots></div>
   <div class="sc-track" data-sc-track tabindex="0" role="group" aria-label="Offer slides">
@@ -88,12 +114,16 @@ ${heroes.map(heroSlide).join('\n')}
   <button class="sc-nav sc-prev" data-sc-prev aria-label="Previous offer">…</button>
   <button class="sc-nav sc-next" data-sc-next aria-label="Next offer">…</button>
   <p class="sc-status" data-sc-status aria-live="polite"></p>
-</section>`],
+</section>`,
+      ],
       ['css', `.hero { --sc-gap: 0px; } /* one per view is the default */`],
-      ['js', `${IMPORTS}
+      [
+        'js',
+        `${IMPORTS}
 import { autoplay } from '@nordwerk/scroll-carousel/autoplay';
 
-attach(hero, { rewind: true, plugins: [autoplay({ delay: 5000 })] });`],
+attach(hero, { rewind: true, plugins: [autoplay({ delay: 5000 })] });`,
+      ],
     ],
   },
   {
@@ -120,21 +150,30 @@ ${products.map(card).join('\n')}
         <button class="btn" type="button" data-act="remove">Remove the last one</button>
       </form>`,
     code: [
-      ['css', `.bestsellers .sc-track { --sc-per-view: 2; --sc-group: 2; --sc-gap: 0.75rem; }
+      [
+        'css',
+        `.bestsellers .sc-track { --sc-per-view: 2; --sc-group: 2; --sc-gap: 0.75rem; }
 @container sc (min-width: 600px) { .bestsellers .sc-track { --sc-per-view: 3; --sc-group: 3; } }
-@container sc (min-width: 900px) { .bestsellers .sc-track { --sc-per-view: 4; --sc-group: 4; } }`],
-      ['js', `${IMPORTS}
+@container sc (min-width: 900px) { .bestsellers .sc-track { --sc-per-view: 4; --sc-group: 4; } }`,
+      ],
+      [
+        'js',
+        `${IMPORTS}
 import { drag } from '@nordwerk/scroll-carousel/drag';
 
 const row = attach(bestsellers, { plugins: [drag()] });
 row.slideTo(6);
-bestsellers.addEventListener('sc:change', (event) => console.log(event.detail.page));`],
-      ['jsx', `import { Carousel } from '@nordwerk/scroll-carousel/react';
+bestsellers.addEventListener('sc:change', (event) => console.log(event.detail.page));`,
+      ],
+      [
+        'jsx',
+        `import { Carousel } from '@nordwerk/scroll-carousel/react';
 
 <Carousel as="ul" label="Bestsellers" gap={12}
   perView={{ 0: 2, 600: 3, 900: 4 }} group={{ 0: 2, 600: 3, 900: 4 }}>
   {products.map((product) => <ProductCard key={product.id} {...product} />)}
-</Carousel>`],
+</Carousel>`,
+      ],
     ],
   },
   {
@@ -162,14 +201,17 @@ ${products.slice(3, 11).map(card).join('\n')}
         </div>
       </div>`,
     code: [
-      ['css', `.picks .sc-track {
+      [
+        'css',
+        `.picks .sc-track {
   --sc-per-view: 2.3;
   --sc-gap: 0.75rem;
   --sc-offset-before: 1rem;
   --sc-offset-after: 1rem;
   --sc-snap: mandatory; /* or proximity, or none */
 }
-@media (max-width: 767px) { .picks { --sc-controls: none; } }`],
+@media (max-width: 767px) { .picks { --sc-controls: none; } }`,
+      ],
     ],
   },
   {
@@ -187,8 +229,11 @@ ${guides.map(guide).join('\n')}
           ${status}
         </div>`,
     code: [
-      ['css', `.guides .sc-track { --sc-per-view: 1.25; --sc-align: center; --sc-centered: 1; }
-@container sc (min-width: 700px) { .guides .sc-track { --sc-per-view: 2.6; } }`],
+      [
+        'css',
+        `.guides .sc-track { --sc-per-view: 1.25; --sc-align: center; --sc-centered: 1; }
+@container sc (min-width: 700px) { .guides .sc-track { --sc-per-view: 2.6; } }`,
+      ],
     ],
   },
   {
@@ -203,9 +248,12 @@ ${categories.map(([name, count], i) => `<li><a class="chip" href="/c/${slug(name
           ${arrows('categories')}
         </nav>`,
     code: [
-      ['css', `.chips .sc-track { --sc-slide-size: auto; --sc-gap: 0.5rem; --sc-snap: proximity; --sc-group: page; }
+      [
+        'css',
+        `.chips .sc-track { --sc-slide-size: auto; --sc-gap: 0.5rem; --sc-snap: proximity; --sc-group: page; }
 /* The script marks the ends, so styles can react: */
-.chips[data-sc-overflow]:not([data-sc-end]) .sc-track { mask-image: linear-gradient(to right, #000 85%, transparent); }`],
+.chips[data-sc-overflow]:not([data-sc-end]) .sc-track { mask-image: linear-gradient(to right, #000 85%, transparent); }`,
+      ],
     ],
   },
   {
@@ -227,15 +275,21 @@ ${days}
         <button class="btn" type="button" data-act="later">Add a later week</button>
       </div>`,
     code: [
-      ['html', `<div class="sc dates">
+      [
+        'html',
+        `<div class="sc dates">
   <ul class="sc-track" data-sc-track tabindex="0" aria-label="Pick-up days">
     <li>…</li>
     <li data-sc-initial>…</li>
   </ul>
 </div>
-<script>/* PRE_POSITION from '@nordwerk/scroll-carousel/markup', inline */</script>`],
-      ['css', `.dates .sc-track { --sc-per-view: 7; --sc-group: page; --sc-gap: 0.375rem; }
-@container sc (max-width: 400px) { .dates .sc-track { --sc-per-view: 5; } }`],
+<script>/* PRE_POSITION from '@nordwerk/scroll-carousel/markup', inline */</script>`,
+      ],
+      [
+        'css',
+        `.dates .sc-track { --sc-per-view: 7; --sc-group: page; --sc-gap: 0.375rem; }
+@container sc (max-width: 400px) { .dates .sc-track { --sc-per-view: 5; } }`,
+      ],
     ],
   },
   {
@@ -266,8 +320,13 @@ ${products.slice(0, 2).map(card).join('\n')}
             <figcaption>Per view clamped to the slide count: <code>--sc-count: 2</code></figcaption>
           </figure>
         </div>`,
-    code: [['html', `<div class="sc sc--center-few">…</div>
-<!-- or: <ul class="sc-track" style="--sc-count: 2"> -->`]],
+    code: [
+      [
+        'html',
+        `<div class="sc sc--center-few">…</div>
+<!-- or: <ul class="sc-track" style="--sc-count: 2"> -->`,
+      ],
+    ],
   },
 ];
 
@@ -325,9 +384,12 @@ const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="
         <h2 id="case-${c.id}">${c.title}</h2>
         <p>${c.text}</p>
       </div>
-      ${c.custom ?? `<div class="${c.stage}">
+      ${
+        c.custom ??
+        `<div class="${c.stage}">
         ${c.body}
-      </div>`}
+      </div>`
+      }
       ${c.id == 'phone' ? '' : readout(c.id)}
       ${c.after ?? ''}
       ${snippet(c.code)}
@@ -353,10 +415,43 @@ const body = `<section class="intro" data-hero aria-labelledby="page-title">
 
   <div class="bench-bar">
     <label class="preset">Style <select id="preset">${PRESETS.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label>
-    ${radios('dir', 'Direction', [['ltr', 'Left to right'], ['rtl', 'Right to left']], 'ltr')}
-    ${radios('drag', 'Mouse drag', [['on', 'On'], ['off', 'Off']], 'on')}
-    ${radios('rewind', 'Rewind', [['off', 'Off'], ['scroll', 'Scroll back'], ['fade', 'Fade']], 'fade')}
-    ${radios('script', 'Script', [['on', 'Attached'], ['off', 'Detached']], 'on')}
+    ${radios(
+      'dir',
+      'Direction',
+      [
+        ['ltr', 'Left to right'],
+        ['rtl', 'Right to left'],
+      ],
+      'ltr',
+    )}
+    ${radios(
+      'drag',
+      'Mouse drag',
+      [
+        ['on', 'On'],
+        ['off', 'Off'],
+      ],
+      'on',
+    )}
+    ${radios(
+      'rewind',
+      'Rewind',
+      [
+        ['off', 'Off'],
+        ['scroll', 'Scroll back'],
+        ['fade', 'Fade'],
+      ],
+      'fade',
+    )}
+    ${radios(
+      'script',
+      'Script',
+      [
+        ['on', 'Attached'],
+        ['off', 'Detached'],
+      ],
+      'on',
+    )}
     <p class="metrics"><span>Layout shift <b id="cls">0.000</b></span><span>scrollend <b id="scrollend">…</b></span></p>
   </div>
 
@@ -420,7 +515,11 @@ export default async function generate({ out, base, canonical, redirect }) {
     },
     logLevel: 'warning',
   });
-  execFileSync(bin('tailwindcss'), ['-i', join(preview, 'index.css'), '-o', join(out, 'shadcn-preview.tailwind.css'), '--minify'], { stdio: 'pipe' });
+  execFileSync(
+    bin('tailwindcss'),
+    ['-i', join(preview, 'index.css'), '-o', join(out, 'shadcn-preview.tailwind.css'), '--minify'],
+    { stdio: 'pipe' },
+  );
   writeFileSync(
     join(out, 'shadcn-preview.html'),
     `<!doctype html>
@@ -441,6 +540,10 @@ export default async function generate({ out, base, canonical, redirect }) {
   );
   // The Tailwind preview: write the page, then let Tailwind compile exactly the classes it uses.
   writeFileSync(join(out, 'tailwind-example.html'), tailwind.previewPage);
-  execFileSync(bin('tailwindcss'), ['-i', join(here, 'tailwind.css'), '-o', join(out, 'tailwind-example.css'), '--minify'], { stdio: 'pipe' });
+  execFileSync(
+    bin('tailwindcss'),
+    ['-i', join(here, 'tailwind.css'), '-o', join(out, 'tailwind-example.css'), '--minify'],
+    { stdio: 'pipe' },
+  );
   console.log(`${out} written. Core ${sizes.core}, drag +${sizes.drag}, autoplay +${sizes.autoplay}, CSS ${sizes.css}`);
 }

@@ -84,11 +84,13 @@ export function responsiveCss(id: string, props: LayoutProps): string {
       rules.get(+width)!.push(`--sc-${name}:${value(key, val)}`);
     }
   }
-  return [...rules]
-    .sort(([a], [b]) => a - b)
-    // On every child of the root: the track takes the layout values, the controls --sc-controls.
-    .map(([width, decls]) => `@container sc (min-width:${width}px){[data-sc-id="${id}"]>*{${decls.join(';')}}}`)
-    .join('');
+  return (
+    [...rules]
+      .sort(([a], [b]) => a - b)
+      // On every child of the root: the track takes the layout values, the controls --sc-controls.
+      .map(([width, decls]) => `@container sc (min-width:${width}px){[data-sc-id="${id}"]>*{${decls.join(';')}}}`)
+      .join('')
+  );
 }
 
 /**
@@ -98,7 +100,7 @@ export function responsiveCss(id: string, props: LayoutProps): string {
  */
 export const PRE_POSITION =
   "(function(r){var t=r.querySelector('[data-sc-track]'),s=t&&t.querySelector('[data-sc-initial]'),f=t&&t.firstElementChild;" +
-  "if(!s||s==f)return;var a=s.getBoundingClientRect(),b=f.getBoundingClientRect();" +
+  'if(!s||s==f)return;var a=s.getBoundingClientRect(),b=f.getBoundingClientRect();' +
   "t.scrollLeft=getComputedStyle(t).direction=='rtl'?a.right-b.right:a.left-b.left})(document.currentScript.previousElementSibling)";
 
 /**

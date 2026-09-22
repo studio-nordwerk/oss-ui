@@ -1,4 +1,4 @@
-import { test } from 'node:test';
+import { test } from 'vite-plus/test';
 import assert from 'node:assert/strict';
 import { baseStyle, baseVars, responsiveCss, templateLabels } from '../../src/markup.ts';
 
@@ -19,7 +19,11 @@ test('centred sets its switch; controls only when hidden', () => {
 });
 
 test('responsive values: 0 is the base, the rest become container queries in order', () => {
-  const props = { perView: { 0: 2, 900: 4, 600: 3 }, group: { 0: 2, 600: 3, 900: 4 }, controls: { 0: false, 600: true } };
+  const props = {
+    perView: { 0: 2, 900: 4, 600: 3 },
+    group: { 0: 2, 600: 3, 900: 4 },
+    controls: { 0: false, 600: true },
+  };
   assert.deepEqual(baseVars(props), { '--sc-per-view': '2', '--sc-group': '2', '--sc-controls': 'none' });
   assert.equal(
     responsiveCss('x1', props),
@@ -44,7 +48,10 @@ test('label templates', () => {
 });
 
 test('a separate template for a single visible slide', () => {
-  const labels = templateLabels({ status: 'Items {first} to {last} of {count}', statusSingle: 'Item {first} of {count}' });
+  const labels = templateLabels({
+    status: 'Items {first} to {last} of {count}',
+    statusSingle: 'Item {first} of {count}',
+  });
   assert.equal(labels.status!(2, 2, 6), 'Item 2 of 6');
   assert.equal(labels.status!(2, 4, 6), 'Items 2 to 4 of 6');
   assert.equal(templateLabels({ statusSingle: 'Item {first} of {count}' }).status!(3, 3, 6), 'Item 3 of 6');

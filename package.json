@@ -5,20 +5,22 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.mjs",
+    "build": "vp run -r build",
     "typecheck": "node scripts/typecheck.mjs",
-    "test": "node --test \"packages/*/test/unit/*.test.ts\"",
+    "test": "vp test run",
+    "lint": "vp lint",
+    "fmt": "vp fmt .",
     "size": "node scripts/size.mjs",
-    "site": "node scripts/build.mjs && node scripts/site.mjs",
+    "site": "vp run -r build && node scripts/site.mjs",
     "fixtures": "node scripts/fixtures.mjs",
-    "lint:package": "node scripts/lint-package.mjs",
     "test:e2e": "playwright test",
     "test:shadcn": "node scripts/shadcn-smoke.mjs",
     "serve": "node scripts/serve.mjs",
-    "check": "pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm lint:package && pnpm fixtures && pnpm test:e2e"
+    "check": "vp fmt --check . && vp lint && pnpm typecheck && pnpm test && pnpm site && pnpm size && pnpm fixtures && pnpm test:e2e",
+    "prepare": "vp config --no-agent"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.5",
+    "@arethetypeswrong/core": "0.18.5",
     "@axe-core/playwright": "4.13.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@playwright/test": "1.61.1",
@@ -28,7 +30,8 @@
     "publint": "0.3.24",
     "shadcn": "4.21.0",
     "tailwindcss": "4.3.3",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vite-plus": "catalog:"
   },
   "packageManager": "pnpm@12.5.1"
 }

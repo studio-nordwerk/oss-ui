@@ -23,11 +23,12 @@ The items are listed in [registry.json](registry.json) and in each package's REA
 
 ## Development
 
-Needs Node 22 or later and the pnpm version in `packageManager`.
+Needs Node 22 or later and the pnpm version in `packageManager`. The toolchain is
+[Vite+](https://viteplus.dev) (`vp`), installed with the dependencies.
 
 ```sh
 pnpm install
-pnpm check      # typecheck, unit tests, build, site, size budgets, package lint, fixtures, browser tests
+pnpm check      # format, lint, typecheck, unit tests, build, site, size budgets, fixtures, browser tests
 pnpm serve      # the site on http://localhost:4173 after pnpm site, each package under /<name>/
 ```
 

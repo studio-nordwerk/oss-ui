@@ -2,7 +2,11 @@
 
 import { drag } from "@nordwerk/scroll-carousel/drag"
 
-import { ScrollCarousel, ScrollCarouselContent, ScrollCarouselItem } from "@/components/ui/scroll-carousel"
+import {
+  ScrollCarousel,
+  ScrollCarouselContent,
+  ScrollCarouselItem,
+} from "@/components/ui/scroll-carousel"
 
 // Widths stand in for logos of different proportions.
 const logos = [
@@ -24,7 +28,9 @@ export function LogoBelt() {
       <ScrollCarouselContent className="py-2 [--sc-gap:2.5rem] [--sc-slide-size:auto] [--sc-snap:none]">
         {logos.map((logo) => (
           <ScrollCarouselItem key={logo.name}>
-            <div className={`${logo.width} grid h-10 place-items-center rounded-md bg-muted text-xs font-medium text-muted-foreground`}>
+            <div
+              className={`${logo.width} grid h-10 place-items-center rounded-md bg-muted text-xs font-medium text-muted-foreground`}
+            >
               {logo.name}
             </div>
           </ScrollCarouselItem>

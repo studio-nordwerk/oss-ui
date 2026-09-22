@@ -24,6 +24,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm exec vp fmt --check .
+      - run: pnpm exec vp lint
       - run: pnpm typecheck
       - run: pnpm test
       # GitHub Pages publishes _site/ under /oss-ui/ and sends its visitors to www.nordwerk.studio,
@@ -33,8 +35,6 @@ jobs:
           SITE_BASE: /oss-ui/
           SITE_REDIRECT: '1'
       - run: pnpm size
-      # publint and arethetypeswrong on the packed tarballs: exports, types and files as published.
-      - run: pnpm lint:package
       - run: pnpm fixtures
       - run: pnpm exec playwright install --with-deps chromium webkit firefox
       - run: pnpm test:e2e

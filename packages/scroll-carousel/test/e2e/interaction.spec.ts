@@ -71,7 +71,9 @@ test.describe('product row paged by group', () => {
     await settled(page, 'bestsellers');
     const probe = () =>
       page.evaluate(() => {
-        const slide = [...document.querySelectorAll('[data-case=bestsellers] .card-name')].find((name) => name.textContent == 'Espresso roast, whole beans, 1 kg')!;
+        const slide = [...document.querySelectorAll('[data-case=bestsellers] .card-name')].find(
+          (name) => name.textContent == 'Espresso roast, whole beans, 1 kg',
+        )!;
         return Math.round(slide.getBoundingClientRect().left);
       });
     const before = await probe();
@@ -119,7 +121,10 @@ test.describe('date strip', () => {
   });
 
   test('a week added before the first day keeps today in place', async ({ page }) => {
-    const today = () => page.evaluate(() => Math.round(document.querySelector('[data-case=dates] [data-sc-initial]')!.getBoundingClientRect().left));
+    const today = () =>
+      page.evaluate(() =>
+        Math.round(document.querySelector('[data-case=dates] [data-sc-initial]')!.getBoundingClientRect().left),
+      );
     await page.locator('[data-case=dates]').scrollIntoViewIfNeeded();
     const before = await today();
     await page.click('[data-act=earlier]');
@@ -253,7 +258,9 @@ test('the shadcn blocks render in the docs as shadcn installs them', async ({ pa
   const row = frame.locator('[aria-label="Bestsellers"]');
   await row.scrollIntoViewIfNeeded();
   await row.locator('[data-slot=scroll-carousel-next]').click();
-  await expect.poll(() => row.locator('[data-sc-track]').evaluate((element) => Math.abs(element.scrollLeft))).toBeGreaterThan(100);
+  await expect
+    .poll(() => row.locator('[data-sc-track]').evaluate((element) => Math.abs(element.scrollLeft)))
+    .toBeGreaterThan(100);
   await expect(row.locator('[data-slot=scroll-carousel-dots] button[aria-current=true]')).toHaveCount(1);
   const height = await page.locator('iframe.sh-preview').evaluate((element) => element.getBoundingClientRect().height);
   expect(height).toBeGreaterThan(1200);

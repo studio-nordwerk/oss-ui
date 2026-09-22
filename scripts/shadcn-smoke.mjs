@@ -12,19 +12,23 @@ import { chromium } from '@playwright/test';
 import { packages, root } from './packages.mjs';
 
 const work = process.env.SMOKE_DIR || mkdtempSync(join(tmpdir(), 'oss-ui-shadcn-'));
-const run = (command, args, cwd = work) => execFileSync(command, args, { cwd, stdio: 'inherit', env: { ...process.env, CI: '1' } });
+const run = (command, args, cwd = work) =>
+  execFileSync(command, args, { cwd, stdio: 'inherit', env: { ...process.env, CI: '1' } });
 const shadcn = (...args) => run('npx', ['-y', 'shadcn@latest', ...args]);
 const REGISTRY = 'studio-nordwerk/oss-ui/';
 
 console.log(`Working in ${work}`);
 
 // 1. The packages as tarballs, and the registry as built JSON.
-run('node', ['scripts/build.mjs'], root);
+run('pnpm', ['build'], root);
 const tarballs = {};
 for (const { dir, manifest } of packages()) {
   const before = new Set(readdirSync(work));
   run('npm', ['pack', '--pack-destination', work], dir);
-  tarballs[manifest.name] = join(work, readdirSync(work).find((name) => name.endsWith('.tgz') && !before.has(name)));
+  tarballs[manifest.name] = join(
+    work,
+    readdirSync(work).find((name) => name.endsWith('.tgz') && !before.has(name)),
+  );
 }
 const built = join(work, 'r');
 shadcn('build', join(root, 'registry.json'), '--output', built, '--cwd', root);
@@ -36,17 +40,35 @@ for (const { name } of items) {
   const file = join(built, `${name}.json`);
   const item = JSON.parse(readFileSync(file, 'utf8'));
   item.dependencies = (item.dependencies || []).map((dep) => tarballs[dep.replace(/(?<=.)@[^@]*$/, '')] ?? dep);
-  item.registryDependencies = (item.registryDependencies || []).map((dep) => (dep.startsWith(REGISTRY) ? join(built, `${dep.slice(REGISTRY.length)}.json`) : dep));
+  item.registryDependencies = (item.registryDependencies || []).map((dep) =>
+    dep.startsWith(REGISTRY) ? join(built, `${dep.slice(REGISTRY.length)}.json`) : dep,
+  );
   writeFileSync(file, JSON.stringify(item, null, 2));
 }
 
 // 2. A fresh shadcn project, and everything installed through the CLI.
-shadcn('init', '--name', 'app', '--template', 'vite', '--preset', 'nova', '--base', 'base', '--yes', '--no-monorepo', '--cwd', work);
+shadcn(
+  'init',
+  '--name',
+  'app',
+  '--template',
+  'vite',
+  '--preset',
+  'nova',
+  '--base',
+  'base',
+  '--yes',
+  '--no-monorepo',
+  '--cwd',
+  work,
+);
 const app = join(work, 'app');
 shadcn('add', ...items.map(({ name }) => join(built, `${name}.json`)), '--yes', '--overwrite', '--cwd', app);
 
 // 3. A page with every block, then the project's own build.
-const blocks = items.filter((item) => item.type == 'registry:block').map(({ name }) => ({ name, component: name.replace(/(^|-)(\w)/g, (_, dash, char) => char.toUpperCase()) }));
+const blocks = items
+  .filter((item) => item.type == 'registry:block')
+  .map(({ name }) => ({ name, component: name.replace(/(^|-)(\w)/g, (_, dash, char) => char.toUpperCase()) }));
 writeFileSync(
   join(app, 'src/App.tsx'),
   `${blocks.map(({ name, component }) => `import { ${component} } from "@/components/${name}"`).join('\n')}
@@ -83,7 +105,9 @@ try {
     reports[name] = result.report;
     problems.push(...result.problems.map((problem) => `${name}: ${problem}`));
   }
-  const overflow = await page.evaluate(() => document.scrollingElement.scrollWidth - document.scrollingElement.clientWidth);
+  const overflow = await page.evaluate(
+    () => document.scrollingElement.scrollWidth - document.scrollingElement.clientWidth,
+  );
   if (overflow > 0) problems.push(`the page scrolls sideways by ${overflow}px`);
   problems.push(...errors);
   await page.screenshot({ path: join(work, 'smoke.png'), fullPage: false });

@@ -16,18 +16,31 @@ const OPTIONS = {
   hero: () => ({
     rewind: rewind(),
     plugins: [autoplay({ delay: 5000 })],
-    labels: { page: (n, count) => `Slide ${n} of ${count}`, status: (first, last, count) => `Slide ${first} of ${count}` },
+    labels: {
+      page: (n, count) => `Slide ${n} of ${count}`,
+      status: (first, last, count) => `Slide ${first} of ${count}`,
+    },
   }),
   bestsellers: () => ({ rewind: rewind() }),
   guides: () => ({
     rewind: rewind(),
-    labels: { page: (n, count) => `Guide ${n} of ${count}`, status: (first, last, count) => `Guide ${first} of ${count}` },
+    labels: {
+      page: (n, count) => `Guide ${n} of ${count}`,
+      status: (first, last, count) => `Guide ${first} of ${count}`,
+    },
   }),
   dates: () => ({
-    labels: { status: (first, last, count, slides) => `Showing ${dayName(slides[first - 1])} to ${dayName(slides[last - 1])}` },
+    labels: {
+      status: (first, last, count, slides) => `Showing ${dayName(slides[first - 1])} to ${dayName(slides[last - 1])}`,
+    },
   }),
   stage: () => ({ rewind: true, plugins: [autoplay({ delay: 5000 })] }),
-  gallery: () => ({ labels: { page: (n, count) => `Image ${n} of ${count}`, status: (first, last, count) => `Image ${first} of ${count}` } }),
+  gallery: () => ({
+    labels: {
+      page: (n, count) => `Image ${n} of ${count}`,
+      status: (first, last, count) => `Image ${first} of ${count}`,
+    },
+  }),
   teasers: () => ({ group: 3 }),
   products: () => ({ group: 'page' }),
 };
@@ -151,9 +164,11 @@ document.addEventListener('click', (event) => {
   }
   const day = event.target.closest('.day');
   if (day && !day.disabled) {
-    for (const other of document.querySelectorAll('.day[aria-pressed="true"]')) other.setAttribute('aria-pressed', 'false');
+    for (const other of document.querySelectorAll('.day[aria-pressed="true"]'))
+      other.setAttribute('aria-pressed', 'false');
     day.setAttribute('aria-pressed', 'true');
-    document.querySelector('.pickup-choice').textContent = `Pick-up on ${day.getAttribute('aria-label').replace(', today', '')}`;
+    document.querySelector('.pickup-choice').textContent =
+      `Pick-up on ${day.getAttribute('aria-label').replace(', today', '')}`;
     return;
   }
   // Storefront links go nowhere here; the toast proves a click arrived (or did not, after a drag).

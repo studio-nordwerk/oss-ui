@@ -19,14 +19,18 @@ const types = {
 };
 
 createServer(async (request, response) => {
-  const path = normalize(decodeURIComponent(new URL(request.url, 'http://localhost').pathname))
-    .replace(/^(\.\.[/\\])+/, '')
-    .replace(/^\/(oss-ui|oss)(?=\/|$)/, '') || '/';
+  const path =
+    normalize(decodeURIComponent(new URL(request.url, 'http://localhost').pathname))
+      .replace(/^(\.\.[/\\])+/, '')
+      .replace(/^\/(oss-ui|oss)(?=\/|$)/, '') || '/';
   let file = join(root, path);
   try {
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html');
     const body = await readFile(file);
-    response.writeHead(200, { 'content-type': types[extname(file)] || 'application/octet-stream', 'cache-control': 'no-store' });
+    response.writeHead(200, {
+      'content-type': types[extname(file)] || 'application/octet-stream',
+      'cache-control': 'no-store',
+    });
     response.end(body);
   } catch {
     response.writeHead(404, { 'content-type': 'text/plain' });

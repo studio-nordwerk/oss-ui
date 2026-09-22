@@ -43,7 +43,8 @@ function useScrollCarousel() {
   return context
 }
 
-const useIsomorphicLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect
 
 function ScrollCarousel({
   opts,
@@ -63,8 +64,11 @@ function ScrollCarousel({
   const ref = React.useRef<HTMLDivElement>(null)
   const [api, setInstance] = React.useState<ScrollCarouselApi | null>(null)
   const [state, setState] = React.useState<CarouselState | null>(null)
+  // The latest props for the callbacks, updated after render and before the attach below.
   const latest = React.useRef({ opts, plugins, setApi, onStateChange })
-  latest.current = { opts, plugins, setApi, onStateChange }
+  useIsomorphicLayoutEffect(() => {
+    latest.current = { opts, plugins, setApi, onStateChange }
+  })
 
   useIsomorphicLayoutEffect(() => {
     if (!ref.current) return
@@ -90,7 +94,7 @@ function ScrollCarousel({
       go(api)
       setState(api.state)
     },
-    [api]
+    [api],
   )
   const rewind = Boolean(opts?.rewind)
   const canScrollPrev = Boolean(state?.overflow && (rewind || !state.isBeginning))
@@ -131,7 +135,7 @@ function ScrollCarouselContent({ className, ...props }: React.ComponentProps<"di
       tabIndex={0}
       className={cn(
         "sc-track rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
-        className
+        className,
       )}
       {...props}
     />
@@ -182,7 +186,7 @@ function ScrollCarouselPrevious({
       className={cn(
         "absolute start-2 top-1/2 -translate-y-1/2 rounded-full touch-manipulation aria-disabled:cursor-default aria-disabled:opacity-50",
         !state?.overflow && "hidden",
-        className
+        className,
       )}
       aria-disabled={!canScrollPrev}
       onClick={canScrollPrev ? scrollPrev : undefined}
@@ -210,7 +214,7 @@ function ScrollCarouselNext({
       className={cn(
         "absolute end-2 top-1/2 -translate-y-1/2 rounded-full touch-manipulation aria-disabled:cursor-default aria-disabled:opacity-50",
         !state?.overflow && "hidden",
-        className
+        className,
       )}
       aria-disabled={!canScrollNext}
       onClick={canScrollNext ? scrollNext : undefined}
@@ -269,10 +273,20 @@ function ScrollCarouselPlay({
       className={cn("rounded-full", !state?.overflow && "invisible", className)}
       {...props}
     >
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="group-data-[sc-playing]/scroll-carousel:hidden">
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className="group-data-[sc-playing]/scroll-carousel:hidden"
+      >
         <path d="M8 5v14l11-7z" />
       </svg>
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="hidden group-data-[sc-playing]/scroll-carousel:block">
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className="hidden group-data-[sc-playing]/scroll-carousel:block"
+      >
         <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
       </svg>
     </Button>

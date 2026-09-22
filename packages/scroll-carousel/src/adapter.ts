@@ -59,8 +59,12 @@ export function createAdapter(framework: Framework) {
    */
   function useCarousel(options: CarouselOptions = {}) {
     const ref = useRef<HTMLElement | null>(null);
+    // The latest options for the callbacks, updated after render and before the attach below.
     const latest = useRef(options);
-    latest.current = options;
+    useBeforePaint(() => {
+      // oxlint-disable-next-line react/immutability -- a ref from the framework's useRef, which the rule cannot see
+      latest.current = options;
+    });
     const [carousel, setCarousel] = useState<Carousel | null>(null);
     const [state, setState] = useState<CarouselState | null>(null);
     useBeforePaint(() => {
@@ -95,7 +99,10 @@ export function createAdapter(framework: Framework) {
       onChange: props.onChange,
     });
     const handoff = useRef(carouselRef);
-    handoff.current = carouselRef;
+    useEffect(() => {
+      // oxlint-disable-next-line react/immutability -- a ref from the framework's useRef, which the rule cannot see
+      handoff.current = carouselRef;
+    });
     useEffect(() => {
       if (!carousel) return;
       handoff.current?.(carousel);
@@ -125,7 +132,11 @@ export function createAdapter(framework: Framework) {
               key: child?.key ?? i,
               className: slideClassName,
               'data-sc-initial': i == initial && i > 0 ? '' : undefined,
-              ...(slideRoles && { role: 'group', 'aria-roledescription': 'slide', 'aria-label': `${i + 1} of ${slides.length}` }),
+              ...(slideRoles && {
+                role: 'group',
+                'aria-roledescription': 'slide',
+                'aria-label': `${i + 1} of ${slides.length}`,
+              }),
             },
             child,
           ),
@@ -135,21 +146,44 @@ export function createAdapter(framework: Framework) {
         h(
           Fragment,
           null,
-          h('button', { type: 'button', className: 'sc-nav sc-prev', 'data-sc-prev': '', 'aria-label': labels.prev || 'Previous' }, chevron(h, 'm15 18-6-6 6-6')),
-          h('button', { type: 'button', className: 'sc-nav sc-next', 'data-sc-next': '', 'aria-label': labels.next || 'Next' }, chevron(h, 'm9 6 6 6-6 6')),
+          h(
+            'button',
+            {
+              type: 'button',
+              className: 'sc-nav sc-prev',
+              'data-sc-prev': '',
+              'aria-label': labels.prev || 'Previous',
+            },
+            chevron(h, 'm15 18-6-6 6-6'),
+          ),
+          h(
+            'button',
+            { type: 'button', className: 'sc-nav sc-next', 'data-sc-next': '', 'aria-label': labels.next || 'Next' },
+            chevron(h, 'm9 6 6 6-6 6'),
+          ),
         ),
       playButton &&
         h(
           'button',
           { type: 'button', className: 'sc-play', 'data-sc-play': '', 'aria-label': 'Stop automatic scrolling' },
-          h('svg', { className: 'sc-icon-play', viewBox: '0 0 24 24', 'aria-hidden': 'true', focusable: 'false' }, h('path', { d: 'M8 5v14l11-7z' })),
-          h('svg', { className: 'sc-icon-pause', viewBox: '0 0 24 24', 'aria-hidden': 'true', focusable: 'false' }, h('path', { d: 'M7 5h3.5v14H7zM13.5 5H17v14h-3.5z' })),
+          h(
+            'svg',
+            { className: 'sc-icon-play', viewBox: '0 0 24 24', 'aria-hidden': 'true', focusable: 'false' },
+            h('path', { d: 'M8 5v14l11-7z' }),
+          ),
+          h(
+            'svg',
+            { className: 'sc-icon-pause', viewBox: '0 0 24 24', 'aria-hidden': 'true', focusable: 'false' },
+            h('path', { d: 'M7 5h3.5v14H7zM13.5 5H17v14h-3.5z' }),
+          ),
         ),
       dots && h('div', { className: 'sc-dots', 'data-sc-dots': '' }),
       h('p', { className: 'sc-status', 'data-sc-status': '', 'aria-live': 'polite' }),
     );
     // The inline script sets the start position before the first paint of server markup.
-    return initial > 0 ? h(Fragment, null, root, h('script', { dangerouslySetInnerHTML: { __html: PRE_POSITION } })) : root;
+    return initial > 0
+      ? h(Fragment, null, root, h('script', { dangerouslySetInnerHTML: { __html: PRE_POSITION } }))
+      : root;
   }
 
   return { Carousel, useCarousel };

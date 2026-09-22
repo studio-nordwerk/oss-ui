@@ -4,13 +4,22 @@ How to work on this repository. How to use a package in a project is in that pac
 AGENTS.md (`packages/<name>/AGENTS.md`), which ships with the package on npm and is published as
 `llms.txt` next to its documentation page.
 
+## Tools
+
+The toolchain is [Vite+](https://viteplus.dev) (`vp`): `vp pack` (tsdown) builds the packages,
+`vp test` (Vitest) runs the unit tests, `vp lint` (Oxlint) and `vp fmt` (Oxfmt) keep the code
+consistent, and `vp run` runs a script in every package. Browser tests use Playwright. The shared
+settings for test, lint, format and the pre-commit check are in the root `vite.config.ts`; the
+pre-commit hook (`.vite-hooks/pre-commit`, installed by `pnpm install`) runs `vp staged`.
+
 ## Layout
 
 - `package.json`: the private workspace root with the shared tools; `pnpm-workspace.yaml` lists
-  `packages/*`.
-- `scripts/`: build, size budgets, site, fixtures, package lint, shadcn smoke test and the local
-  server. Each works on every package, or on the packages named on the command line, e.g.
-  `node scripts/build.mjs scroll-carousel`.
+  `packages/*` and pins Vite+ in its catalog.
+- `vite.config.ts`: test, lint, format and staged-file settings for the whole repository.
+- `scripts/`: the shared `vp pack` settings (`pack-config.mjs`), size budgets, site, fixtures,
+  type check, shadcn smoke test and the local server. The scripts work on every package, or on the
+  packages named on the command line, e.g. `node scripts/size.mjs scroll-carousel`.
 - `site/`: the shared frame of the documentation pages (`frame.mjs`, `frame.css`, `frame.js`).
 - `registry.json`: the shadcn registry for all packages, read by the shadcn CLI straight from this
   public repository (`studio-nordwerk/oss-ui/<item>`).
@@ -19,14 +28,18 @@ AGENTS.md (`packages/<name>/AGENTS.md`), which ships with the package on npm and
 
 ## What a package brings
 
-- `package.json`: what is published. The build follows its `exports`: each `./dist/<x>.js` is
-  built from `src/<x>.ts`, each `./dist/<x>.css` is copied from `src/`, and `./dist/<x>.layer.css`
+- `package.json`: what is published, with `"build": "vp pack"` and `"prepublishOnly": "vp pack"`.
+  `repository.directory` names the package folder. Dev dependencies the package needs itself
+  (React, Preact, Astro for its adapters and fixtures) are listed here, the shared tools at the root.
+- `vite.config.ts`: `defineConfig({ pack: packConfig(import.meta.dirname) })` with `packConfig`
+  from `scripts/pack-config.mjs`. The build follows the package's `exports`: each `./dist/<x>.js`
+  is built from `src/<x>.ts`, each `./dist/<x>.css` comes from `src/`, and `./dist/<x>.layer.css`
   is `src/<x>.css` inside Tailwind's components layer. Peer dependencies stay external;
-  `dist/react.js` gets `'use client'`. Declarations come from the package's `tsconfig.json`.
-  `repository.directory` names the package folder; `prepublishOnly` runs the build.
+  `dist/react.js` gets `'use client'`; declarations come from the package's `tsconfig.json`.
+  publint and arethetypeswrong check every build.
 - `budgets.json`: gzip budgets per entry, `[{ "name", "entry": "dist/…", "max": bytes }]`,
   measured bundled and minified. Not published.
-- `src/`, `test/unit/*.test.ts` (node's test runner on the TypeScript sources).
+- `src/`, `test/unit/*.test.ts` (`vp test`, on the TypeScript sources).
 - `test/e2e/*.spec.ts`: Playwright against `_site/`, where the package's page and fixtures are
   under `/<name>/`. Visual baselines sit next to the tests in `__screenshots__/<platform>`.
 - `test/fixtures/build.mjs` (optional): builds adapter fixtures into `_site/<name>/fixtures/`.
@@ -61,13 +74,14 @@ Pages address are sent to nordwerk.studio (`SITE_REDIRECT=1` in CI).
 Needs Node 22 or later and the pnpm version in `packageManager`.
 
 ```sh
-pnpm install
+pnpm install              # also installs the pre-commit hook
+pnpm fmt                  # vp fmt: format everything
+pnpm lint                 # vp lint
 pnpm typecheck            # every package, and its registry files
-pnpm test                 # unit tests, no build needed
-pnpm build                # packages/*/dist
+pnpm test                 # vp test: unit tests, no build needed
+pnpm build                # vp pack in every package, with publint and arethetypeswrong
 pnpm site                 # build, then _site/: every package's page, the registry as JSON in r/
 pnpm size                 # fails when an entry exceeds its gzip budget
-pnpm lint:package         # publint and arethetypeswrong on the packed tarballs, after a build
 pnpm fixtures             # adapter fixtures into _site/<name>/fixtures/, after pnpm site
 pnpm test:e2e             # Chromium, WebKit and Firefox
 pnpm test:shadcn          # a fresh shadcn project installs, builds and renders every item

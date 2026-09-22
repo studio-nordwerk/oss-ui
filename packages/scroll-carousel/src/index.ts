@@ -94,7 +94,12 @@ export interface Layout {
 export interface PluginContext {
   root: HTMLElement;
   track: HTMLElement;
-  listen(target: EventTarget | null | undefined, type: string, handler: (event: any) => void, options?: AddEventListenerOptions): void;
+  listen(
+    target: EventTarget | null | undefined,
+    type: string,
+    handler: (event: any) => void,
+    options?: AddEventListenerOptions,
+  ): void;
   layout(): Layout;
   toPage(page: number): void;
   /** Scroll to a position, e.g. where a drag's momentum ends. */
@@ -250,7 +255,11 @@ export function attach(root: HTMLElement, options: CarouselOptions = {}): Carous
       isEnd: here >= geo.max - EPS,
       overflow: geo.max > EPS,
     };
-    for (const [name, on] of [['overflow', state.overflow], ['start', state.isBeginning], ['end', state.isEnd]] as const) {
+    for (const [name, on] of [
+      ['overflow', state.overflow],
+      ['start', state.isBeginning],
+      ['end', state.isEnd],
+    ] as const) {
       root.toggleAttribute('data-sc-' + name, on);
     }
     // A row that cannot scroll is no tab stop.
@@ -260,10 +269,13 @@ export function attach(root: HTMLElement, options: CarouselOptions = {}): Carous
     nextButton?.setAttribute('aria-disabled', String(state.isEnd && !rewind));
     // An empty aria-current counts as false, so the value must be 'true'.
     if (dots) {
-      [...dots.children].forEach((dot, i) => (i == page ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current')));
+      [...dots.children].forEach((dot, i) =>
+        i == page ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current'),
+      );
     }
     if (!isSettled) return;
-    if (settled && ['index', 'page', 'pageCount'].every((key) => settled![key as 'page'] == state[key as 'page'])) return;
+    if (settled && ['index', 'page', 'pageCount'].every((key) => settled![key as 'page'] == state[key as 'page']))
+      return;
     const first = !settled;
     settled = state;
     if (first) return;

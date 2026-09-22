@@ -37,7 +37,10 @@ export const autoplay =
       const running = playing && !holds.size && layout().pages.length > 1;
       root.toggleAttribute('data-sc-playing', playing);
       root.toggleAttribute('data-sc-paused', playing && !running);
-      play?.setAttribute('aria-label', playing ? labels.pause || 'Stop automatic scrolling' : labels.play || 'Start automatic scrolling');
+      play?.setAttribute(
+        'aria-label',
+        playing ? labels.pause || 'Stop automatic scrolling' : labels.play || 'Start automatic scrolling',
+      );
       if (running && !timer) {
         since = performance.now();
         timer = setTimeout(() => {

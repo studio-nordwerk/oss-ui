@@ -68,13 +68,13 @@ export const pageStarts = (geo: Geometry, snaps: number[], group: Group, anchor:
     // Slides from..last are fully visible when the view is scrolled to slide `from`.
     const fits = (from: number, last: number) =>
       geo.starts[last] + geo.sizes[last] <= snaps[from] + geo.port - geo.padEnd + EPS;
-    for (let i = anchor; i < count && snaps[i] < geo.max - EPS; ) {
+    for (let i = anchor; i < count && snaps[i] < geo.max - EPS;) {
       let next = i + 1;
       while (next < count && fits(i, next)) next++;
       if (next >= count) break;
       firsts.add((i = next));
     }
-    for (let i = anchor; i > 0; ) {
+    for (let i = anchor; i > 0;) {
       let first = i - 1;
       while (first > 0 && fits(first - 1, i - 1)) first--;
       firsts.add((i = first));

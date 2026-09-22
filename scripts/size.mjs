@@ -8,7 +8,14 @@ import { gzipSync } from 'node:zlib';
 import { packages } from './packages.mjs';
 
 export const gzipSize = async (entry) => {
-  const result = await build({ entryPoints: [entry], bundle: true, minify: true, format: 'esm', write: false, logLevel: 'silent' });
+  const result = await build({
+    entryPoints: [entry],
+    bundle: true,
+    minify: true,
+    format: 'esm',
+    write: false,
+    logLevel: 'silent',
+  });
   return gzipSync(result.outputFiles[0].contents, { level: 9 }).length;
 };
 
@@ -22,7 +29,9 @@ if (import.meta.main) {
       const size = await gzipSize(join(dir, budget.entry));
       const ok = size <= budget.max;
       failed ||= !ok;
-      console.log(`  ${ok ? 'ok  ' : 'OVER'} ${(size / 1024).toFixed(2)} kB of ${(budget.max / 1024).toFixed(2)} kB  ${budget.name}`);
+      console.log(
+        `  ${ok ? 'ok  ' : 'OVER'} ${(size / 1024).toFixed(2)} kB of ${(budget.max / 1024).toFixed(2)} kB  ${budget.name}`,
+      );
     }
   }
   process.exit(failed ? 1 : 0);

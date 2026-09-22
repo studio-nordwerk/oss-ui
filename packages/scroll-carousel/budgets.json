@@ -1,6 +1,10 @@
 [
   { "name": "core (attach, arrows, dots, keyboard, announcements)", "entry": "dist/index.js", "max": 3600 },
-  { "name": "drag plugin, on top of the core (it imports only types and two small helpers)", "entry": "dist/drag.js", "max": 1000 },
+  {
+    "name": "drag plugin, on top of the core (it imports only types and two small helpers)",
+    "entry": "dist/drag.js",
+    "max": 1000
+  },
   { "name": "autoplay plugin, on top of the core", "entry": "dist/autoplay.js", "max": 850 },
   { "name": "stylesheet", "entry": "dist/carousel.css", "max": 1500 }
 ]

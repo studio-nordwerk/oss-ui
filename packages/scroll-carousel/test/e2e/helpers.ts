@@ -1,7 +1,11 @@
 import { expect, type Page } from '@playwright/test';
 
 export const ready = (page: Page) =>
-  page.waitForFunction(() => document.querySelectorAll('.sc[data-sc-ready]').length == document.querySelectorAll('[data-case], [data-wire]').length);
+  page.waitForFunction(
+    () =>
+      document.querySelectorAll('.sc[data-sc-ready]').length ==
+      document.querySelectorAll('[data-case], [data-wire]').length,
+  );
 
 /** The carousel state of an example, plus its physical scroll position. */
 export const state = (page: Page, name: string) =>
@@ -30,7 +34,10 @@ export async function settled(page: Page, name: string) {
 }
 
 export const changes = (page: Page, name: string) =>
-  page.evaluate((name) => Number(document.querySelector(`[data-readout="${name}"]`)!.textContent!.match(/change events (\d+)/)![1]), name);
+  page.evaluate(
+    (name) => Number(document.querySelector(`[data-readout="${name}"]`)!.textContent!.match(/change events (\d+)/)![1]),
+    name,
+  );
 
 export const call = (page: Page, name: string, method: string, ...args: unknown[]) =>
   page.evaluate(

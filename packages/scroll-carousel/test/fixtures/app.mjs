@@ -19,7 +19,15 @@ export const App = ({ h, Carousel }) =>
         labels: { prev: 'Previous items', next: 'Next items' },
       },
       items.map((item) =>
-        h('div', { key: item.id, className: 'item', style: { height: '160px', background: '#e8ebe8', display: 'grid', placeItems: 'center' } }, item.name),
+        h(
+          'div',
+          {
+            key: item.id,
+            className: 'item',
+            style: { height: '160px', background: '#e8ebe8', display: 'grid', placeItems: 'center' },
+          },
+          item.name,
+        ),
       ),
     ),
     h('p', null, 'Below the carousel.'),

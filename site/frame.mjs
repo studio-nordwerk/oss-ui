@@ -14,14 +14,27 @@ const here = import.meta.dirname;
 const root = join(here, '..');
 
 export const esc = (value) =>
-  String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+  String(value).replace(
+    /[&<>"']/g,
+    (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char],
+  );
 
 /**
  * A complete page. `styles` load before the frame's stylesheet (the package's own stylesheet, so
  * the page can override it), `head` after it (the page stylesheet and scripts). `before` goes
  * ahead of the sheet, e.g. an SVG sprite; `body` is the page content inside it.
  */
-export const page = ({ title, description, base, canonical, redirect, styles = [], head = '', before = '', body }) => `<!doctype html>
+export const page = ({
+  title,
+  description,
+  base,
+  canonical,
+  redirect,
+  styles = [],
+  head = '',
+  before = '',
+  body,
+}) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">

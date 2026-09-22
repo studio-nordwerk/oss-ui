@@ -16,7 +16,8 @@ export const drag =
   ({ threshold = 6 }: DragOptions = {}): Plugin =>
   ({ root, track, listen, layout, toPage, scrollTo, grab, hold, on }) => {
     let suppressUntil = 0;
-    let press: { id: number; x: number; left: number; from: number; moved: boolean; trail: [number, number][] } | null = null;
+    let press: { id: number; x: number; left: number; from: number; moved: boolean; trail: [number, number][] } | null =
+      null;
     const readPos = () => Math.abs(track.scrollLeft);
 
     root.setAttribute('data-sc-drag', '');
@@ -36,8 +37,16 @@ export const drag =
 
     listen(track, 'pointerdown', (event: PointerEvent) => {
       if (event.pointerType != 'mouse' || event.button || !layout().state.overflow) return;
-      if ((event.target as Element).closest('input, textarea, select, label, [contenteditable], [data-sc-no-drag]')) return;
-      press = { id: event.pointerId, x: event.clientX, left: track.scrollLeft, from: readPos(), moved: false, trail: [[event.timeStamp, event.clientX]] };
+      if ((event.target as Element).closest('input, textarea, select, label, [contenteditable], [data-sc-no-drag]'))
+        return;
+      press = {
+        id: event.pointerId,
+        x: event.clientX,
+        left: track.scrollLeft,
+        from: readPos(),
+        moved: false,
+        trail: [[event.timeStamp, event.clientX]],
+      };
     });
 
     listen(document, 'pointermove', (event: PointerEvent) => {

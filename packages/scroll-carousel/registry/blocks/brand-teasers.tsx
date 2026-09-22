@@ -12,12 +12,36 @@ import {
 } from "@/components/ui/scroll-carousel"
 
 const teasers = [
-  { brand: "Harlow & Pine", title: "The autumn kettle collection", text: "Four finishes, one pour: slow, steady and exact." },
-  { brand: "Ostmark", title: "Grinders built to be repaired", text: "Every part replaceable, for decades of mornings." },
-  { brand: "Fjordware", title: "Glazed by hand in small batches", text: "No two mugs alike, all of them dishwasher safe." },
-  { brand: "Kiln Coffee Co.", title: "Single origins, roasted this week", text: "Traceable farms, fair prices, shipped within two days." },
-  { brand: "Tarekit", title: "Precision for the morning ritual", text: "Scales and timers that fit in any kitchen." },
-  { brand: "Arken", title: "Linen for the kitchen table", text: "Napkins and cloths woven in Portugal." },
+  {
+    brand: "Harlow & Pine",
+    title: "The autumn kettle collection",
+    text: "Four finishes, one pour: slow, steady and exact.",
+  },
+  {
+    brand: "Ostmark",
+    title: "Grinders built to be repaired",
+    text: "Every part replaceable, for decades of mornings.",
+  },
+  {
+    brand: "Fjordware",
+    title: "Glazed by hand in small batches",
+    text: "No two mugs alike, all of them dishwasher safe.",
+  },
+  {
+    brand: "Kiln Coffee Co.",
+    title: "Single origins, roasted this week",
+    text: "Traceable farms, fair prices, shipped within two days.",
+  },
+  {
+    brand: "Tarekit",
+    title: "Precision for the morning ritual",
+    text: "Scales and timers that fit in any kitchen.",
+  },
+  {
+    brand: "Arken",
+    title: "Linen for the kitchen table",
+    text: "Napkins and cloths woven in Portugal.",
+  },
 ]
 
 const plugins = [drag()]
@@ -35,7 +59,9 @@ export function BrandTeasers() {
                 {teaser.brand}
               </div>
               <a href="#" className="flex flex-col gap-2 bg-foreground p-4 pt-9 text-background">
-                <span className="text-xl font-semibold uppercase leading-tight tracking-tight">{teaser.title}</span>
+                <span className="text-xl font-semibold uppercase leading-tight tracking-tight">
+                  {teaser.title}
+                </span>
                 <span className="text-sm opacity-80">{teaser.text}</span>
               </a>
             </ScrollCarouselItem>

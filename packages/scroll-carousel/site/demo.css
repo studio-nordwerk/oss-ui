@@ -665,13 +665,37 @@
   --fade-start: 0px;
   --fade-end: 0px;
   padding-block: 0.25rem;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
-  mask-image: linear-gradient(to right, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--fade-start),
+    #000 calc(100% - var(--fade-end)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--fade-start),
+    #000 calc(100% - var(--fade-end)),
+    transparent
+  );
 }
 
 .chips .sc-track:dir(rtl) {
-  -webkit-mask-image: linear-gradient(to left, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
-  mask-image: linear-gradient(to left, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
+  -webkit-mask-image: linear-gradient(
+    to left,
+    transparent,
+    #000 var(--fade-start),
+    #000 calc(100% - var(--fade-end)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to left,
+    transparent,
+    #000 var(--fade-start),
+    #000 calc(100% - var(--fade-end)),
+    transparent
+  );
 }
 
 .chips[data-sc-overflow]:not([data-sc-start]) .sc-track {
@@ -891,8 +915,18 @@
   max-width: 100%;
   border: 1.5px solid var(--wf-line);
   background:
-    linear-gradient(to top right, transparent calc(50% - 0.7px), var(--wf-line) calc(50% - 0.7px) calc(50% + 0.7px), transparent calc(50% + 0.7px)),
-    linear-gradient(to bottom right, transparent calc(50% - 0.7px), var(--wf-line) calc(50% - 0.7px) calc(50% + 0.7px), transparent calc(50% + 0.7px)),
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.7px),
+      var(--wf-line) calc(50% - 0.7px) calc(50% + 0.7px),
+      transparent calc(50% + 0.7px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 0.7px),
+      var(--wf-line) calc(50% - 0.7px) calc(50% + 0.7px),
+      transparent calc(50% + 0.7px)
+    ),
     var(--wf-fill);
 }
 
@@ -1210,7 +1244,12 @@
   padding: 0.05rem 0.3rem;
   border-radius: 4px;
   background: var(--sunken);
-  font: 0.78rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font:
+    0.78rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
 }
 
 /* --- Style presets: archetypes of storefront design, applied through the theme tokens ------ */

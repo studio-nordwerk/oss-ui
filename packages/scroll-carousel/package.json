@@ -2,29 +2,56 @@
   "name": "@nordwerk/scroll-carousel",
   "version": "0.1.4",
   "description": "A dependency-free carousel on native scrolling: CSS scroll snap first, arrows, dots, paging and an API as progressive enhancement.",
+  "keywords": [
+    "accessibility",
+    "astro",
+    "carousel",
+    "preact",
+    "progressive-enhancement",
+    "react",
+    "scroll-snap",
+    "slider"
+  ],
+  "homepage": "https://www.nordwerk.studio/oss/scroll-carousel",
+  "bugs": "https://github.com/studio-nordwerk/oss-ui/issues",
   "license": "MIT",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/studio-nordwerk/oss-ui.git",
     "directory": "packages/scroll-carousel"
   },
-  "homepage": "https://www.nordwerk.studio/oss/scroll-carousel",
-  "keywords": [
-    "carousel",
-    "slider",
-    "scroll-snap",
-    "progressive-enhancement",
-    "accessibility",
-    "react",
-    "preact",
-    "astro"
+  "files": [
+    "dist",
+    "src/astro",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "docs/migration.md"
   ],
+  "type": "module",
   "sideEffects": [
     "*.css"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "drag": [
+        "./dist/drag.d.ts"
+      ],
+      "autoplay": [
+        "./dist/autoplay.d.ts"
+      ],
+      "markup": [
+        "./dist/markup.d.ts"
+      ],
+      "react": [
+        "./dist/react.d.ts"
+      ],
+      "preact": [
+        "./dist/preact.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -55,27 +82,24 @@
     "./carousel.layer.css": "./dist/carousel.layer.css",
     "./package.json": "./package.json"
   },
-  "typesVersions": {
-    "*": {
-      "drag": ["./dist/drag.d.ts"],
-      "autoplay": ["./dist/autoplay.d.ts"],
-      "markup": ["./dist/markup.d.ts"],
-      "react": ["./dist/react.d.ts"],
-      "preact": ["./dist/preact.d.ts"]
-    }
-  },
-  "files": [
-    "dist",
-    "src/astro",
-    "AGENTS.md",
-    "CHANGELOG.md",
-    "docs/migration.md"
-  ],
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "prepublishOnly": "node ../../scripts/build.mjs scroll-carousel"
+    "build": "vp pack",
+    "prepublishOnly": "vp pack"
+  },
+  "devDependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.3.3",
+    "class-variance-authority": "^0.7.1",
+    "cn": "^0.3.2",
+    "preact": "^10.29.8",
+    "preact-render-to-string": "6.7.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "peerDependencies": {
     "preact": ">=10",
@@ -88,18 +112,5 @@
     "react": {
       "optional": true
     }
-  },
-  "bugs": "https://github.com/studio-nordwerk/oss-ui/issues",
-  "devDependencies": {
-    "@base-ui/react": "^1.8.0",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "astro": "^7.3.3",
-    "class-variance-authority": "^0.7.1",
-    "cn": "^0.3.2",
-    "preact": "^10.29.8",
-    "preact-render-to-string": "6.7.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
   }
 }

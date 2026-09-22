@@ -7,9 +7,26 @@ import { ready } from './helpers.ts';
 // per platform (test/e2e/__screenshots__/<platform>). Where none exist, the tests are skipped;
 // create them with: UPDATE_VISUAL=1 pnpm test:e2e --project=chromium visual --update-snapshots
 test.skip(({ browserName }) => browserName != 'chromium', 'baselines are kept for Chromium only');
-test.skip(!existsSync(join(import.meta.dirname, '__screenshots__', process.platform)) && !process.env.UPDATE_VISUAL, `no baselines for ${process.platform}`);
+test.skip(
+  !existsSync(join(import.meta.dirname, '__screenshots__', process.platform)) && !process.env.UPDATE_VISUAL,
+  `no baselines for ${process.platform}`,
+);
 
-const names = ['hero', 'bestsellers', 'phone', 'guides', 'chips', 'dates', 'few', 'fewClamped', 'teasers', 'products', 'stage', 'gallery', 'belt'];
+const names = [
+  'hero',
+  'bestsellers',
+  'phone',
+  'guides',
+  'chips',
+  'dates',
+  'few',
+  'fewClamped',
+  'teasers',
+  'products',
+  'stage',
+  'gallery',
+  'belt',
+];
 
 for (const width of [390, 768, 1280]) {
   test(`every example at ${width} px`, async ({ page }) => {

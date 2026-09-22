@@ -29,7 +29,8 @@ const stage = (i) => `<div class="wf-stage" role="group" aria-roledescription="s
 
 const photo = (i) => `<li class="wf-photo">${img('4 / 5')}<span class="visually-hidden">Image ${i + 1}</span></li>`;
 
-const logo = (width) => `<li class="wf-brand" style="--w:${width}rem"><span class="wf-img" style="aspect-ratio:auto;height:2.5rem"></span></li>`;
+const logo = (width) =>
+  `<li class="wf-brand" style="--w:${width}rem"><span class="wf-img" style="aspect-ratio:auto;height:2.5rem"></span></li>`;
 
 const table = (rows) => `<table class="wf-table">
   <thead><tr><th scope="col">Need</th><th scope="col">Typical library setup</th><th scope="col">Here</th></tr></thead>
@@ -50,11 +51,19 @@ export const patterns = [
   ${status}
 </div>`,
     rows: [
-      ['Three per view, 1.2 on phones', `${code('slidesPerView')} and ${code('breakpoints')}, applied by script after load`, `${code('--sc-per-view')} in a container query, final in the server markup`],
+      [
+        'Three per view, 1.2 on phones',
+        `${code('slidesPerView')} and ${code('breakpoints')}, applied by script after load`,
+        `${code('--sc-per-view')} in a container query, final in the server markup`,
+      ],
       ['2 px between teasers', code('spaceBetween: 2'), code('--sc-gap: 2px')],
       ['Page by three', code('slidesPerGroup: 3'), code('--sc-group: 3')],
       ['Same height', 'wrapper CSS on top of the library', 'default: slides stretch'],
-      ['Square dots over the panels', `${code('pagination')} with custom bullets`, `${code('[data-sc-dots]')} placed by the host; ${code('--sc-dot-radius: 0')}`],
+      [
+        'Square dots over the panels',
+        `${code('pagination')} with custom bullets`,
+        `${code('[data-sc-dots]')} placed by the host; ${code('--sc-dot-radius: 0')}`,
+      ],
     ],
   },
   {
@@ -68,8 +77,16 @@ export const patterns = [
   ${status}
 </div>`,
     rows: [
-      ['Arrows at the edges', `${code('navigation')} with the shop's own arrow components`, `any element with ${code('data-sc-prev')} / ${code('data-sc-next')}, or the defaults with ${code('--sc-control-radius: 0')}`],
-      ['Next shows the next full view', `${code('slidesPerGroup')} equal to ${code('slidesPerView')}`, code('--sc-group: page')],
+      [
+        'Arrows at the edges',
+        `${code('navigation')} with the shop's own arrow components`,
+        `any element with ${code('data-sc-prev')} / ${code('data-sc-next')}, or the defaults with ${code('--sc-control-radius: 0')}`,
+      ],
+      [
+        'Next shows the next full view',
+        `${code('slidesPerGroup')} equal to ${code('slidesPerView')}`,
+        code('--sc-group: page'),
+      ],
       ['No arrows when nothing scrolls', code('watchOverflow'), `automatic: ${code('[data-sc-overflow]')}`],
       ['Dragging with a mouse', `${code('simulateTouch')}, on by default`, `${code('drag()')} plugin, opt-in`],
     ],
@@ -86,9 +103,17 @@ export const patterns = [
   ${status}
 </section>`,
     rows: [
-      ['Endless', `${code('loop: true')}: cloned slides, a teleported position and clones hidden from assistive technology`, `${code('rewind: true')}: the first banner fades in again`],
+      [
+        'Endless',
+        `${code('loop: true')}: cloned slides, a teleported position and clones hidden from assistive technology`,
+        `${code('rewind: true')}: the first banner fades in again`,
+      ],
       ['Every 5 seconds', code('autoplay: { delay: 5000 }'), `${code('autoplay({ delay: 5000 })')} plugin`],
-      ['A way to stop it (WCAG 2.2.2)', 'not built in', `${code('[data-sc-play]')} button; focus entering the stage stops it`],
+      [
+        'A way to stop it (WCAG 2.2.2)',
+        'not built in',
+        `${code('[data-sc-play]')} button; focus entering the stage stops it`,
+      ],
       ['Pause on hover', code('pauseOnMouseEnter'), 'built in, also while off-screen or in a hidden tab'],
     ],
   },
@@ -104,9 +129,21 @@ export const patterns = [
   ${status}
 </div>`,
     rows: [
-      ['Centred with neighbours showing', `${code('centeredSlides: true')}, ${code('slidesPerView: 1.4')}`, `${code('--sc-align: center')}, ${code('--sc-centered: 1')}, ${code('--sc-per-view: 1.4')}`],
-      ['Open on the third image', code('initialSlide: 2'), `${code('data-sc-initial')} on the slide; the inline snippet avoids a jump`],
-      ['Know the current image', `${code('realIndex')} in ${code('slideChange')}`, `${code('carousel.index')} in the ${code('sc:change')} event, once per settled move`],
+      [
+        'Centred with neighbours showing',
+        `${code('centeredSlides: true')}, ${code('slidesPerView: 1.4')}`,
+        `${code('--sc-align: center')}, ${code('--sc-centered: 1')}, ${code('--sc-per-view: 1.4')}`,
+      ],
+      [
+        'Open on the third image',
+        code('initialSlide: 2'),
+        `${code('data-sc-initial')} on the slide; the inline snippet avoids a jump`,
+      ],
+      [
+        'Know the current image',
+        `${code('realIndex')} in ${code('slideChange')}`,
+        `${code('carousel.index')} in the ${code('sc:change')} event, once per settled move`,
+      ],
     ],
   },
   {
@@ -122,8 +159,16 @@ export const patterns = [
     rows: [
       ['Content widths', code("slidesPerView: 'auto'"), code('--sc-slide-size: auto')],
       ['Free scrolling', code('freeMode: true'), code('--sc-snap: none')],
-      ['Free, but coming to rest on an item', code('freeMode: { sticky: true }'), `${code('--sc-snap: mandatory')}: momentum still carries across items`],
-      ['No controls on narrow rows', 'navigation switched off per breakpoint', `${code('--sc-controls: none')} in a container query`],
+      [
+        'Free, but coming to rest on an item',
+        code('freeMode: { sticky: true }'),
+        `${code('--sc-snap: mandatory')}: momentum still carries across items`,
+      ],
+      [
+        'No controls on narrow rows',
+        'navigation switched off per breakpoint',
+        `${code('--sc-controls: none')} in a container query`,
+      ],
     ],
   },
 ];

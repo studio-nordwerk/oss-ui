@@ -34,8 +34,7 @@
   --_n: min(var(--sc-per-view, 1), var(--sc-count, 1000));
   --_gap: var(--sc-gap, 1rem);
   --_size: calc(
-    (100cqi - var(--sc-offset-before, 0px) - var(--sc-offset-after, 0px) - (var(--_n) - 1) * var(--_gap)) /
-      var(--_n)
+    (100cqi - var(--sc-offset-before, 0px) - var(--sc-offset-after, 0px) - (var(--_n) - 1) * var(--_gap)) / var(--_n)
   );
   --_edge: calc((100cqi - var(--_size)) / 2 * var(--sc-centered, 0));
   /* Also the containing block for anything absolutely positioned inside the slides, which the
@@ -194,7 +193,9 @@
   border-radius: var(--sc-dot-radius, 1rem);
   background: currentColor;
   opacity: var(--sc-dot-idle, 0.35);
-  transition: inline-size 0.2s ease, opacity 0.2s ease;
+  transition:
+    inline-size 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .sc-dot[aria-current]::before {

@@ -14,7 +14,12 @@ import {
 
 const products = [
   { brand: "Harlow & Pine", name: "Gooseneck kettle, 0.9 l", price: "€64.00", badge: "Bestseller" },
-  { brand: "Ostmark", name: "Hand grinder with conical steel burrs", price: "€89.00", badge: "−18%" },
+  {
+    brand: "Ostmark",
+    name: "Hand grinder with conical steel burrs",
+    price: "€89.00",
+    badge: "−18%",
+  },
   { brand: "Fjordware", name: "Stoneware mug, 350 ml", price: "€18.50", badge: "New" },
   { brand: "Kiln Coffee Co.", name: "Espresso roast, whole beans, 1 kg", price: "€27.90" },
   { brand: "Ostmark", name: "Paper filters, size 02, 100 pieces", price: "€5.90" },
@@ -41,9 +46,14 @@ export function ProductRow() {
         <ScrollCarouselContent className="[--sc-gap:1rem] [--sc-group:page] [--sc-per-view:1.4] @md:[--sc-per-view:3] @4xl:[--sc-per-view:4]">
           {products.map((product) => (
             <ScrollCarouselItem key={product.name}>
-              <a href="#" className="flex h-full flex-col gap-1.5 rounded-xl p-2 transition-colors hover:bg-muted">
+              <a
+                href="#"
+                className="flex h-full flex-col gap-1.5 rounded-xl p-2 transition-colors hover:bg-muted"
+              >
                 <div className="relative mb-1.5 aspect-square rounded-lg bg-muted">
-                  {product.badge && <Badge className="absolute start-2 top-2">{product.badge}</Badge>}
+                  {product.badge && (
+                    <Badge className="absolute start-2 top-2">{product.badge}</Badge>
+                  )}
                 </div>
                 <p className="text-sm text-muted-foreground">{product.brand}</p>
                 <p className="line-clamp-2 font-medium">{product.name}</p>

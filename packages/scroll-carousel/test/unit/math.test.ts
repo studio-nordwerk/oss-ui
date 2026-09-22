@@ -1,9 +1,18 @@
-import { test } from 'node:test';
+import { test } from 'vite-plus/test';
 import assert from 'node:assert/strict';
 import { buildPages, closest, pageOf, pageStarts, snapPositions, visibleRange, type Geometry } from '../../src/math.ts';
 
 /** A row of equal slides: `count` slides of `size` px with `gap` between, in a `port` px view. */
-function row({ count, size, gap = 0, port, before = 0, after = 0, align = 'start' as Geometry['align'], centeredEdge = 0 }: {
+function row({
+  count,
+  size,
+  gap = 0,
+  port,
+  before = 0,
+  after = 0,
+  align = 'start' as Geometry['align'],
+  centeredEdge = 0,
+}: {
   count: number;
   size: number;
   gap?: number;
@@ -15,7 +24,15 @@ function row({ count, size, gap = 0, port, before = 0, after = 0, align = 'start
 }): Geometry {
   const starts = Array.from({ length: count }, (_, i) => before + centeredEdge + i * (size + gap));
   const contentEnd = starts[count - 1] + size + after + centeredEdge;
-  return { starts, sizes: Array(count).fill(size), port, padStart: before, padEnd: after, max: Math.max(0, contentEnd - port), align };
+  return {
+    starts,
+    sizes: Array(count).fill(size),
+    port,
+    padStart: before,
+    padEnd: after,
+    max: Math.max(0, contentEnd - port),
+    align,
+  };
 }
 
 /** A row of slides with the given widths. */
@@ -30,7 +47,8 @@ function widths(list: number[], { gap = 0, port }: { gap?: number; port: number 
   return { starts, sizes: list, port, padStart: 0, padEnd: 0, max: Math.max(0, end - port), align: 'start' };
 }
 
-const pagesOf = (geo: Geometry, group: number | 'page', anchor = 0) => buildPages(geo, snapPositions(geo), group, anchor);
+const pagesOf = (geo: Geometry, group: number | 'page', anchor = 0) =>
+  buildPages(geo, snapPositions(geo), group, anchor);
 
 test('closest picks the nearest value and the earliest on a tie', () => {
   assert.equal(closest([0, 100, 200], 140), 1);
@@ -87,20 +105,32 @@ test('group of 1: one page per distinct position', () => {
 test('group of 4: the last page is shorter than a full group', () => {
   const geo = row({ count: 10, size: 100, gap: 10, port: 430 });
   const pages = pagesOf(geo, 4);
-  assert.deepEqual(pages.map((page) => page.first), [0, 4, 6]);
-  assert.deepEqual(pages.map((page) => page.pos), [0, 440, 660]);
+  assert.deepEqual(
+    pages.map((page) => page.first),
+    [0, 4, 6],
+  );
+  assert.deepEqual(
+    pages.map((page) => page.pos),
+    [0, 440, 660],
+  );
   // Matches the common formula ceil((n - perView) / group) + 1.
   assert.equal(pages.length, Math.ceil((10 - 4) / 4) + 1);
 });
 
 test('group exactly filling the row', () => {
   const geo = row({ count: 12, size: 100, gap: 10, port: 430 });
-  assert.deepEqual(pagesOf(geo, 4).map((page) => page.first), [0, 4, 8]);
+  assert.deepEqual(
+    pagesOf(geo, 4).map((page) => page.first),
+    [0, 4, 8],
+  );
 });
 
 test('group larger than the slide count gives two pages', () => {
   const geo = row({ count: 6, size: 100, gap: 10, port: 430 });
-  assert.deepEqual(pagesOf(geo, 8).map((page) => page.first), [0, 2]);
+  assert.deepEqual(
+    pagesOf(geo, 8).map((page) => page.first),
+    [0, 2],
+  );
 });
 
 test('no overflow: a single page', () => {
@@ -129,7 +159,10 @@ test('page groups with auto widths take as many whole slides as fit', () => {
   const snaps = snapPositions(geo);
   geo.starts.forEach((start, i) => {
     const page = pages[pageOf(pages, i)];
-    assert.ok(start >= page.pos - 2 && start + geo.sizes[i] <= page.pos + geo.port + 2, `slide ${i} visible on its page`);
+    assert.ok(
+      start >= page.pos - 2 && start + geo.sizes[i] <= page.pos + geo.port + 2,
+      `slide ${i} visible on its page`,
+    );
     assert.ok(snaps[i] >= 0);
   });
 });
@@ -140,14 +173,20 @@ test('pages are counted from the anchor in both directions', () => {
   const firsts = pageStarts(geo, snapPositions(geo), 7, 20);
   assert.deepEqual(firsts, [0, 6, 13, 20, 27, 34]);
   const pages = pagesOf(geo, 'page', 20);
-  assert.deepEqual(pages.map((page) => page.first), [0, 6, 13, 20, 27, 34]);
+  assert.deepEqual(
+    pages.map((page) => page.first),
+    [0, 6, 13, 20, 27, 34],
+  );
   assert.equal(pageOf(pages, 20), 3);
 });
 
 test('an anchor near the end merges into the last page', () => {
   const geo = row({ count: 10, size: 100, gap: 10, port: 430 });
   const pages = pagesOf(geo, 4, 8);
-  assert.deepEqual(pages.map((page) => page.first), [0, 4, 6]);
+  assert.deepEqual(
+    pages.map((page) => page.first),
+    [0, 4, 6],
+  );
   assert.equal(pageOf(pages, 8), 2);
 });
 
