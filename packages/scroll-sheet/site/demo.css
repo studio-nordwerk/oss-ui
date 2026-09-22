@@ -127,9 +127,11 @@
   gap: 12px;
 }
 
+/* The storefront around the buttons is drawn in flat blocks, as on the scroll-carousel page:
+   only the buttons that open a sheet stand out. */
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, calc(50% - 7px)), 1fr));
   gap: 14px;
   margin: 0;
   padding: 0;
@@ -145,9 +147,9 @@
 }
 
 .tile-img {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1;
   border-radius: 10px;
-  background: linear-gradient(160deg, hsl(var(--hue) 40% 88%), hsl(calc(var(--hue) + 30) 35% 76%));
+  background: var(--panel-2);
 }
 
 .tile-name,
@@ -169,8 +171,8 @@
   height: 180px;
   border-radius: 16px;
   background:
-    repeating-linear-gradient(0deg, transparent 0 38px, rgb(255 255 255 / 0.5) 38px 40px),
-    repeating-linear-gradient(90deg, transparent 0 58px, rgb(255 255 255 / 0.5) 58px 60px), #dfe7dc;
+    repeating-linear-gradient(0deg, transparent 0 38px, rgb(255 255 255 / 0.6) 38px 40px),
+    repeating-linear-gradient(90deg, transparent 0 58px, rgb(255 255 255 / 0.6) 58px 60px), var(--panel-2);
 }
 
 .pin {
@@ -199,7 +201,7 @@
   aspect-ratio: 1;
   border: 0;
   border-radius: 12px;
-  background: linear-gradient(135deg, hsl(var(--hue) 45% 70%), hsl(calc(var(--hue) + 25) 40% 45%));
+  background: hsl(var(--hue) 18% 80%);
   cursor: pointer;
 }
 
@@ -441,5 +443,5 @@
 
 .swatch {
   border-radius: 12px;
-  background: linear-gradient(135deg, hsl(var(--hue) 45% 70%), hsl(calc(var(--hue) + 25) 40% 40%));
+  background: hsl(var(--hue) 18% 62%);
 }

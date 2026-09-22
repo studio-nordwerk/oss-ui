@@ -1,5 +1,6 @@
 // The scroll-carousel documentation page: a live example per configuration, the Tailwind and
-// shadcn previews, storefront patterns as wireframes, and the package itself from dist/.
+// shadcn previews, and the package itself from dist/. The storefront patterns as wireframes and
+// the Swiper comparison are a page of their own (swiper.mjs).
 // Called by scripts/site.mjs at the repository root after the build: pnpm site
 
 import { build } from 'esbuild';
@@ -23,7 +24,7 @@ import {
   sprite,
   status,
 } from './content.mjs';
-import { wireframeSection } from './wireframes.mjs';
+import { swiperBody, swiperTeaser } from './swiper.mjs';
 import * as tailwind from './tailwind-example.mjs';
 import { execFileSync } from 'node:child_process';
 import { copyFrame, page } from '../../../site/frame.mjs';
@@ -371,7 +372,7 @@ const shadcnUsage = `import {
 const shadcnSection = () => `<section class="case" id="shadcn" aria-labelledby="case-shadcn">
       <div class="case-head">
         <h2 id="case-shadcn">shadcn/ui: a component and five blocks</h2>
-        <p>The component has the structure of shadcn's Carousel, on native scrolling: <code>ScrollCarousel</code>, <code>ScrollCarouselContent</code>, <code>ScrollCarouselItem</code>, <code>ScrollCarouselPrevious</code> and <code>ScrollCarouselNext</code>, plus <code>ScrollCarouselDots</code>, <code>ScrollCarouselPlay</code> and <code>useScrollCarousel()</code>. It uses your theme and shadcn's Button, and installs straight from the GitHub repository. Below are the five blocks as <code>shadcn add</code> installs them, with shadcn's default theme; the storefront patterns further down are the same five as wireframes.</p>
+        <p>The component has the structure of shadcn's Carousel, on native scrolling: <code>ScrollCarousel</code>, <code>ScrollCarouselContent</code>, <code>ScrollCarouselItem</code>, <code>ScrollCarouselPrevious</code> and <code>ScrollCarouselNext</code>, plus <code>ScrollCarouselDots</code>, <code>ScrollCarouselPlay</code> and <code>useScrollCarousel()</code>. It uses your theme and shadcn's Button, and installs straight from the GitHub repository. Below are the five blocks as <code>shadcn add</code> installs them, with shadcn's default theme; the <a href="swiper">Swiper comparison</a> shows the same five as wireframes.</p>
       </div>
       <iframe class="tw-preview sh-preview" src="shadcn-preview.html" title="Live preview of the shadcn blocks" loading="lazy"></iframe>
       ${copyBlock('shadcn-add', 'Add the component', 'npx shadcn@latest add studio-nordwerk/oss-ui/scroll-carousel')}
@@ -399,6 +400,17 @@ const GITHUB = 'https://github.com/studio-nordwerk/oss-ui';
 const SOURCE = `${GITHUB}/tree/main/packages/scroll-carousel`;
 const FILES = `${GITHUB}/blob/main/packages/scroll-carousel`;
 const NPM = 'https://www.npmjs.com/package/@nordwerk/scroll-carousel';
+
+const closing = `<section class="closing" aria-labelledby="closing-title">
+    <h2 id="closing-title">scroll-carousel ${pkg.version}</h2>
+    <p>MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
+    <ul class="closing-links">
+      <li><a href="${SOURCE}">Source on GitHub</a></li>
+      <li><a href="${NPM}">Package on npm</a></li>
+      <li><a href="${FILES}/CHANGELOG.md">Changelog</a></li>
+      <li><a href="swiper">Coming from Swiper</a></li>
+    </ul>
+  </section>`;
 
 const body = `<section class="intro" data-hero aria-labelledby="page-title">
     <span class="nw-badge">Open source, MIT</span>
@@ -460,19 +472,10 @@ const body = `<section class="intro" data-hero aria-labelledby="page-title">
     ${cases.map(caseSection).join('\n    ')}
     ${tailwindSection()}
     ${shadcnSection()}
-    ${wireframeSection()}
+    ${swiperTeaser()}
   </main>
 
-  <section class="closing" aria-labelledby="closing-title">
-    <h2 id="closing-title">scroll-carousel ${pkg.version}</h2>
-    <p>MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
-    <ul class="closing-links">
-      <li><a href="${SOURCE}">Source on GitHub</a></li>
-      <li><a href="${NPM}">Package on npm</a></li>
-      <li><a href="${FILES}/CHANGELOG.md">Changelog</a></li>
-      <li><a href="${FILES}/docs/migration.md">Replacing a library carousel</a></li>
-    </ul>
-  </section>`;
+  ${closing}`;
 
 /** Writes the page into `out`; `base` is its <base href>, `canonical` its address on nordwerk.studio. */
 export default async function generate({ out, base, canonical, redirect }) {
@@ -496,6 +499,27 @@ export default async function generate({ out, base, canonical, redirect }) {
       body,
     }),
   );
+  writeFileSync(
+    join(out, 'swiper.html'),
+    page({
+      title: 'Coming from Swiper · scroll-carousel',
+      description:
+        'Five storefront carousels as wireframes, each next to its Swiper options, and every Swiper option and API call next to what does the same in scroll-carousel.',
+      base,
+      canonical: `${canonical}/swiper`,
+      redirect,
+      styles: ['lib/carousel.css'],
+      head: '<link rel="stylesheet" href="demo.css">\n<script type="module" src="swiper.js"></script>',
+      body: swiperBody({
+        root,
+        closing: closing.replace(
+          '<a href="swiper">Coming from Swiper</a>',
+          '<a href="../scroll-carousel">Documentation</a>',
+        ),
+      }),
+    }),
+  );
+  cpSync(join(here, 'swiper.js'), join(out, 'swiper.js'));
   // The shadcn blocks as a live preview: the registry files with shadcn's own Button, Badge and
   // theme (site/shadcn-preview), bundled by esbuild and compiled by Tailwind.
   const preview = join(here, 'shadcn-preview');

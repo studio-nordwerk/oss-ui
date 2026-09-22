@@ -92,7 +92,7 @@ const cases = [
   {
     id: 'sizes',
     title: 'Size picker: a bottom sheet with a snap point',
-    text: 'Opens at half the screen, drag it up to the full height or down to close it; the button stays at the bottom edge at every height. A tap on the dimmed area, Escape or the close button close it, the page behind keeps its place, and focus goes back to the button you pressed. Below its full height a drag on the list moves the sheet; at the full height the list scrolls, and at its top the next drag moves the sheet down. With the keyboard plugin the sheet stays above the on-screen keyboard when you type an engraving. The size guide opens a second sheet on top.',
+    text: 'Opens at half the screen; drag it up to the full height or down to close it, and the button stays at the bottom edge. Below the full height a drag on the list moves the sheet, at the full height the list scrolls. The page behind keeps its place, focus goes back to the button you pressed, and with the keyboard plugin the sheet stays above the on-screen keyboard while you type an engraving. The size guide opens a second sheet on top.',
     body: `<ul class="tiles">
 ${[0, 1, 2, 3].map(tile).join('\n')}
         </ul>
@@ -364,14 +364,14 @@ const NPM = 'https://www.npmjs.com/package/@nordwerk/scroll-sheet';
 const body = `<section class="intro" data-hero aria-labelledby="page-title">
     <span class="nw-badge">Open source, MIT</span>
     <h1 id="page-title">scroll-sheet</h1>
-    <p class="lede">Bottom sheets, side drawers and dialogs on a native modal dialog. The sheet position is plain scrolling with CSS scroll snap, so dragging, momentum and snap points come from the browser, and buttons open and close it before any script runs. A small script adds closing by dragging away, a tap on the dimmed area, snap points on open and focus return; the back button and the iOS keyboard are opt-in. No runtime dependencies.</p>
+    <p class="lede">Bottom sheets, side drawers and dialogs on a native modal dialog. Dragging, momentum and snap points are plain CSS scroll snap, and buttons open and close a sheet before any script runs; a small script adds the rest. No runtime dependencies.</p>
     <div class="actions">
       <a class="nw-btn" href="${SOURCE}#readme">Read the documentation</a>
       <a class="nw-btn nw-btn-line" href="${FILES}/AGENTS.md">Guide for coding agents</a>
     </div>
     <p class="install"><code>pnpm add @nordwerk/scroll-sheet</code></p>
     <p class="sizes">Core <b>${size.core}</b>, history <b>+${size.history}</b>, keyboard <b>+${size.keyboard}</b>, stylesheet <b>${size.css}</b>, gzip and minified. React, Preact and Astro adapters included.</p>
-    <p class="note">Every example below is live; its readout shows the sheet's state, how it was closed, and that the page behind stayed where it was. Switch the script off in the bar to see what works before any JavaScript runs. All products, stores and names are made up.</p>
+    <p class="note">Every example below is live. Switch the script off in the bar to see what works before any JavaScript runs. All products, stores and names are made up.</p>
   </section>
 
   <div class="bench-bar">

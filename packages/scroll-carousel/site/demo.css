@@ -901,11 +901,13 @@
   color: var(--muted);
 }
 
+/* Flat blocks rather than crossed-out boxes: the layout reads at a glance and the live controls
+   (arrows, dots, the play button) are the only things that stand out. */
 .wf {
-  --wf-fill: color-mix(in srgb, var(--ink) 5%, var(--surface));
-  --wf-line: color-mix(in srgb, var(--ink) 30%, var(--surface));
-  --wf-bar: color-mix(in srgb, var(--ink) 15%, var(--surface));
-  --wf-dark: color-mix(in srgb, var(--ink) 88%, var(--surface));
+  --wf-fill: color-mix(in srgb, var(--ink) 9%, var(--surface));
+  --wf-line: color-mix(in srgb, var(--ink) 22%, var(--surface));
+  --wf-bar: color-mix(in srgb, var(--ink) 12%, var(--surface));
+  --wf-dark: color-mix(in srgb, var(--ink) 72%, var(--surface));
   font-size: 0.8rem;
 }
 
@@ -913,21 +915,7 @@
   display: block;
   width: 100%;
   max-width: 100%;
-  border: 1.5px solid var(--wf-line);
-  background:
-    linear-gradient(
-      to top right,
-      transparent calc(50% - 0.7px),
-      var(--wf-line) calc(50% - 0.7px) calc(50% + 0.7px),
-      transparent calc(50% + 0.7px)
-    ),
-    linear-gradient(
-      to bottom right,
-      transparent calc(50% - 0.7px),
-      var(--wf-line) calc(50% - 0.7px) calc(50% + 0.7px),
-      transparent calc(50% + 0.7px)
-    ),
-    var(--wf-fill);
+  background: var(--wf-fill);
 }
 
 .wf-line {
@@ -1110,7 +1098,6 @@
   width: min(40%, 22rem);
   margin-inline-start: 8%;
   padding: 1.25rem;
-  border: 1.5px solid var(--wf-line);
   background: var(--surface);
 }
 
@@ -1250,6 +1237,73 @@
     Menlo,
     Consolas,
     monospace;
+}
+
+/* --- Swiper page --------------------------------------------------------------------------- */
+
+/* Where the page goes: one chip per pattern and reference table, wrapping on narrow screens. */
+.toc ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 24px;
+  background: var(--sunken);
+  list-style: none;
+  font-size: 14px;
+}
+
+.toc a {
+  display: block;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  background: var(--ground);
+  color: var(--ink);
+}
+
+.pattern {
+  scroll-margin-top: 96px;
+}
+
+.reference .pattern > p,
+.steps {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+.steps {
+  display: grid;
+  gap: 6px;
+  padding-inline-start: 1.25em;
+}
+
+.steps code,
+.reference .pattern > p code {
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+  background: var(--sunken);
+  font: 0.85em var(--mono);
+}
+
+/* On the main page, in place of the wireframes: a pointer to the Swiper page. */
+.swiper-teaser {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+
+.swiper-teaser .case-head {
+  max-width: 56ch;
 }
 
 /* --- Style presets: archetypes of storefront design, applied through the theme tokens ------ */

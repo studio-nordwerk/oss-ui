@@ -25,6 +25,12 @@ createServer(async (request, response) => {
       .replace(/^\/(oss-ui|oss)(?=\/|$)/, '') || '/';
   let file = join(root, path);
   try {
+    // Like GitHub Pages: /name/swiper serves name/swiper.html.
+    if (!extname(file))
+      file = await stat(`${file}.html`).then(
+        () => `${file}.html`,
+        () => file,
+      );
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html');
     const body = await readFile(file);
     response.writeHead(200, {

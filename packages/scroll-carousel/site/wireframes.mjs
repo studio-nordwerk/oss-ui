@@ -175,8 +175,8 @@ export const patterns = [
 
 export const wireframeSection = () => `<section class="patterns" aria-labelledby="patterns-title">
   <div class="case-head">
-    <h2 id="patterns-title">Storefront patterns, as wireframes</h2>
-    <p>Five carousels as they appear on large shops, drawn as wireframes and built with this package. Each table puts the options a library usually takes next to what does the same here. Option names on the left are those of Swiper, the most common library.</p>
+    <h2 id="patterns-title">Five storefront patterns</h2>
+    <p>Drawn as wireframes and built with this package. Each table puts the options Swiper usually takes next to what does the same here.</p>
   </div>
   ${patterns
     .map(

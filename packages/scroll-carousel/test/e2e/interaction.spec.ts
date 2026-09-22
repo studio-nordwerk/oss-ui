@@ -197,20 +197,26 @@ test.describe('autoplay', () => {
   });
 });
 
-test('without the script every row still scrolls and no control is shown', async ({ page }) => {
-  await page.goto('/scroll-carousel/?nojs');
-  await page.waitForTimeout(300);
-  const baseline = await page.evaluate(() => ({
-    controls: [...document.querySelectorAll('.sc-nav, .sc-play')].filter((b) => {
-      const style = getComputedStyle(b);
-      return style.display != 'none' && style.visibility != 'hidden';
-    }).length,
-    dots: [...document.querySelectorAll('.sc-dots')].filter((d) => getComputedStyle(d).visibility != 'hidden').length,
-    scrollable: [...document.querySelectorAll('[data-sc-track]')].filter((t) => t.scrollWidth > t.clientWidth).length,
-    tracks: document.querySelectorAll('[data-sc-track]').length,
-  }));
-  expect(baseline).toEqual({ controls: 0, dots: 0, scrollable: baseline.tracks - 2, tracks: 13 });
-});
+// Per page: its number of rows, and how many of them hold too few slides to scroll.
+for (const [url, tracks, still] of [
+  ['/scroll-carousel/', 8, 2],
+  ['/scroll-carousel/swiper', 5, 0],
+] as const) {
+  test(`without the script every row still scrolls and no control is shown: ${url}`, async ({ page }) => {
+    await page.goto(`${url}?nojs`);
+    await page.waitForTimeout(300);
+    const baseline = await page.evaluate(() => ({
+      controls: [...document.querySelectorAll('.sc-nav, .sc-play')].filter((b) => {
+        const style = getComputedStyle(b);
+        return style.display != 'none' && style.visibility != 'hidden';
+      }).length,
+      dots: [...document.querySelectorAll('.sc-dots')].filter((d) => getComputedStyle(d).visibility != 'hidden').length,
+      scrollable: [...document.querySelectorAll('[data-sc-track]')].filter((t) => t.scrollWidth > t.clientWidth).length,
+      tracks: document.querySelectorAll('[data-sc-track]').length,
+    }));
+    expect(baseline).toEqual({ controls: 0, dots: 0, scrollable: tracks - still, tracks });
+  });
+}
 
 test('attaching causes no layout shift, even when the script arrives late', async ({ page, browserName }) => {
   test.skip(browserName != 'chromium', 'layout shift is only reported by Chromium');

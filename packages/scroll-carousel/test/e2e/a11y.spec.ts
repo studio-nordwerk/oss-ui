@@ -10,12 +10,17 @@ const patterns = ['teasers', 'products', 'stage', 'gallery', 'belt'];
 
 for (const script of [true, false]) {
   test(`axe finds no violations in any example, script ${script ? 'attached' : 'detached'}`, async ({ page }) => {
-    await page.goto(script ? '/scroll-carousel/' : '/scroll-carousel/?nojs');
-    if (script) await ready(page);
-    for (const name of [...examples, ...patterns]) {
-      const selector = `[data-case="${name}"], [data-wire="${name}"]`;
-      const results = await new AxeBuilder({ page }).include(selector).analyze();
-      expect(results.violations.map((v) => `${name}: ${v.id} (${v.nodes.length})`)).toEqual([]);
+    for (const [url, names] of [
+      ['/scroll-carousel/', examples],
+      ['/scroll-carousel/swiper', patterns],
+    ] as const) {
+      await page.goto(script ? url : `${url}?nojs`);
+      if (script) await ready(page);
+      for (const name of names) {
+        const selector = `[data-case="${name}"], [data-wire="${name}"]`;
+        const results = await new AxeBuilder({ page }).include(selector).analyze();
+        expect(results.violations.map((v) => `${name}: ${v.id} (${v.nodes.length})`)).toEqual([]);
+      }
     }
   });
 }

@@ -34,19 +34,10 @@ const OPTIONS = {
       status: (first, last, count, slides) => `Showing ${dayName(slides[first - 1])} to ${dayName(slides[last - 1])}`,
     },
   }),
-  stage: () => ({ rewind: true, plugins: [autoplay({ delay: 5000 })] }),
-  gallery: () => ({
-    labels: {
-      page: (n, count) => `Image ${n} of ${count}`,
-      status: (first, last, count) => `Image ${first} of ${count}`,
-    },
-  }),
-  teasers: () => ({ group: 3 }),
-  products: () => ({ group: 'page' }),
 };
 
-const roots = [...document.querySelectorAll('[data-case], [data-wire]')];
-const nameOf = (root) => root.dataset.case || root.dataset.wire;
+const roots = [...document.querySelectorAll('[data-case]')];
+const nameOf = (root) => root.dataset.case;
 
 function mount(root) {
   getCarousel(root)?.destroy();
