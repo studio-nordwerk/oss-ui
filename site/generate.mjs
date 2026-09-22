@@ -290,12 +290,14 @@ const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="
 
 const GITHUB = 'https://github.com/studio-nordwerk/scroll-carousel';
 const NPM = 'https://www.npmjs.com/package/@nordwerk/scroll-carousel';
+// Absolute on purpose: relative links would resolve against <base href>.
+const STUDIO = 'https://www.nordwerk.studio';
 
 const body = `${sprite}
 <div class="sheet">
 <header class="band">
   <nav class="band-pill" aria-label="Site">
-    <a class="brand" href="https://www.nordwerk.studio"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk <small>Open Source</small></a>
+    <a class="brand" href="${STUDIO}"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk</a>
     <div class="band-links">
       <a class="optional" href="#hero">Examples</a>
       <a class="optional" href="#patterns-title">Patterns</a>
@@ -336,16 +338,37 @@ const body = `${sprite}
 </div>
 <footer class="foot">
   <div class="foot-inner">
-    <div>
-      <a class="brand" href="https://www.nordwerk.studio"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk</a>
-      <p>scroll-carousel ${pkg.version}, MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="${STUDIO}"><span class="brand-mark" aria-hidden="true"></span>Studio Nordwerk</a>
+        <p>scroll-carousel ${pkg.version}, MIT licence. Not included on purpose: vertical carousels, zoom, a draggable scrollbar, slide effects, virtual slides, synced thumbnails and a true infinite loop.</p>
+      </div>
+      <div>
+        <div class="foot-label">Package</div>
+        <ul>
+          <li><a href="${GITHUB}">Source on GitHub</a></li>
+          <li><a href="${NPM}">Package on npm</a></li>
+          <li><a href="${GITHUB}/blob/main/CHANGELOG.md">Changelog</a></li>
+          <li><a href="${GITHUB}/blob/main/docs/migration.md">Replacing a library carousel</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="foot-label">Studio</div>
+        <ul>
+          <li><a href="${STUDIO}/oss">Open Source</a></li>
+          <li><a href="${STUDIO}">nordwerk.studio</a></li>
+          <li><a href="mailto:hello@nordwerk.studio">hello@nordwerk.studio</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="foot-label">Legal</div>
+        <ul>
+          <li><a href="${STUDIO}/impressum" hreflang="de">Impressum</a></li>
+          <li><a href="${STUDIO}/datenschutz" hreflang="de">Datenschutz</a></li>
+        </ul>
+      </div>
     </div>
-    <ul>
-      <li><a href="${GITHUB}">Source on GitHub</a></li>
-      <li><a href="${NPM}">Package on npm</a></li>
-      <li><a href="${GITHUB}/blob/main/docs/migration.md">Replacing a library carousel</a></li>
-      <li><a href="${GITHUB}/blob/main/CHANGELOG.md">Changelog</a></li>
-    </ul>
+    <div class="foot-base">© ${new Date().getFullYear()} Studio Nordwerk UG (haftungsbeschränkt)</div>
   </div>
 </footer>
 <p class="toast" role="status"></p>`;

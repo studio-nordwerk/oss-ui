@@ -164,6 +164,16 @@ document.addEventListener('click', (event) => {
     document.querySelector('.pickup-choice').textContent = `Pick-up on ${day.getAttribute('aria-label').replace(', today', '')}`;
     return;
   }
+  // www.nordwerk.studio serves this page at /oss/scroll-carousel, without the slash that
+  // <base href> ends in, so "#hero" would point at another address and reload the page.
+  const anchor = event.target.closest('a[href^="#"]');
+  if (anchor && !event.defaultPrevented && !(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) {
+    event.preventDefault();
+    const hash = anchor.getAttribute('href');
+    if (location.hash === hash) document.getElementById(hash.slice(1))?.scrollIntoView();
+    else location.hash = hash;
+    return;
+  }
   // Storefront links go nowhere here; the toast proves a click arrived (or did not, after a drag).
   const link = event.target.closest('a[href^="/"]');
   if (link) {
@@ -233,6 +243,14 @@ document.querySelector('[data-snap-choice]').addEventListener('change', (event) 
   phone.querySelector('[data-sc-track]').style.setProperty('--sc-snap', event.target.value);
   getCarousel(phone)?.update();
 });
+
+// --- Header -----------------------------------------------------------------------------------
+
+// The sheen runs through the band once, on the first scroll (as on www.nordwerk.studio).
+const band = document.querySelector('.band');
+const syncBand = () => band.classList.toggle('is-scrolled', window.scrollY > 24);
+syncBand();
+window.addEventListener('scroll', syncBand, { passive: true });
 
 // --- Start ------------------------------------------------------------------------------------
 
