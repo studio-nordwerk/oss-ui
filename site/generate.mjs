@@ -10,6 +10,8 @@ import { gzipSync } from 'node:zlib';
 import { PRE_POSITION } from '../dist/markup.js';
 import { arrows, card, categories, days, esc, guide, guides, heroSlide, heroes, products, slug, sprite, status } from './content.mjs';
 import { wireframeSection } from './wireframes.mjs';
+import * as tailwind from './tailwind-example.mjs';
+import { execFileSync } from 'node:child_process';
 
 const here = dirname(fileURLToPath(import.meta.url));
 // The page links everything relative to <base href>. GitHub Pages serves it under
@@ -275,6 +277,22 @@ ${products.slice(0, 2).map(card).join('\n')}
   },
 ];
 
+const copyBlock = (id, label, text) => `<div class="copy-block">
+        <div class="copy-head"><span>${label}</span><button class="btn" type="button" data-copy="${id}">Copy</button></div>
+        <pre><code id="${id}">${esc(text)}</code></pre>
+      </div>`;
+
+const tailwindSection = () => `<section class="case" id="tailwind" aria-labelledby="case-tailwind">
+      <div class="case-head">
+        <h2 id="case-tailwind">Tailwind CSS, copy and paste</h2>
+        <p>The product row with Tailwind CSS v4: layout values as arbitrary properties, container-query variants for the breakpoints, and your own arrow buttons styled from the carousel's state, <code>group-data-[sc-overflow]/row:grid</code> and <code>aria-disabled:opacity-30</code>. Import the stylesheet into the components layer, so utilities can override it. The preview is this exact code, compiled by Tailwind.</p>
+      </div>
+      <iframe class="tw-preview" src="tailwind-example.html" title="Live preview of the Tailwind example" loading="lazy"></iframe>
+      ${copyBlock('tw-css', 'CSS', tailwind.css)}
+      ${copyBlock('tw-html', 'HTML', tailwind.markup)}
+      ${copyBlock('tw-js', 'JavaScript', tailwind.script)}
+    </section>`;
+
 const caseSection = (c) => `<section class="case" id="${c.id}" aria-labelledby="case-${c.id}">
       <div class="case-head">
         <h2 id="case-${c.id}">${c.title}</h2>
@@ -331,6 +349,7 @@ const body = `${sprite}
   <main>
     <script>if (/[?&]dir=rtl/.test(location.search)) document.currentScript.parentElement.dir = 'rtl';</script>
     ${cases.map(caseSection).join('\n    ')}
+    ${tailwindSection()}
     ${wireframeSection()}
   </main>
 
@@ -405,5 +424,8 @@ for (const subset of ['latin', 'latin-ext']) {
 cpSync(join(here, 'demo.js'), join(out, 'demo.js'));
 cpSync(join(root, 'AGENTS.md'), join(out, 'llms.txt'));
 writeFileSync(join(out, 'index.html'), page);
+// The Tailwind preview: write the page, then let Tailwind compile exactly the classes it uses.
+writeFileSync(join(out, 'tailwind-example.html'), tailwind.previewPage);
+execFileSync(join(root, 'node_modules/.bin/tailwindcss'), ['-i', join(here, 'tailwind.css'), '-o', join(out, 'tailwind-example.css'), '--minify'], { stdio: 'pipe' });
 writeFileSync(join(out, '.nojekyll'), '');
 console.log(`_site/ written. Core ${sizes.core}, drag +${sizes.drag}, autoplay +${sizes.autoplay}, CSS ${sizes.css}`);

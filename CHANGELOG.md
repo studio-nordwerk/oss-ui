@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 (2026-09-22)
+
+- React entry marked `'use client'`: `<Carousel>` now works in Next.js App Router Server
+  Components (it failed to prerender before, as the hooks are not available on the server).
+- Documentation: a copy-and-paste Tailwind CSS v4 example with a live preview compiled by
+  Tailwind, and notes for Tailwind and Next.js.
+
 ## 0.1.1 (2026-09-21)
 
 - Astro and `templateLabels`: `statusSingle` template for when only one slide is visible, so a

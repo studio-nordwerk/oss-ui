@@ -39,6 +39,12 @@ JavaScript, never move slides with transforms, never clone slides.
 9. Text: pass `labels` for dots and the live region in the page's language, and give the arrow
    buttons their own `aria-label`s ("Previous products", "Next products").
 10. Do not add `disabled` to the arrows yourself; the script manages `aria-disabled`.
+11. Tailwind CSS: `@import "@nordwerk/scroll-carousel/carousel.css" layer(components);`, layout as
+    arbitrary properties (`[--sc-per-view:2]`, `@3xl:[--sc-per-view:4]` on `.sc-track`), own
+    controls styled from the state attributes (`group-data-[sc-overflow]/row:grid`,
+    `aria-disabled:opacity-30`). Copyable example: the `#tailwind` section of the docs site.
+12. Next.js App Router: import `<Carousel>` from `@nordwerk/scroll-carousel/react` in a Server
+    Component as is; the entry carries `'use client'`.
 
 ### Recipes (CSS on the root or track, options in attach)
 

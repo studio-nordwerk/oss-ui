@@ -228,3 +228,20 @@ test('attaching causes no layout shift, even when the script arrives late', asyn
   );
   expect(shift).toBe(0);
 });
+
+test('the Tailwind example works as compiled by Tailwind', async ({ page }) => {
+  const section = page.locator('#tailwind');
+  await section.scrollIntoViewIfNeeded();
+  const frame = page.frameLocator('iframe.tw-preview');
+  await expect(frame.locator('.sc[data-sc-ready][data-sc-overflow]')).toBeVisible();
+  // The host's own arrows appear through the Tailwind variant on the state attribute.
+  const next = frame.locator('[data-sc-next]');
+  await expect(next).toBeVisible();
+  const track = frame.locator('[data-sc-track]');
+  await next.click();
+  await expect.poll(() => track.evaluate((element) => Math.abs(element.scrollLeft))).toBeGreaterThan(100);
+  await expect(frame.locator('[data-sc-prev]')).toHaveAttribute('aria-disabled', 'false');
+  // The iframe grows to its content instead of scrolling.
+  const height = await page.locator('iframe.tw-preview').evaluate((element) => element.getBoundingClientRect().height);
+  expect(height).toBeGreaterThan(300);
+});

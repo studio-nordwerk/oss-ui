@@ -24,5 +24,8 @@ for (const file of readdirSync('dist').filter((name) => name.endsWith('.d.ts')))
   const path = `dist/${file}`;
   writeFileSync(path, readFileSync(path, 'utf8').replace(/(from '\.\/[\w-]+)\.ts'/g, "$1.js'"));
 }
+// The React entry holds hooks, so React Server Components (Next.js App Router) must treat it as
+// a client module. esbuild drops module directives when bundling; put it back on the entry.
+writeFileSync('dist/react.js', `'use client';\n${readFileSync('dist/react.js', 'utf8')}`);
 copyFileSync('src/carousel.css', 'dist/carousel.css');
 console.log('dist/ built');

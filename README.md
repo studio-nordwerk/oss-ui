@@ -102,6 +102,35 @@ import Carousel from '@nordwerk/scroll-carousel/astro';
 Slides go in the default slot, one element each. Drag and autoplay are loaded only on pages that
 use them. Labels take templates: `labels={{ page: 'Slide {n} of {count}' }}`.
 
+### Tailwind CSS
+
+Import the stylesheet into the components layer, so utilities on your markup can override it, and
+set the layout with arbitrary properties and container-query variants:
+
+```css
+@import "tailwindcss";
+@import "@nordwerk/scroll-carousel/carousel.css" layer(components);
+```
+
+```html
+<div class="sc group/row relative [--sc-gap:1rem]">
+  <ul data-sc-track tabindex="0" aria-label="New arrivals"
+    class="sc-track [--sc-group:page] [--sc-per-view:1.3] @md:[--sc-per-view:2] @3xl:[--sc-per-view:4]">
+    <li>…</li>
+  </ul>
+  <button data-sc-next aria-label="Next products"
+    class="absolute end-3 top-1/3 hidden group-data-[sc-overflow]/row:grid aria-disabled:opacity-30">›</button>
+</div>
+```
+
+The complete example to copy, with a live preview compiled by Tailwind, is on the
+[documentation site](https://www.nordwerk.studio/oss/scroll-carousel#tailwind).
+
+### Next.js
+
+The React entry is marked `'use client'`, so `<Carousel>` can be used directly in Server
+Components of the App Router; it renders on the server and attaches in the browser.
+
 ## Markup
 
 | Element | Required | Purpose |

@@ -1,6 +1,6 @@
 {
   "name": "@nordwerk/scroll-carousel",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A dependency-free carousel on native scrolling: CSS scroll snap first, arrows, dots, paging and an API as progressive enhancement.",
   "license": "MIT",
   "type": "module",
@@ -89,6 +89,7 @@
     "@axe-core/playwright": "4.13.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@playwright/test": "1.61.1",
+    "@tailwindcss/cli": "4.3.3",
     "@types/node": "^24.0.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -98,6 +99,7 @@
     "preact-render-to-string": "6.7.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "tailwindcss": "4.3.3",
     "typescript": "^7.0.2"
   },
   "engines": {

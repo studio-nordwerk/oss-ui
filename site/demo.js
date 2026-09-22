@@ -252,6 +252,25 @@ const syncBand = () => band.classList.toggle('is-scrolled', window.scrollY > 24)
 syncBand();
 window.addEventListener('scroll', syncBand, { passive: true });
 
+// --- Tailwind example -------------------------------------------------------------------------
+
+const preview = document.querySelector('.tw-preview');
+window.addEventListener('message', (event) => {
+  const height = event.data?.tailwindExampleHeight;
+  if (event.source == preview?.contentWindow && height) preview.style.height = `${Math.ceil(height)}px`;
+});
+document.addEventListener('click', async (event) => {
+  const button = event.target.closest('[data-copy]');
+  if (!button) return;
+  try {
+    await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+    button.textContent = 'Copied';
+  } catch {
+    button.textContent = 'Select and copy';
+  }
+  setTimeout(() => (button.textContent = 'Copy'), 1600);
+});
+
 // --- Start ------------------------------------------------------------------------------------
 
 const params = new URLSearchParams(location.search);
