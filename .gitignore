@@ -8,3 +8,5 @@ playwright-report/
 # The task brief refers to private material and never goes into this repository.
 TASK.md
 .vite-hooks/_/
+
+.claude/
