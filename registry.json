@@ -111,7 +111,7 @@
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
-      "description": "A drop-in for the shadcn/ui Drawer on @nordwerk/scroll-sheet: the same exports and the props of both the Vaul and the Base UI drawer, on a native <dialog> with native dragging. Opens before hydration; 3.7 kB with its React code instead of 21 to 37 kB.",
+      "description": "A drop-in for the shadcn/ui Drawer on @nordwerk/scroll-sheet: the same exports and the props of both the Vaul and the Base UI drawer, on a native <dialog> with native dragging. Opens before hydration; about 6 kB of JavaScript with its library, against 22 kB (Vaul) and 39 kB (Base UI).",
       "dependencies": ["@nordwerk/scroll-sheet@^0.4.0"],
       "files": [
         {

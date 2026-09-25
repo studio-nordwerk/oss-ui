@@ -367,8 +367,11 @@ scroll-sheet stands on work that set the bar for sheets on the web:
   where the depth stylesheet took its cue.
 
 They move the sheet with script. scroll-sheet takes the other road, native scrolling on a native
-dialog, and is smaller for it (bundled, minified, gzip, React not counted, September 2026): 3.7 kB
-with its React component, Vaul 1.1.2 21.4 kB, Base UI 1.8.0's Drawer 37.2 kB.
+dialog, and is smaller for it. Measured bundled, minified and gzip, React and `cn` not counted
+(September 2026), each shadcn `drawer.tsx` with its library: 5.8 kB for the drop-in on scroll-sheet
+0.4.0, 22.1 kB on Vaul 1.1.2, 39.3 kB on Base UI 1.8.0 (+14.4 kB in an app that already has Base UI's
+Dialog). The drop-in adds 3.2 kB of stylesheets; Vaul injects its styles from script, Base UI's are
+Tailwind classes. The package's own React component is 3.8 kB with the core.
 
 ## Development
 
