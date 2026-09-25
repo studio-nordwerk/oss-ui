@@ -75,3 +75,12 @@
     transition: none;
   }
 }
+
+/* A sheet under a nested one (data-ss-covered, set by the script) steps back a little. */
+.ss > .ss-panel {
+  transition-property: translate, opacity, scale, filter;
+}
+.ss[data-ss-covered] > .ss-panel {
+  scale: 0.95;
+  filter: brightness(0.94);
+}

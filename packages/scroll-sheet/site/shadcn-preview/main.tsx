@@ -1,7 +1,8 @@
-// The seven blocks exactly as `shadcn add` installs them, rendered for the docs page.
+// The eight blocks exactly as `shadcn add` installs them, rendered for the docs page.
 import { createRoot } from "react-dom/client"
 
 import { ContactDialog } from "../../registry/blocks/contact-dialog"
+import { DrawerDemo } from "../../registry/blocks/drawer-demo"
 import { FilterDrawer } from "../../registry/blocks/filter-drawer"
 import { Lightbox } from "../../registry/blocks/lightbox"
 import { MiniCart } from "../../registry/blocks/mini-cart"
@@ -17,6 +18,7 @@ const blocks = [
   ["mobile-menu", MobileMenu],
   ["contact-dialog", ContactDialog],
   ["lightbox", Lightbox],
+  ["drawer-demo", DrawerDemo],
 ] as const
 
 function Preview() {

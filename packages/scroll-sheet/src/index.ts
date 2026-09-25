@@ -64,6 +64,9 @@ const emit = (dialog: HTMLDialogElement, type: string, detail: object, cancelabl
 const unstack = (sheet: Sheet) => {
   const index = stack.indexOf(sheet);
   if (index >= 0) stack.splice(index, 1);
+  // A sheet under another one is marked (data-ss-covered) for the stylesheet; the new top is not.
+  sheet.dialog.removeAttribute('data-ss-covered');
+  stack[stack.length - 1]?.dialog.removeAttribute('data-ss-covered');
   // The stylesheet keeps a scrollbar gutter while the page is locked; a page that did not scroll
   // had none, so it gets none either (set in open), and loses the override with the last sheet.
   if (!stack.length) document.documentElement.style.removeProperty('--ss-gutter');
@@ -239,7 +242,9 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
         const behind = document.querySelector<HTMLElement>('[data-ss-page]') ?? document.body;
         behind.style.setProperty('--ss-page-y', `${-behind.getBoundingClientRect().top}px`);
       }
-      dialog.showModal();
+      // data-ss-modal="false": the page stays usable around the sheet (no top layer, no lock).
+      if (dialog.dataset.ssModal == 'false') dialog.show();
+      else dialog.showModal();
       // Opened by a tap or click: focus goes to the dialog, not to its first control, where
       // browsers would draw the keyboard focus ring (the tap focused nothing before). Tab still
       // reaches the first control; an [autofocus] element keeps its focus.
@@ -247,6 +252,7 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
         if (!dialog.hasAttribute('tabindex')) dialog.tabIndex = -1;
         dialog.focus({ preventScroll: true });
       }
+      stack[stack.length - 1]?.dialog.setAttribute('data-ss-covered', '');
       stack.push(sheet);
       if (stack.length == 1 && short) page.style.setProperty('--ss-gutter', 'auto');
       const marked = markers().find((marker) => marker.hasAttribute('data-ss-initial'));
@@ -262,7 +268,9 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
     requestClose(why = 'api') {
       if (!dialog.open) return Promise.resolve(false);
       if (pending) return pending.promise;
-      if (!emit(dialog, 'requestclose', { reason: why }, true)) return Promise.resolve(false);
+      // data-ss-dismissible="false": only the close button and the API close it.
+      const refused = dialog.dataset.ssDismissible == 'false' && why != 'button' && why != 'api';
+      if (refused || !emit(dialog, 'requestclose', { reason: why }, true)) return Promise.resolve(false);
       reason = why;
       let resolve!: (closed: boolean) => void;
       const promise = new Promise<boolean>((done) => (resolve = done));
@@ -342,6 +350,11 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
     } else if (event.command == '--ss-cycle') cycle(sheet);
   });
   // Escape, the Android back gesture and requestClose() arrive as a cancelable cancel event.
+  // A non-modal dialog gets no cancel event: Escape is handled here.
+  listen(dialog, 'keydown', (event: KeyboardEvent) => {
+    const own = (event.target as Element).closest('dialog') == dialog;
+    if (event.key == 'Escape' && own && !dialog.matches(':modal')) void sheet.requestClose('escape');
+  });
   listen(dialog, 'cancel', (event: Event) => {
     event.preventDefault();
     void sheet.requestClose('escape');

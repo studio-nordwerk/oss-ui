@@ -14,12 +14,16 @@ the browser does alone).
 
 | Part | gzip, minified |
 | --- | --- |
-| Core: one close path, snap points, focus return, stacking, events, API | 2.5 kB |
+| Core: one close path, snap points, focus return, stacking, events, API | 2.8 kB |
 | History plugin: back button and back swipe close the top sheet | +0.7 kB |
 | Keyboard plugin: sheets above the iOS on-screen keyboard | +0.7 kB |
 | Drag plugin: drag by the handle and header with a mouse | +1.1 kB |
-| Stylesheet: bottom sheet, drawers, dialog, breakpoints | 2.2 kB |
-| Depth stylesheet: the page recedes behind the sheet | +0.6 kB |
+| Stylesheet: bottom and top sheets, drawers, dialog, breakpoints | 2.3 kB |
+| Options stylesheet: non-modal, not dismissible, sequential snapping, handle only | +0.3 kB |
+| Depth stylesheet: the page recedes, a covered sheet steps back | +0.6 kB |
+
+Each plugin and each extra stylesheet is its own entry point: a page pays only for what it
+imports. Types ship with every entry.
 
 Adapters for React, Preact and Astro are included; they render the markup and attach the core.
 
@@ -132,6 +136,39 @@ npx shadcn@latest add studio-nordwerk/oss-ui/size-picker
 names and click handler. What ends up in the page must be a native `<button>`, since `commandfor`
 works only there.
 
+#### A drop-in for the shadcn/ui Drawer
+
+```sh
+npx shadcn@latest add studio-nordwerk/oss-ui/drawer --overwrite
+```
+
+This replaces `components/ui/drawer.tsx` with the same exports (`Drawer`, `DrawerTrigger`,
+`DrawerContent`, `DrawerHeader`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`, `DrawerClose`,
+`DrawerPortal`, `DrawerOverlay`, `DrawerSwipeHandle`) and takes the props of both shadcn drawers:
+Vaul's in the Radix styles and Base UI's in the Base UI styles. Call sites stay as they are.
+
+| Vaul | Base UI | Here |
+| --- | --- | --- |
+| `open`, `defaultOpen`, `onOpenChange` | same | same; the second argument says why it closed |
+| `direction` | `swipeDirection` | `bottom`, `top`, `left`, `right` |
+| `snapPoints` (fractions or px) | `snapPoints` | same; CSS lengths work too |
+| `activeSnapPoint`, `setActiveSnapPoint` | `snapPoint`, `defaultSnapPoint`, `onSnapPointChange` | same |
+| `fadeFromIndex` | — | same: the dimmed area shows from that snap point on |
+| `snapToSequentialPoint` | `snapToSequentialPoints` | same |
+| `dismissible` | `disablePointerDismissal` | same |
+| `modal` | `modal` | same |
+| `shouldScaleBackground`, `setBackgroundColorOnScale` | `Drawer.Indent` | same; the page is `<body>` or `[data-ss-page]` |
+| `handleOnly` | — | same |
+| `repositionInputs` | `VirtualKeyboardProvider` | on by default (keyboard plugin) |
+| `onDrag`, `onRelease`, `onClose`, `onAnimationEnd` | `onOpenChangeComplete` | same |
+| `nested` | nested drawers | automatic: a covered drawer steps back |
+
+What stays different: the drawer is a native `<dialog>` in the top layer, so there is no portal
+(`DrawerPortal` renders its children, `DrawerOverlay` nothing; style the dimmed area with
+`backdrop:` utilities on `DrawerContent`) and no z-index. Vaul's `vaul-drawer-wrapper` becomes
+`data-ss-page`. `closeThreshold` and `scrollLockTimeout` are accepted and have nothing to do:
+closing and scrolling follow the browser's own scroll snapping. `drawer-demo` shows the calls.
+
 ### Next.js
 
 The React entry is marked `'use client'`, so `<Sheet>` works in Server Components of the App
@@ -167,6 +204,7 @@ page then shifts when its scrollbar goes.
 | Value | |
 | --- | --- |
 | `bottom` (default) | A sheet from the bottom edge, up to `--ss-sheet-max-size` wide, with snap points |
+| `top` | A sheet from the top edge, dragged up to close |
 | `end`, `start` | A drawer from the inline end or start edge (right or left, mirrored right to left) |
 | `center` | A dialog in the middle |
 | `sm:` `md:` `lg:` + any of them | From 40rem, 48rem, 64rem on |
@@ -205,6 +243,20 @@ by default, so a full-height sheet shows a sliver of the receded page; with
 | `--ss-depth-inset` | `1rem` | Room at each side of the receded page |
 | `--ss-depth-offset` | `safe-area-inset-top + 0.625rem` | How far the page moves down |
 | `--ss-depth-radius` | `12px` | Corners of the receded page |
+
+## Options
+
+Attributes on the dialog; load `@nordwerk/scroll-sheet/options.css` after `sheet.css` for them.
+
+| Attribute | |
+| --- | --- |
+| `data-ss-modal="false"` | Opens with `show()`: no dimmed area, no page lock, the page around the panel stays usable. Escape still closes it. Stacks with `--ss-z-index` (50) |
+| `data-ss-dismissible="false"` | Dragging away, Escape, taps outside and the back button do not close it; its close button and `requestClose()` do |
+| `data-ss-sequential` | A fast swipe stops at the next snap point instead of skipping it |
+| `data-ss-handle-only` | Touch drags the sheet only by its handle; the body scrolls on its own at every height |
+
+A sheet under a nested one gets `data-ss-covered` while the other is open; `depth.css` makes it
+step back a little.
 
 ## Custom properties
 
@@ -301,6 +353,22 @@ scroll-driven animations exist (Chrome, Safari 26 and later), the backdrop follo
 
 See [docs/migration.md](docs/migration.md) for the usual options mapped to this package and what is
 deliberately not supported.
+
+## Prior art
+
+scroll-sheet stands on work that set the bar for sheets on the web:
+
+- [Vaul](https://github.com/emilkowalski/vaul) by Emil Kowalski made drag-to-dismiss drawers feel
+  native in React and is the Drawer in shadcn/ui's Radix styles. Its API is the one the drop-in
+  follows.
+- [Base UI's Drawer](https://base-ui.com/react/components/drawer) is the Drawer in shadcn/ui's Base
+  UI styles, with snap points, nested drawers, swipe areas and a virtual keyboard provider.
+- [Silk](https://silkhq.com) shows how far native-feeling sheets can go; its sheet with depth is
+  where the depth stylesheet took its cue.
+
+They move the sheet with script. scroll-sheet takes the other road, native scrolling on a native
+dialog, and is smaller for it (bundled, minified, gzip, React not counted, September 2026): 3.7 kB
+with its React component, Vaul 1.1.2 21.4 kB, Base UI 1.8.0's Drawer 37.2 kB.
 
 ## Development
 

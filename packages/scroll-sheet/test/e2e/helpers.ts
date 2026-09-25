@@ -94,9 +94,10 @@ export const dragAway = (page: Page, id: string) =>
     const dialog = document.getElementById(id)!;
     const start = getComputedStyle(dialog).getPropertyValue('--_ready-rest-order').trim() == '0';
     const rtl = getComputedStyle(dialog).direction == 'rtl';
-    // Bottom sheets and end drawers close at scroll offset 0; start drawers at the far end.
+    // Bottom sheets and end drawers close at scroll offset 0; top sheets and start drawers at the
+    // far end.
     if (!start) dialog.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    else dialog.scrollTo({ left: (rtl ? -1 : 1) * dialog.scrollWidth, behavior: 'instant' });
+    else dialog.scrollTo({ top: dialog.scrollHeight, left: (rtl ? -1 : 1) * dialog.scrollWidth, behavior: 'instant' });
   }, id);
 
 export const focusedText = (page: Page) =>

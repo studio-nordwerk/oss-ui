@@ -70,6 +70,9 @@ never give a sheet a z-index: the top layer is above everything.
 | Confirmation or form | `data-ss="center"`, `<form method="dialog">` | read `dialog.returnValue` on `ss:close` |
 | Store finder over a map | bottom sheet with `--ss-at: 32dvh` (initial) and `66dvh` | — |
 | Product details over the page, iOS-style | bottom sheet with `data-ss-depth`, `--ss-sheet-max-size: none`, `depth.css` after `sheet.css` | — |
+| shadcn/ui project with a Drawer | `npx shadcn add studio-nordwerk/oss-ui/drawer --overwrite`; keep the call sites | — |
+| Sheet that leaves the page usable (map + list) | `data-ss-modal="false"`, `options.css` | — |
+| Confirmation the user must answer | `data-ss-dismissible="false"`, `options.css`, a close button | — |
 | Full-screen gallery | `data-ss="center"` with `--ss-dialog-size: 100vw` and a full-height panel | — |
 
 ### Adapters

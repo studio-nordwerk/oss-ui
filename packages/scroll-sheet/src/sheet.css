@@ -7,7 +7,7 @@
  * the script adds closing by dragging away, a tap on the dimmed area, an initial snap point and
  * focus return.
  *
- * Presentations: data-ss="bottom" (default), "end", "start", "center", each also with a
+ * Presentations: data-ss="bottom" (default), "top", "end", "start", "center", each also with a
  * breakpoint prefix: data-ss="bottom md:end" is a bottom sheet below 48rem and a drawer from the
  * end edge above. Breakpoints: sm 40rem, md 48rem, lg 64rem.
  *
@@ -148,6 +148,41 @@
   --_collapsed-body: auto;
 }
 
+/* ---- Presentation: sheet from the top edge ------------------------------------------------- */
+
+.ss[data-ss~='top'] {
+  --_display: flex;
+  --_direction: column;
+  --_overflow: hidden auto;
+  --_snap: y mandatory;
+  --_panel-inline: 100%;
+  --_panel-block: auto;
+  --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+  --_panel-radius: 0 0 var(--_radius) var(--_radius);
+  --_panel-align: start none;
+  --_rest-display: block;
+  --_rest-inline: auto;
+  --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+  --_rest-align: none;
+  --_ready-rest-inline: auto;
+  --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+  --_ready-rest-align: end none;
+  --_enter-x: 0px;
+  --_enter-y: -100%;
+  --_css-motion: 0;
+  --_align: stretch;
+  --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  --_panel-max-inline: var(--_sheet-max-size);
+  --_snap-display: none;
+  --_handle-display: none;
+  --_ready-direction: column;
+  --_ready-rest-order: 0;
+  --_timeline-axis: block;
+  --_timeline-direction: reverse;
+  --_collapsed-body: auto;
+  --_panel-clip: inset(0 -100vw -100vh -100vw);
+}
+
 /* ---- Presentation: centred dialog ---------------------------------------------------------- */
 
 .ss[data-ss~='center'] {
@@ -281,6 +316,38 @@
     --_panel-clip: none;
     --_collapsed-body: auto;
   }
+  .ss[data-ss~='sm:top'] {
+    --_display: flex;
+    --_direction: column;
+    --_overflow: hidden auto;
+    --_snap: y mandatory;
+    --_panel-inline: 100%;
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+    --_panel-radius: 0 0 var(--_radius) var(--_radius);
+    --_panel-align: start none;
+    --_rest-display: block;
+    --_rest-inline: auto;
+    --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+    --_rest-align: none;
+    --_ready-rest-inline: auto;
+    --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+    --_ready-rest-align: end none;
+    --_enter-x: 0px;
+    --_enter-y: -100%;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+    --_panel-max-inline: var(--_sheet-max-size);
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: column;
+    --_ready-rest-order: 0;
+    --_timeline-axis: block;
+    --_timeline-direction: reverse;
+    --_collapsed-body: auto;
+    --_panel-clip: inset(0 -100vw -100vh -100vw);
+  }
   .ss[data-ss~='sm:center'] {
     --_display: grid;
     --_direction: row;
@@ -411,6 +478,38 @@
     --_panel-clip: none;
     --_collapsed-body: auto;
   }
+  .ss[data-ss~='md:top'] {
+    --_display: flex;
+    --_direction: column;
+    --_overflow: hidden auto;
+    --_snap: y mandatory;
+    --_panel-inline: 100%;
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+    --_panel-radius: 0 0 var(--_radius) var(--_radius);
+    --_panel-align: start none;
+    --_rest-display: block;
+    --_rest-inline: auto;
+    --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+    --_rest-align: none;
+    --_ready-rest-inline: auto;
+    --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+    --_ready-rest-align: end none;
+    --_enter-x: 0px;
+    --_enter-y: -100%;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+    --_panel-max-inline: var(--_sheet-max-size);
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: column;
+    --_ready-rest-order: 0;
+    --_timeline-axis: block;
+    --_timeline-direction: reverse;
+    --_collapsed-body: auto;
+    --_panel-clip: inset(0 -100vw -100vh -100vw);
+  }
   .ss[data-ss~='md:center'] {
     --_display: grid;
     --_direction: row;
@@ -540,6 +639,38 @@
     --_timeline-direction: reverse;
     --_panel-clip: none;
     --_collapsed-body: auto;
+  }
+  .ss[data-ss~='lg:top'] {
+    --_display: flex;
+    --_direction: column;
+    --_overflow: hidden auto;
+    --_snap: y mandatory;
+    --_panel-inline: 100%;
+    --_panel-block: auto;
+    --_panel-max-block: calc(var(--ss-viewport-height, 100dvh) - var(--_top-gap));
+    --_panel-radius: 0 0 var(--_radius) var(--_radius);
+    --_panel-align: start none;
+    --_rest-display: block;
+    --_rest-inline: auto;
+    --_rest-block: calc(var(--ss-viewport-height, 100dvh) - var(--_peek));
+    --_rest-align: none;
+    --_ready-rest-inline: auto;
+    --_ready-rest-block: var(--ss-viewport-height, 100dvh);
+    --_ready-rest-align: end none;
+    --_enter-x: 0px;
+    --_enter-y: -100%;
+    --_css-motion: 0;
+    --_align: stretch;
+    --_panel-pad: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+    --_panel-max-inline: var(--_sheet-max-size);
+    --_snap-display: none;
+    --_handle-display: none;
+    --_ready-direction: column;
+    --_ready-rest-order: 0;
+    --_timeline-axis: block;
+    --_timeline-direction: reverse;
+    --_collapsed-body: auto;
+    --_panel-clip: inset(0 -100vw -100vh -100vw);
   }
   .ss[data-ss~='lg:center'] {
     --_display: grid;

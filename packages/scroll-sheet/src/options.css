@@ -1,0 +1,34 @@
+/*
+ * scroll-sheet options, loaded after sheet.css. Each applies only where its attribute is set:
+ * data-ss-modal="false", data-ss-dismissible="false", data-ss-sequential, data-ss-handle-only.
+ */
+
+/* data-ss-modal="false" (the script opens it with show()): no top layer, no dimmed area and no
+   page lock; the page around the panel stays usable. */
+.ss[data-ss-modal='false'] {
+  z-index: var(--ss-z-index, 50);
+  pointer-events: none;
+}
+.ss[data-ss-modal='false'] > .ss-panel {
+  pointer-events: auto;
+}
+/* data-ss-dismissible="false": the spacer keeps its script-free size, so the sheet cannot be
+   dragged away; the script refuses Escape and taps outside. */
+.ss[data-ss-ready][data-ss-dismissible='false'] > .ss-rest {
+  inline-size: var(--_rest-inline);
+  block-size: var(--_rest-block);
+  scroll-snap-align: none;
+}
+/* data-ss-sequential: a fast swipe stops at the next snap point instead of skipping it. */
+.ss[data-ss-sequential] .ss-snap {
+  scroll-snap-stop: always;
+}
+/* data-ss-handle-only: touch drags the sheet only by its handle; the body scrolls on its own at
+   every height. */
+.ss[data-ss-handle-only] > .ss-panel > :not(.ss-handle, .ss-body) {
+  touch-action: none;
+}
+.ss[data-ss-ready][data-ss-handle-only] > .ss-panel > .ss-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+}

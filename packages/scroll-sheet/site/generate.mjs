@@ -395,14 +395,16 @@ const BLOCKS = [
   'mobile-menu',
   'contact-dialog',
   'lightbox',
+  'drawer-demo',
 ];
 
 const shadcnSection = () => `<section class="case" id="shadcn" aria-labelledby="case-shadcn">
       <div class="case-head">
-        <h2 id="case-shadcn">shadcn/ui: a component and seven blocks</h2>
-        <p>The component follows the part names of shadcn's Sheet and Drawer with the <code>ScrollSheet</code> prefix: <code>ScrollSheet</code>, <code>ScrollSheetTrigger</code>, <code>ScrollSheetContent</code>, <code>ScrollSheetHeader</code>, <code>ScrollSheetTitle</code>, <code>ScrollSheetDescription</code>, <code>ScrollSheetBody</code>, <code>ScrollSheetFooter</code>, <code>ScrollSheetClose</code> and <code>ScrollSheetHandle</code>. It installs straight from the GitHub repository and uses your theme. Below are the blocks as <code>shadcn add</code> installs them.</p>
+        <h2 id="case-shadcn">shadcn/ui: a drop-in Drawer, a component and eight blocks</h2>
+        <p>The component follows the part names of shadcn's Sheet and Drawer with the <code>ScrollSheet</code> prefix: <code>ScrollSheet</code>, <code>ScrollSheetTrigger</code>, <code>ScrollSheetContent</code>, <code>ScrollSheetHeader</code>, <code>ScrollSheetTitle</code>, <code>ScrollSheetDescription</code>, <code>ScrollSheetBody</code>, <code>ScrollSheetFooter</code>, <code>ScrollSheetClose</code> and <code>ScrollSheetHandle</code>. It installs straight from the GitHub repository and uses your theme. The <code>drawer</code> item replaces <code>components/ui/drawer.tsx</code>: the same exports, and the props of both shadcn drawers (Vaul in the Radix styles, Base UI in the Base UI styles), so call sites stay as they are. Below are the blocks as <code>shadcn add</code> installs them; <code>drawer-demo</code> uses the drop-in.</p>
       </div>
       <iframe class="preview" src="shadcn-preview.html" title="Live preview of the shadcn blocks" loading="lazy"></iframe>
+      ${copyBlock('shadcn-drawer', 'Replace the Drawer', 'npx shadcn@latest add studio-nordwerk/oss-ui/drawer --overwrite')}
       ${copyBlock('shadcn-add', 'Add the component', 'npx shadcn@latest add studio-nordwerk/oss-ui/scroll-sheet')}
       ${copyBlock('shadcn-blocks', 'Or a block, which brings the component along', BLOCKS.map((name) => `npx shadcn@latest add studio-nordwerk/oss-ui/${name}`).join('\n'))}
       ${copyBlock('shadcn-usage', 'Use it', shadcnUsage)}
@@ -515,7 +517,7 @@ export default async function generate({ out, base, canonical, redirect }) {
       base,
       canonical,
       redirect,
-      styles: ['lib/sheet.css', 'lib/depth.css', 'carousel/carousel.css'],
+      styles: ['lib/sheet.css', 'lib/options.css', 'lib/depth.css', 'carousel/carousel.css'],
       head: '<link rel="stylesheet" href="demo.css">\n<script type="module" src="demo.js"></script>',
       body,
     }),
@@ -533,6 +535,7 @@ export default async function generate({ out, base, canonical, redirect }) {
     define: { 'process.env.NODE_ENV': '"production"' },
     alias: {
       '@/components/ui/scroll-sheet': join(root, 'registry/ui/scroll-sheet.tsx'),
+      '@/components/ui/drawer': join(root, 'registry/ui/drawer.tsx'),
       // The lightbox block holds a scroll-carousel.
       '@/components/ui/scroll-carousel': join(root, '../scroll-carousel/registry/ui/scroll-carousel.tsx'),
       '@/components/ui/button': join(preview, 'components/ui/button.tsx'),

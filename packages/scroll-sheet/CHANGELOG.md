@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 (2026-09-25)
+
+- A drop-in for the shadcn/ui Drawer: `npx shadcn add studio-nordwerk/oss-ui/drawer --overwrite`
+  replaces `components/ui/drawer.tsx` with the same exports and the props of both shadcn drawers
+  (Vaul and Base UI), including snap points, controlled snap point, fading from a snap point,
+  scaled background, non-modal, not dismissible and handle only. New block `drawer-demo`.
+- New presentation `top` (also `sm:top`, `md:top`, `lg:top`): a sheet from the top edge.
+- New opt-in stylesheet `options.css` (+0.3 kB) with attributes for the core:
+  `data-ss-modal="false"` opens with `show()` and leaves the page usable, Escape still closes it;
+  `data-ss-dismissible="false"` keeps the sheet open against dragging, Escape, taps outside and
+  the back button; `data-ss-sequential` stops a fast swipe at each snap point;
+  `data-ss-handle-only` lets touch drag the sheet only by its handle.
+- A sheet under a nested one gets `data-ss-covered`; `depth.css` makes it step back a little.
+
 ## 0.3.1 (2026-09-25)
 
 - Fix: a sheet opened by a tap or click showed the keyboard focus ring on its first control (the

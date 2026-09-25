@@ -1,9 +1,11 @@
 // What scripts/shadcn-smoke.mjs checks for this package's blocks in the fresh shadcn project:
 // every sheet attaches, the size picker opens at its snap point and closes on Escape, the filter
 // is a drawer from the end edge at desktop width, and the contact form's buttons submit
-// method="dialog" (Base UI buttons default to type="button").
+// method="dialog" (Base UI buttons default to type="button"). The drop-in drawer: a bottom drawer
+// that closes on Escape, snap points with the page receding, a drawer from the right and one that
+// Escape does not close.
 export async function check(page) {
-  await page.waitForFunction(() => document.querySelectorAll('dialog.ss[data-ss-ready]').length == 7, null, {
+  await page.waitForFunction(() => document.querySelectorAll('dialog.ss[data-ss-ready]').length == 11, null, {
     timeout: 15000,
   });
   const problems = [];
@@ -52,5 +54,42 @@ export async function check(page) {
   if (contact.open || contact.returnValue != 'cancel')
     problems.push(`the contact form's Cancel did not close it with its value (${JSON.stringify(contact)})`);
 
-  return { report: { sizes, filter, contact }, problems };
+  const press = async (name) => {
+    await page.getByRole('button', { name, exact: true }).click();
+    await page.waitForTimeout(900);
+  };
+  await press('Daily goal');
+  const goal = await openState('Daily goal');
+  if (!goal.open || Math.abs(goal.height - goal.top - 0) < 100)
+    problems.push('the drawer did not open from the bottom');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(900);
+  if ((await openState('Daily goal')).open) problems.push('Escape did not close the drawer');
+
+  await press('Route details');
+  const route = await openState('Route details');
+  const ground = await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
+  if (!route.open || Math.abs(route.height - route.top - route.height * 0.4) > 4)
+    problems.push(`the route drawer opened at ${route.top}px, not at its 0.4 snap point`);
+  if (ground != 'rgb(0, 0, 0)') problems.push('shouldScaleBackground did not make the page recede');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(900);
+
+  await press('Settings');
+  const settings = await openState('Settings');
+  if (!settings.open || settings.right != settings.width)
+    problems.push('direction="right" is not a drawer from the right');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(900);
+
+  await press('Terms');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(600);
+  const terms = (await openState('Terms')).open;
+  if (!terms) problems.push('dismissible={false} still closed on Escape');
+  await page.getByRole('button', { name: 'Accept', exact: true }).click();
+  await page.waitForTimeout(900);
+  if ((await openState('Terms')).open) problems.push('DrawerClose did not close the drawer that is not dismissible');
+
+  return { report: { sizes, filter, contact, goal, route, settings }, problems };
 }

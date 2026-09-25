@@ -14,6 +14,7 @@
       "@/lib/utils": ["./shims/utils.ts"],
       "@/components/ui/button": ["./shims/button.tsx"],
       "@/components/ui/scroll-sheet": ["./ui/scroll-sheet.tsx"],
+      "@/components/ui/drawer": ["./ui/drawer.tsx"],
       "@/components/ui/scroll-carousel": ["../../scroll-carousel/registry/ui/scroll-carousel.tsx"],
       "@nordwerk/scroll-carousel": ["../../scroll-carousel/src/index.ts"],
       "@nordwerk/scroll-carousel/*": ["../../scroll-carousel/src/*.ts"],
