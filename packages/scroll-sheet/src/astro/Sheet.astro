@@ -1,7 +1,7 @@
 ---
 /*
  * Astro adapter. Renders a sheet around what you put in the default slot (header, body, footer)
- * and attaches the core in the browser. The history, keyboard and drag plugins are loaded only when a
+ * and attaches the core in the browser. The history, keyboard, drag and swipe area plugins are loaded only when a
  * sheet on the page asks for them. Open it with any button:
  * <button type="button" commandfor="sizes" command="show-modal">Choose a size</button>
  */
@@ -25,11 +25,13 @@ interface Props {
   keyboard?: boolean;
   /** Drag the sheet with a mouse by its handle and header. */
   drag?: boolean;
+  /** A strip at the sheet's edge: a swipe away from the edge opens the sheet. */
+  swipeArea?: boolean;
   class?: string;
 }
-const { id, presentation, depth, label, snapPoints = [], initialSnap, replace, history, keyboard, drag, class: className } =
+const { id, presentation, depth, label, snapPoints = [], initialSnap, replace, history, keyboard, drag, swipeArea, class: className } =
   Astro.props;
-const options = JSON.stringify({ history, keyboard, drag, replace });
+const options = JSON.stringify({ history, keyboard, drag, swipeArea, replace });
 ---
 <dialog
   id={id}
@@ -56,6 +58,7 @@ const options = JSON.stringify({ history, keyboard, drag, replace });
       if (options.history) plugins.push((await import('@nordwerk/scroll-sheet/history')).history());
       if (options.keyboard) plugins.push((await import('@nordwerk/scroll-sheet/keyboard')).keyboard());
       if (options.drag) plugins.push((await import('@nordwerk/scroll-sheet/drag')).drag());
+      if (options.swipeArea) plugins.push((await import('@nordwerk/scroll-sheet/swipe-area')).swipeArea());
       // The page may have changed while the plugins loaded.
       if (dialog.isConnected) attach(dialog, { plugins, replace: options.replace });
     }

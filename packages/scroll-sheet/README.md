@@ -18,6 +18,7 @@ the browser does alone).
 | History plugin: back button and back swipe close the top sheet | +0.7 kB |
 | Keyboard plugin: sheets above the iOS on-screen keyboard | +0.7 kB |
 | Drag plugin: drag by the handle and header with a mouse | +1.1 kB |
+| Swipe area plugin: swipe from the edge to open | +1.4 kB |
 | Stylesheet: bottom and top sheets, drawers, dialog, breakpoints | 2.3 kB |
 | Options stylesheet: non-modal, not dismissible, sequential snapping, handle only | +0.3 kB |
 | Depth stylesheet: the page recedes, a covered sheet steps back | +0.6 kB |
@@ -144,7 +145,7 @@ npx shadcn@latest add studio-nordwerk/oss-ui/drawer --overwrite
 
 This replaces `components/ui/drawer.tsx` with the same exports (`Drawer`, `DrawerTrigger`,
 `DrawerContent`, `DrawerHeader`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`, `DrawerClose`,
-`DrawerPortal`, `DrawerOverlay`, `DrawerSwipeHandle`) and takes the props of both shadcn drawers:
+`DrawerPortal`, `DrawerOverlay`, `DrawerSwipeHandle`, `DrawerSwipeArea`) and takes the props of both shadcn drawers:
 Vaul's in the Radix styles and Base UI's in the Base UI styles. Call sites stay as they are.
 
 | Vaul | Base UI | Here |
@@ -160,6 +161,7 @@ Vaul's in the Radix styles and Base UI's in the Base UI styles. Call sites stay 
 | `shouldScaleBackground`, `setBackgroundColorOnScale` | `Drawer.Indent` | same; the page is `<body>` or `[data-ss-page]` |
 | `handleOnly` | — | same |
 | `repositionInputs` | `VirtualKeyboardProvider` | on by default (keyboard plugin) |
+| — | `Drawer.SwipeArea` | `DrawerSwipeArea` (swipe area plugin, loaded only where it is used) |
 | `onDrag`, `onRelease`, `onClose`, `onAnimationEnd` | `onOpenChangeComplete` | same |
 | `nested` | nested drawers | automatic: a covered drawer steps back |
 
@@ -318,6 +320,13 @@ toasts and popovers that must stay usable while the sheet is open.
   snap point the drag and its speed point at, or closes when it ends below half of the lowest one.
   The click after a drag is swallowed. The mouse wheel and trackpad still move a sheet as they
   scroll any scroller.
+- **`swipeArea({ element, size, threshold })`**: a strip at the edge the sheet comes from; a swipe
+  away from that edge opens the sheet, which follows the finger, and on release goes to the snap
+  point the swipe and its speed point at, or closes again when it ends below half of the lowest
+  one. Without `element` the plugin adds an invisible strip (`size`, default `1.5rem`) and keeps it
+  at the edge of the current presentation, also across breakpoints; the centred dialog gets none.
+  Touch, pen and mouse. The strip takes the taps on the page beneath it, and at the left edge it
+  competes with the browser's back swipe, so keep it narrow there. Astro: `swipeArea`.
 
 ## iOS notes
 

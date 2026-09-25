@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 (2026-09-25)
+
+- New `swipeArea()` plugin (`@nordwerk/scroll-sheet/swipe-area`, Astro: `swipeArea`, +1.4 kB): a
+  strip at the edge the sheet comes from; a swipe away from it opens the sheet, which follows the
+  finger and rests at the snap point the swipe points at, or closes again. The strip follows the
+  presentation across breakpoints; bring your own with `element`. The drop-in Drawer gets
+  `DrawerSwipeArea` (Base UI's `Drawer.SwipeArea`), which loads the plugin only where it is used.
+- Fix: after a pause before letting go, the drag plugin threw the sheet as if it were still moving;
+  the throw speed now counts only the last 100 ms.
+
 ## 0.4.0 (2026-09-25)
 
 - A drop-in for the shadcn/ui Drawer: `npx shadcn add studio-nordwerk/oss-ui/drawer --overwrite`

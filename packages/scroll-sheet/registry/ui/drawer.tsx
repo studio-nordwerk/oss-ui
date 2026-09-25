@@ -24,6 +24,7 @@
 import * as React from "react"
 import { attach, type CloseReason, type Sheet } from "@nordwerk/scroll-sheet"
 import { keyboard } from "@nordwerk/scroll-sheet/keyboard"
+import { swipeArea } from "@nordwerk/scroll-sheet/swipe-area"
 import "@nordwerk/scroll-sheet/sheet.layer.css"
 import "@nordwerk/scroll-sheet/options.layer.css"
 import "@nordwerk/scroll-sheet/depth.layer.css"
@@ -200,6 +201,42 @@ function DrawerPortal({
 /** The dimmed area is the dialog's ::backdrop, styled by DrawerContent. Kept so imports keep working. */
 function DrawerOverlay(_props: React.ComponentProps<"div">) {
   return null
+}
+
+/**
+ * An invisible strip at the drawer's edge: a swipe away from the edge opens the drawer, which
+ * follows the finger (Base UI's Drawer.SwipeArea). Place it anywhere inside <Drawer>.
+ */
+function DrawerSwipeArea({
+  className,
+  disabled,
+  // Base UI's; here the direction comes from <Drawer>.
+  swipeDirection: _swipeDirection,
+  ...props
+}: React.ComponentProps<"div"> & { disabled?: boolean; swipeDirection?: string }) {
+  const { api, direction } = useDrawer()
+  const ref = React.useRef<HTMLDivElement>(null)
+  React.useEffect(() => {
+    if (!api || !ref.current || disabled) return
+    return swipeArea({ element: ref.current })(api) || undefined
+  }, [api, disabled])
+  return (
+    <div
+      ref={ref}
+      aria-hidden="true"
+      data-slot="drawer-swipe-area"
+      className={cn(
+        "fixed z-10 touch-none",
+        direction == "bottom" && "inset-x-0 bottom-0 h-6",
+        direction == "top" && "inset-x-0 top-0 h-6",
+        direction == "left" && "inset-y-0 left-0 w-6",
+        direction == "right" && "inset-y-0 right-0 w-6",
+        disabled && "pointer-events-none",
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 /** The bar at the top of a bottom drawer; with snap points a button that steps through them. */
@@ -521,6 +558,7 @@ export {
   DrawerPortal,
   DrawerOverlay,
   DrawerSwipeHandle,
+  DrawerSwipeArea,
   DrawerTrigger,
   DrawerClose,
   DrawerContent,

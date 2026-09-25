@@ -26,8 +26,8 @@ never give a sheet a z-index: the top layer is above everything.
 3. Open and close with buttons: `<button type="button" commandfor="ID" command="show-modal">`, and
    `command="close"` inside. They work before the script loads; do not replace them with onclick
    handlers.
-4. Presentation in the markup, per breakpoint: `data-ss="bottom"` (default), `"end"`, `"start"`,
-   `"center"`, with `sm:`, `md:`, `lg:` prefixes: `data-ss="bottom md:end"`. Do not switch
+4. Presentation in the markup, per breakpoint: `data-ss="bottom"` (default), `"top"`, `"end"`,
+   `"start"`, `"center"`, with `sm:`, `md:`, `lg:` prefixes: `data-ss="bottom md:end"`. Do not switch
    presentations with script or by user agent.
 5. Snap points of a bottom sheet: `<i class="ss-snap" style="--ss-at: 50dvh"></i>` inside the panel;
    `--ss-at` is how much of the sheet shows. `data-ss-initial` on one of them opens there. The full
@@ -66,6 +66,7 @@ never give a sheet a z-index: the top layer is above everything.
 | Size or variant picker on phones | bottom sheet, `.ss-snap --ss-at: 50dvh data-ss-initial`, footer with the action | `plugins: [keyboard()]` if it has fields |
 | Filters: sheet on phones, drawer on desktop | `data-ss="bottom md:end"` | — |
 | Mobile navigation | `data-ss="start"` | `plugins: [history()]` |
+| Sheet or drawer that also opens with a swipe from the edge | any presentation but `center` | `plugins: [swipeArea()]` |
 | Mini cart after adding | `data-ss="end" data-ss-replace` | open with `getSheet(dialog).open()` |
 | Confirmation or form | `data-ss="center"`, `<form method="dialog">` | read `dialog.returnValue` on `ss:close` |
 | Store finder over a map | bottom sheet with `--ss-at: 32dvh` (initial) and `66dvh` | — |
@@ -89,8 +90,9 @@ never give a sheet a z-index: the top layer is above everything.
 ### Layout
 
 - `src/index.ts`: the core, `attach()` and `enhance()`. Framework-free.
-- `src/history.ts`, `src/keyboard.ts`, `src/drag.ts`: plugins; a plugin gets the sheet and returns
-  its cleanup.
+- `src/history.ts`, `src/keyboard.ts`, `src/drag.ts`, `src/swipe-area.ts`: plugins; a plugin gets
+  the sheet and returns its cleanup, and can be attached later by calling it with the sheet.
+- `src/options.css`, `src/depth.css`: opt-in stylesheets for the attribute options and depth.
 - `src/adapter.ts`: the React and Preact adapter against a small `Framework` interface;
   `src/react.ts` and `src/preact.ts` only bind it.
 - `src/astro/Sheet.astro`: shipped as source.
@@ -137,6 +139,9 @@ never give a sheet a z-index: the top layer is above everything.
   dialog on screen after `[open]` is gone.
 - The drag plugin turns snapping off while the mouse drags and back on at the next `scrollend`
   after the release, listened for from the next frame on (the drag's own last step sends one).
+  The swipe area plugin does the same while a swipe opens the sheet: `open()` starts at the
+  closed position, the plugin stops the scroll there and the finger moves it on. The throw speed
+  of both counts only the last 100 ms before the release.
 - `open()` right after a close whose `close` event is still queued ends that close first
   (`ss:close`, promise settled), so a sheet reopened in the same task never waits on a dead close.
 - The core keeps page-wide listeners for its lifetime (the input kind, the `commandfor` fallback
@@ -161,8 +166,8 @@ pnpm test:shadcn
 
 - No runtime dependencies; optional behaviour is a plugin.
 - The script reads layout (computed styles, geometry, scroll offsets) and scrolls; it never writes
-  layout styles, apart from the one-frame snap switch when adopting an open dialog and the keyboard
-  plugin's viewport variables.
+  layout styles, apart from the one-frame snap switch when adopting an open dialog, the keyboard
+  plugin's viewport variables and the position of the swipe area plugin's own strip.
 - Every must-have behaviour has a browser test in all engines, including the page without script.
   iOS behaviour (touch drag, toolbar, keyboard, back swipe) is checked in the iOS simulator by hand;
   see docs/testing.md.

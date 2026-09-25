@@ -123,7 +123,8 @@ export function drag({ area = '.ss-handle, .ss-header', threshold = 4 }: DragOpt
       timer = setTimeout(restore, 800) as unknown as number;
       const points = sheet.state.snapPoints;
       const now = shown(done.x);
-      const [t0, s0] = done.trail[0] ?? [event.timeStamp, now];
+      // Only the last 100 ms count: after a pause the speed is zero, not that of the moves before it.
+      const [t0, s0] = done.trail.find(([t]) => event.timeStamp - t <= 100) ?? [event.timeStamp, now];
       // Where the throw would carry it: the speed (px per ms, positive towards open) over 200 ms.
       const aim = now + (event.timeStamp > t0 ? ((now - s0) / (event.timeStamp - t0)) * 200 : 0);
       if (aim < points[0] / 2) {

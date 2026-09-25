@@ -1,6 +1,6 @@
 {
   "name": "@nordwerk/scroll-sheet",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Bottom sheets, side drawers and dialogs on a native modal <dialog> and CSS scroll snap: open and close without script, drag, snap points and focus return as progressive enhancement.",
   "keywords": [
     "accessibility",
@@ -46,6 +46,9 @@
       "drag": [
         "./dist/drag.d.ts"
       ],
+      "swipe-area": [
+        "./dist/swipe-area.d.ts"
+      ],
       "react": [
         "./dist/react.d.ts"
       ],
@@ -70,6 +73,10 @@
     "./drag": {
       "types": "./dist/drag.d.ts",
       "default": "./dist/drag.js"
+    },
+    "./swipe-area": {
+      "types": "./dist/swipe-area.d.ts",
+      "default": "./dist/swipe-area.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",

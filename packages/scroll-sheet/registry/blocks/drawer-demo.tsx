@@ -10,6 +10,7 @@ import {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
+  DrawerSwipeArea,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
@@ -97,10 +98,14 @@ export function DrawerDemo() {
         <DrawerTrigger asChild>
           <Button variant="outline">Settings</Button>
         </DrawerTrigger>
+        {/* Or swipe in from the right edge. */}
+        <DrawerSwipeArea />
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>Settings</DrawerTitle>
-            <DrawerDescription>A drawer from the right edge.</DrawerDescription>
+            <DrawerDescription>
+              A drawer from the right edge; a swipe from that edge opens it too.
+            </DrawerDescription>
           </DrawerHeader>
           <DrawerFooter>
             <DrawerClose asChild>

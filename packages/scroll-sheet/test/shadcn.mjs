@@ -2,8 +2,8 @@
 // every sheet attaches, the size picker opens at its snap point and closes on Escape, the filter
 // is a drawer from the end edge at desktop width, and the contact form's buttons submit
 // method="dialog" (Base UI buttons default to type="button"). The drop-in drawer: a bottom drawer
-// that closes on Escape, snap points with the page receding, a drawer from the right and one that
-// Escape does not close.
+// that closes on Escape, snap points with the page receding, a drawer from the right that a swipe from
+// the right edge opens too, and one that Escape does not close.
 export async function check(page) {
   await page.waitForFunction(() => document.querySelectorAll('dialog.ss[data-ss-ready]').length == 11, null, {
     timeout: 15000,
@@ -79,6 +79,22 @@ export async function check(page) {
   const settings = await openState('Settings');
   if (!settings.open || settings.right != settings.width)
     problems.push('direction="right" is not a drawer from the right');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(900);
+
+  // The swipe area at the right edge opens the settings drawer with a swipe to the left.
+  const edge = await page.evaluate(() => {
+    const box = document.querySelector('[data-slot="drawer-swipe-area"]').getBoundingClientRect();
+    return box.left + box.width / 2;
+  });
+  await page.mouse.move(edge, 450);
+  await page.mouse.down();
+  for (let i = 1; i <= 12; i++) await page.mouse.move(edge - i * 30, 450);
+  await page.mouse.up();
+  await page.waitForTimeout(900);
+  const swiped = await openState('Settings');
+  if (!swiped.open || swiped.right != swiped.width)
+    problems.push('a swipe from the right edge did not open the settings drawer');
   await page.keyboard.press('Escape');
   await page.waitForTimeout(900);
 
