@@ -2,7 +2,7 @@
   {
     "name": "core (lifecycle, one close path, snap points, focus return, commands fallback)",
     "entry": "dist/index.js",
-    "max": 2750
+    "max": 2800
   },
   { "name": "history plugin (back button and back swipe)", "entry": "dist/history.js", "max": 800 },
   { "name": "keyboard plugin (iOS on-screen keyboard)", "entry": "dist/keyboard.js", "max": 800 },

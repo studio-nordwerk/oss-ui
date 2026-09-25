@@ -4,7 +4,8 @@
  * - one cancelable close path for every way of closing (close button, Escape, a tap on the dimmed
  *   area, dragging the sheet away), with an exit animation that keeps the dialog modal until it ends;
  * - opening at a snap point, and events and an API for frameworks and stores;
- * - focus back to the element that opened the sheet (Safari does not focus tapped buttons);
+ * - focus back to the element that opened the sheet (Safari does not focus tapped buttons), and
+ *   focus on the sheet itself, without a focus ring, when a tap or click opened it;
  * - the handle as a button (command="--ss-cycle"): each press moves to the next snap point;
  * - a fallback for browsers without invoker commands.
  * The script reads layout and scrolls; positions come from CSS scroll snap.
@@ -71,7 +72,7 @@ const unstack = (sheet: Sheet) => {
 export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): Sheet {
   const existing = sheets.get(dialog);
   if (existing) return existing;
-  installFallback();
+  install();
 
   const panel = dialog.querySelector<HTMLElement>(':scope > .ss-panel')!;
   const rest = dialog.querySelector<HTMLElement>(':scope > .ss-rest');
@@ -239,6 +240,13 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
         behind.style.setProperty('--ss-page-y', `${-behind.getBoundingClientRect().top}px`);
       }
       dialog.showModal();
+      // Opened by a tap or click: focus goes to the dialog, not to its first control, where
+      // browsers would draw the keyboard focus ring (the tap focused nothing before). Tab still
+      // reaches the first control; an [autofocus] element keeps its focus.
+      if (viaPointer && !document.activeElement?.hasAttribute('autofocus')) {
+        if (!dialog.hasAttribute('tabindex')) dialog.tabIndex = -1;
+        dialog.focus({ preventScroll: true });
+      }
       stack.push(sheet);
       if (stack.length == 1 && short) page.style.setProperty('--ss-gutter', 'auto');
       const marked = markers().find((marker) => marker.hasAttribute('data-ss-initial'));
@@ -410,12 +418,20 @@ export function closeTop(reason: CloseReason = 'api') {
   return !!top;
 }
 
-let fallback = false;
+/** Whether the last input was a pointer (tap, click) rather than a key. */
+let viaPointer = false;
+let installed = false;
 
-/** In browsers without invoker commands, commandfor buttons open and close attached sheets. */
-function installFallback() {
-  if (fallback || typeof HTMLButtonElement == 'undefined' || 'commandForElement' in HTMLButtonElement.prototype) return;
-  fallback = true;
+/**
+ * Once per page: notes whether the last input was a pointer or a key, and in browsers without
+ * invoker commands lets commandfor buttons open and close attached sheets.
+ */
+function install() {
+  if (installed || typeof document == 'undefined') return;
+  installed = true;
+  document.addEventListener('pointerdown', () => (viaPointer = true), true);
+  document.addEventListener('keydown', () => (viaPointer = false), true);
+  if ('commandForElement' in HTMLButtonElement.prototype) return;
   document.addEventListener('click', (event) => {
     const button = (event.target as Element).closest?.('button[commandfor]');
     const dialog = button && document.getElementById(button.getAttribute('commandfor')!);

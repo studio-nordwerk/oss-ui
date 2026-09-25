@@ -7,14 +7,14 @@ const fixtures = [
   { name: 'Astro', url: '/scroll-sheet/fixtures/astro/', controlled: false },
 ];
 
-/** Attributes the core manages; everything else must match the server markup. */
+/** Attributes the core manages (style and tabindex on the dialog); everything else must match the server markup. */
 const normalize = (page: Page, html: string) =>
   page.evaluate((html) => {
     const template = document.createElement('template');
     template.innerHTML = html;
     for (const element of template.content.querySelectorAll('*'))
-      for (const name of ['data-ss-ready', 'data-ss-expanded', 'data-ss-closing', 'open', 'style'])
-        if (name != 'style' || element.tagName == 'DIALOG') element.removeAttribute(name);
+      for (const name of ['data-ss-ready', 'data-ss-expanded', 'data-ss-closing', 'open', 'style', 'tabindex'])
+        if ((name != 'style' && name != 'tabindex') || element.tagName == 'DIALOG') element.removeAttribute(name);
     return template.innerHTML;
   }, html);
 

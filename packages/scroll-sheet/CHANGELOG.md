@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 (2026-09-25)
+
+- Fix: a sheet opened by a tap or click showed the keyboard focus ring on its first control (the
+  handle, or the close button) in Chrome and Safari. Focus now goes to the sheet itself, which
+  screen readers announce by its title; Tab still reaches the first control. Opened by a key, the
+  first control keeps the focus, and an `[autofocus]` element always does.
+
 ## 0.3.0 (2026-09-25)
 
 - Depth: `data-ss-depth` on a sheet (`depth` in the React, Preact and Astro adapters) makes the

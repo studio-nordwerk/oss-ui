@@ -136,8 +136,11 @@ never give a sheet a z-index: the top layer is above everything.
   after the release, listened for from the next frame on (the drag's own last step sends one).
 - `open()` right after a close whose `close` event is still queued ends that close first
   (`ss:close`, promise settled), so a sheet reopened in the same task never waits on a dead close.
-- The core keeps two page-wide listeners for its lifetime (the `commandfor` fallback and the history
-  plugin's popstate check); they hold no sheet and are installed once.
+- The core keeps page-wide listeners for its lifetime (the input kind, the `commandfor` fallback
+  and the history plugin's popstate check); they hold no sheet and are installed once.
+- Opened by a tap or click, the core focuses the dialog itself (`tabindex="-1"`), not its first
+  control: Chrome and Safari draw the keyboard focus ring on a control focused after a tap that
+  focused nothing. Opened by a key, the browser's own choice stays; so does an `[autofocus]` one.
 
 ### Commands (from the repository root)
 

@@ -558,3 +558,20 @@ test('the page entry restores scroll as before once no sheet entry is above it',
   await expect.poll(async () => (await state(page, 'size-sheet')).open).toBe(false);
   await expect.poll(() => page.evaluate(() => history.scrollRestoration)).toBe('auto');
 });
+
+test('opened by a click, focus goes to the sheet without a focus ring; Tab reaches the first control', async ({
+  page,
+}) => {
+  await page.goto(PAGE);
+  await ready(page);
+  await openWith(page, page.locator('#sizes .tile-btn').first(), 'size-sheet');
+  const focus = await page.evaluate(() => ({
+    onDialog: document.activeElement?.id,
+    ring: document.querySelector('#size-sheet :focus-visible')?.className ?? null,
+  }));
+  expect(focus).toEqual({ onDialog: 'size-sheet', ring: null });
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(() => document.activeElement?.closest('#size-sheet') != null)).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect.poll(async () => (await state(page, 'size-sheet')).open).toBe(false);
+});
