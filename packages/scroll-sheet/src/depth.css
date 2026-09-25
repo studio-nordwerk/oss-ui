@@ -1,0 +1,77 @@
+/*
+ * scroll-sheet depth, loaded after sheet.css.
+ *
+ * data-ss-depth on a sheet: while it is open, the page behind it shrinks, rounds its corners and
+ * shows a dark ground around it, like a sheet on iOS. The page is <body>, or the element marked
+ * data-ss-page (an app shell). It needs a background of its own, as the ground replaces the root
+ * element's. The script records where the page was scrolled (--ss-page-y), so the page recedes
+ * towards the top of the screen; where scroll-driven animations exist, it follows the sheet while
+ * it is dragged. A transformed page is the containing block of its fixed elements: a fixed header
+ * would leave the screen. Keep fixed elements outside data-ss-page, or make them sticky.
+ *
+ * Tokens: --ss-depth-bg (the ground), --ss-depth-inset (room at the sides), --ss-depth-offset
+ * (room at the top), --ss-depth-radius.
+ */
+@property --_depth {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes ss-depth {
+  from {
+    --_depth: 0;
+  }
+  to {
+    --_depth: 1;
+  }
+}
+/* A full-height sheet leaves a sliver of the receded page above it. */
+.ss[data-ss-depth] {
+  --_top-gap: var(--ss-top-gap, calc(env(safe-area-inset-top) + 1.375rem));
+}
+:root:has(dialog.ss[data-ss-depth][data-ss-ready]:modal) {
+  /* Important: inside a cascade layer (Tailwind) it still wins over a background utility on <html>. */
+  background: var(--ss-depth-bg, #000) !important;
+}
+:root:has(dialog.ss[data-ss-depth][data-ss-ready]) :is(body:not(:has([data-ss-page])), [data-ss-page]) {
+  transition: --_depth var(--ss-duration, 0.36s) var(--ss-easing, cubic-bezier(0.32, 0.72, 0, 1));
+}
+:root:has(dialog.ss[data-ss-depth][data-ss-ready]:modal) :is(body:not(:has([data-ss-page])), [data-ss-page]) {
+  --_depth: 1;
+  --_depth-y: var(--ss-page-y, 0px);
+  transform-origin: 50% var(--_depth-y);
+  scale: calc(1 - 0.08 * var(--_depth));
+  translate: 0 calc(var(--_depth) * var(--ss-depth-offset, calc(env(safe-area-inset-top) + 0.625rem)));
+  /* Only the part on screen, with round corners: the page is taller than the viewport. */
+  clip-path: inset(
+    var(--_depth-y) 0 calc(100% - var(--_depth-y) - 100lvh) round calc(var(--_depth) * var(--ss-depth-radius, 12px))
+  );
+}
+/* The same room at the sides on every screen width. */
+@supports (scale: calc(1px / 1px)) {
+  :root:has(dialog.ss[data-ss-depth][data-ss-ready]:modal) :is(body:not(:has([data-ss-page])), [data-ss-page]) {
+    scale: calc(1 - 2 * var(--ss-depth-inset, 1rem) / 100vw * var(--_depth));
+  }
+}
+:root:has(dialog.ss[data-ss-depth][data-ss-closing]) :is(body:not(:has([data-ss-page])), [data-ss-page]) {
+  --_depth: 0;
+}
+@supports (animation-timeline: scroll()) and (timeline-scope: none) {
+  :root:has(dialog.ss[data-ss-depth]) {
+    timeline-scope: --ss-depth;
+  }
+  .ss[data-ss-depth][data-ss-ready] {
+    scroll-timeline:
+      --ss-travel var(--_timeline-axis),
+      --ss-depth var(--_timeline-axis);
+  }
+  :root:has(dialog.ss[data-ss-depth][data-ss-ready]:modal) :is(body:not(:has([data-ss-page])), [data-ss-page]) {
+    animation: ss-depth linear both;
+    animation-timeline: --ss-depth;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:has(dialog.ss[data-ss-depth]) :is(body, [data-ss-page]) {
+    transition: none;
+  }
+}

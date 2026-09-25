@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (2026-09-25)
+
+- Depth: `data-ss-depth` on a sheet (`depth` in the React, Preact and Astro adapters) makes the
+  page behind it recede while it is open. The page shrinks towards the top of the screen, rounds
+  its corners and sits on a dark ground, and follows the drag where scroll-driven animations
+  exist. The styles are the new opt-in `@nordwerk/scroll-sheet/depth.css`; the receding page is
+  `<body>` or the element marked `data-ss-page`. The shadcn `ScrollSheet` takes `depth` too.
+
 ## 0.2.0 (2026-09-22)
 
 - The handle can be a button: `<button class="ss-handle" commandfor="ID" command="--ss-cycle">`

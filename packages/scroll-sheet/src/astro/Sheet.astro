@@ -11,6 +11,8 @@ interface Props {
   id: string;
   /** Presentation per breakpoint, e.g. 'bottom md:end'. */
   presentation?: string;
+  /** The page behind recedes while the sheet is open. */
+  depth?: boolean;
   /** Accessible name; otherwise the element with the id `${id}-title` names the sheet. */
   label?: string;
   /** Snap points of a bottom sheet below its full height, as CSS lengths. */
@@ -25,7 +27,7 @@ interface Props {
   drag?: boolean;
   class?: string;
 }
-const { id, presentation, label, snapPoints = [], initialSnap, replace, history, keyboard, drag, class: className } =
+const { id, presentation, depth, label, snapPoints = [], initialSnap, replace, history, keyboard, drag, class: className } =
   Astro.props;
 const options = JSON.stringify({ history, keyboard, drag, replace });
 ---
@@ -33,6 +35,7 @@ const options = JSON.stringify({ history, keyboard, drag, replace });
   id={id}
   class:list={['ss', className]}
   data-ss={presentation}
+  data-ss-depth={depth ? '' : undefined}
   data-ss-astro={options}
   aria-label={label}
   aria-labelledby={label ? undefined : `${id}-title`}

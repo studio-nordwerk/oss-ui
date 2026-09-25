@@ -21,6 +21,8 @@ export interface SheetProps {
   id?: string;
   /** Presentation per breakpoint, e.g. 'bottom md:end'. Default: bottom sheet. */
   presentation?: string;
+  /** The page behind recedes while the sheet is open (data-ss-depth). */
+  depth?: boolean;
   /** Accessible name when the sheet has no <SheetTitle>. */
   label?: string;
   /** Snap points of a bottom sheet below its full height, as CSS lengths ('45dvh', '320px'). */
@@ -152,7 +154,7 @@ export function createAdapter(framework: Framework) {
   function Sheet(props: SheetProps) {
     const generated = useId();
     const id = props.id ?? `ss${generated.replace(/[^\w-]/g, '')}`;
-    const { presentation, label, snapPoints = [], initialSnap, className, panelClassName, style } = props;
+    const { presentation, depth, label, snapPoints = [], initialSnap, className, panelClassName, style } = props;
     const { ref } = useSheet(props);
 
     return h(
@@ -165,6 +167,7 @@ export function createAdapter(framework: Framework) {
           id,
           className: join('ss', className),
           'data-ss': presentation,
+          'data-ss-depth': depth ? '' : undefined,
           'aria-label': label,
           'aria-labelledby': label ? undefined : `${id}-title`,
           style,

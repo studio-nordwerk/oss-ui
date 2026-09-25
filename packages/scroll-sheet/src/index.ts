@@ -233,6 +233,11 @@ export function attach(dialog: HTMLDialogElement, options: SheetOptions = {}): S
       invoker = (from ?? (active != document.body ? active : null)) as HTMLElement | null;
       const page = document.documentElement;
       const short = page.scrollHeight <= page.clientHeight;
+      // A sheet with depth: the page recedes towards the top of the screen, measured before it locks.
+      if (dialog.hasAttribute('data-ss-depth')) {
+        const behind = document.querySelector<HTMLElement>('[data-ss-page]') ?? document.body;
+        behind.style.setProperty('--ss-page-y', `${-behind.getBoundingClientRect().top}px`);
+      }
       dialog.showModal();
       stack.push(sheet);
       if (stack.length == 1 && short) page.style.setProperty('--ss-gutter', 'auto');

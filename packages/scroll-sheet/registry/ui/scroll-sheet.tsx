@@ -28,6 +28,7 @@ import {
   type SheetState,
 } from "@nordwerk/scroll-sheet"
 import "@nordwerk/scroll-sheet/sheet.layer.css"
+import "@nordwerk/scroll-sheet/depth.layer.css"
 
 import { cn } from "@/lib/utils"
 
@@ -35,6 +36,7 @@ type ScrollSheetContextProps = {
   id: string
   open?: boolean
   presentation?: string
+  depth?: boolean
   snapPoints: string[]
   initialSnap?: number
   api: ScrollSheetApi | null
@@ -72,6 +74,7 @@ function useScrollSheet() {
 function ScrollSheet({
   id: givenId,
   presentation,
+  depth,
   snapPoints = [],
   initialSnap,
   open,
@@ -85,6 +88,8 @@ function ScrollSheet({
   id?: string
   /** Presentation per breakpoint: "bottom" (default), "end", "start", "center", with sm:, md:, lg:. */
   presentation?: string
+  /** The page behind recedes while the sheet is open (iOS-like); <body> needs its own background. */
+  depth?: boolean
   /** Snap points of a bottom sheet below its full height, as CSS lengths ("50dvh", "320px"). */
   snapPoints?: string[]
   /** Index into snapPoints to open at; default: full height. */
@@ -112,6 +117,7 @@ function ScrollSheet({
         id,
         open,
         presentation,
+        depth,
         snapPoints,
         initialSnap,
         api,
@@ -191,7 +197,7 @@ function ScrollSheetContent({
 }: React.ComponentProps<"dialog"> & { panelClassName?: string }) {
   const context = React.useContext(ScrollSheetContext)
   if (!context) throw new Error("ScrollSheetContent must be used within a <ScrollSheet />")
-  const { id, open, presentation, snapPoints, initialSnap, api, setApi, setState, options } =
+  const { id, open, presentation, depth, snapPoints, initialSnap, api, setApi, setState, options } =
     context
   const ref = React.useRef<HTMLDialogElement>(null)
   const closingFromProp = React.useRef(false)
@@ -273,6 +279,7 @@ function ScrollSheetContent({
       ref={ref}
       id={id}
       data-ss={presentation}
+      data-ss-depth={depth ? "" : undefined}
       data-slot="scroll-sheet-content"
       aria-labelledby={`${id}-title`}
       suppressHydrationWarning

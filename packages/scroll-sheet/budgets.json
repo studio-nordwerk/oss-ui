@@ -2,10 +2,11 @@
   {
     "name": "core (lifecycle, one close path, snap points, focus return, commands fallback)",
     "entry": "dist/index.js",
-    "max": 2700
+    "max": 2750
   },
   { "name": "history plugin (back button and back swipe)", "entry": "dist/history.js", "max": 800 },
   { "name": "keyboard plugin (iOS on-screen keyboard)", "entry": "dist/keyboard.js", "max": 800 },
   { "name": "drag plugin (mouse drag on handle and header)", "entry": "dist/drag.js", "max": 1200 },
-  { "name": "stylesheet (bottom sheet, drawers, dialog, breakpoints)", "entry": "dist/sheet.css", "max": 2300 }
+  { "name": "stylesheet (bottom sheet, drawers, dialog, breakpoints)", "entry": "dist/sheet.css", "max": 2300 },
+  { "name": "depth stylesheet (the page recedes behind the sheet)", "entry": "dist/depth.css", "max": 700 }
 ]

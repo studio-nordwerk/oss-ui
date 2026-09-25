@@ -256,6 +256,40 @@ ${stores.map(([street, town, distance, hours]) => `              <li><b>${street
     ],
   },
   {
+    id: 'depth',
+    title: 'Product details: full width, the page recedes',
+    text: 'A bottom sheet across the whole width and almost the whole height. With <code>data-ss-depth</code> the page behind it shrinks, rounds its corners and sits on a dark ground, and follows the sheet while you drag it down. The page is <code>&lt;body&gt;</code>, or the element marked <code>data-ss-page</code>.',
+    body: `<div class="toolbar"><button class="nw-btn nw-btn-line" type="button" commandfor="details-sheet" command="show-modal">Product details</button></div>
+        <dialog class="ss details" id="details-sheet" data-ss-depth aria-labelledby="details-sheet-title" data-case-sheet="depth">
+          <div class="ss-panel">
+            <button class="ss-handle" type="button" commandfor="details-sheet" command="--ss-cycle" aria-label="Change height"></button>
+            <header class="ss-header"><h2 id="details-sheet-title">Rose Water Mist</h2>${closeButton('details-sheet')}</header>
+            <div class="ss-body">
+              <div class="details-img" aria-hidden="true"></div>
+              <p class="muted">Harbour Mist · 100 ml · 24.95 €</p>
+              <p>A light face mist with rose water and aloe. Spray it on after cleansing or over make-up during the day; it leaves no film and dries in seconds.</p>
+              <h3>How to use</h3>
+              <p>Hold the bottle an arm's length away, close your eyes and spray two or three times. Let it dry on its own.</p>
+              <h3>Ingredients</h3>
+              <p class="muted">Aqua, rosa damascena flower water, aloe barbadensis leaf juice, glycerin, sodium benzoate, citric acid.</p>
+              <h3>Reviews</h3>
+${['Fresh without being sticky. — M.', 'Nice after sport, the scent is gone after a minute. — J.', 'The spray is very fine, the bottle lasts long. — S.'].map((r) => `              <p>${r}</p>`).join('\n')}
+            </div>
+            <footer class="ss-footer"><button class="nw-btn" type="button" data-demo-link>Add to bag</button></footer>
+          </div>
+          <div class="ss-rest"></div>
+        </dialog>`,
+    code: [
+      ['html', `<dialog class="ss details" id="details" data-ss-depth aria-labelledby="details-title">…</dialog>`],
+      [
+        'css',
+        `/* Full width; the page needs a background of its own. */
+.details { --ss-sheet-max-size: none; }
+body { background: #fff; }`,
+      ],
+    ],
+  },
+  {
     id: 'lightbox',
     title: 'Lightbox: a full-screen dialog with a carousel inside',
     text: 'The centred presentation stretched to the whole screen, dark, with a <a href="../scroll-carousel">scroll-carousel</a> inside: arrows, dots, arrow keys, and it opens at the image you picked. Escape or the close button end it; the page does not move. The two packages do not depend on each other; the page uses both.',
@@ -481,7 +515,7 @@ export default async function generate({ out, base, canonical, redirect }) {
       base,
       canonical,
       redirect,
-      styles: ['lib/sheet.css', 'carousel/carousel.css'],
+      styles: ['lib/sheet.css', 'lib/depth.css', 'carousel/carousel.css'],
       head: '<link rel="stylesheet" href="demo.css">\n<script type="module" src="demo.js"></script>',
       body,
     }),

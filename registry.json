@@ -98,7 +98,7 @@
       "type": "registry:ui",
       "title": "Scroll Sheet",
       "description": "Bottom sheets, side drawers and dialogs on a native modal <dialog> and CSS scroll snap: opens before hydration, drags natively, 2.6 kB for the core.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "files": [
         {
           "path": "packages/scroll-sheet/registry/ui/scroll-sheet.tsx",
@@ -112,7 +112,7 @@
       "type": "registry:block",
       "title": "Size Picker",
       "description": "A bottom sheet that opens at half the screen with a list of sizes, an engraving field kept above the iOS keyboard, and the add button at the bottom edge.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
       "files": [
         {
@@ -127,7 +127,7 @@
       "type": "registry:block",
       "title": "Filter Drawer",
       "description": "Brand filters in a bottom sheet on phones and a drawer from the end edge on wide screens, with reset and a sticky result button.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
       "files": [
         {
@@ -142,7 +142,7 @@
       "type": "registry:block",
       "title": "Mini Cart",
       "description": "The bag in a drawer from the end edge with items, total and checkout; closes other sheets when it opens.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
       "files": [
         {
@@ -157,7 +157,7 @@
       "type": "registry:block",
       "title": "Store Finder",
       "description": "A list of stores in a bottom sheet that rests at a third, two thirds or the full height.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
       "files": [
         {
@@ -172,7 +172,7 @@
       "type": "registry:block",
       "title": "Mobile Menu",
       "description": "Navigation in a drawer from the start edge; the back button and back swipe close it.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
       "files": [
         {
@@ -187,7 +187,7 @@
       "type": "registry:block",
       "title": "Contact Dialog",
       "description": "A centred dialog with a form that closes itself through method=\"dialog\".",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "button"],
       "files": [
         {
@@ -202,7 +202,7 @@
       "type": "registry:block",
       "title": "Lightbox",
       "description": "Images full screen in a dark dialog, with a scroll-carousel inside that opens at the picked image.",
-      "dependencies": ["@nordwerk/scroll-sheet@^0.2.0", "@nordwerk/scroll-carousel@^0.1.5"],
+      "dependencies": ["@nordwerk/scroll-sheet@^0.3.0", "@nordwerk/scroll-carousel@^0.1.5"],
       "registryDependencies": ["studio-nordwerk/oss-ui/scroll-sheet", "studio-nordwerk/oss-ui/scroll-carousel"],
       "files": [
         {

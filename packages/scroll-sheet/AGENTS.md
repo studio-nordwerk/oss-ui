@@ -69,6 +69,7 @@ never give a sheet a z-index: the top layer is above everything.
 | Mini cart after adding | `data-ss="end" data-ss-replace` | open with `getSheet(dialog).open()` |
 | Confirmation or form | `data-ss="center"`, `<form method="dialog">` | read `dialog.returnValue` on `ss:close` |
 | Store finder over a map | bottom sheet with `--ss-at: 32dvh` (initial) and `66dvh` | — |
+| Product details over the page, iOS-style | bottom sheet with `data-ss-depth`, `--ss-sheet-max-size: none`, `depth.css` after `sheet.css` | — |
 | Full-screen gallery | `data-ss="center"` with `--ss-dialog-size: 100vw` and a full-height panel | — |
 
 ### Adapters

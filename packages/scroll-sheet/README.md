@@ -18,7 +18,8 @@ the browser does alone).
 | History plugin: back button and back swipe close the top sheet | +0.7 kB |
 | Keyboard plugin: sheets above the iOS on-screen keyboard | +0.7 kB |
 | Drag plugin: drag by the handle and header with a mouse | +1.1 kB |
-| Stylesheet: bottom sheet, drawers, dialog, breakpoints | 2.1 kB |
+| Stylesheet: bottom sheet, drawers, dialog, breakpoints | 2.2 kB |
+| Depth stylesheet: the page recedes behind the sheet | +0.6 kB |
 
 Adapters for React, Preact and Astro are included; they render the markup and attach the core.
 
@@ -173,6 +174,37 @@ page then shifts when its scrollbar goes.
 `data-ss="bottom md:end"` is a bottom sheet on phones and a drawer on wider screens; the switch
 is CSS, so the server sends one markup for every device. A sheet that is open while the
 presentation changes (a rotated phone, a resized window) shows in full in the new one.
+
+## Depth
+
+`data-ss-depth` on a sheet (`depth` in the adapters) makes the page behind it recede while it is
+open, like a sheet on iOS: the page shrinks towards the top of the screen, rounds its corners and
+sits on a dark ground, and where scroll-driven animations exist it follows the sheet while it is
+dragged. Load `@nordwerk/scroll-sheet/depth.css` after `sheet.css`. The receding page is
+`<body>`, or the element marked `data-ss-page` in an app shell; give it a background of its own,
+as the ground replaces the root element's. It needs the script, which records where the page
+was scrolled.
+
+**Fixed elements:** a transformed element becomes the containing block of its `position: fixed`
+descendants, so a fixed header inside the receding page leaves the screen while the sheet is open.
+Make it `position: sticky` (which keeps working), or wrap the page content in an element with
+`data-ss-page` and keep fixed elements outside it (they then stay in place, above the ground).
+
+**iOS:** Safari 26 keeps the strip behind the status bar in the page's own colour; like the
+dimmed backdrop of every sheet, the dark ground starts below it.
+
+With Tailwind, `depth.css` can go into the components layer like `sheet.css`; the ground is
+`!important`, so a background utility on `<html>` does not hide it. The shadcn component loads it
+and takes a `depth` prop. A depth sheet leaves a smaller gap at the top
+by default, so a full-height sheet shows a sliver of the receded page; with
+`--ss-sheet-max-size: none` it spans the whole width.
+
+| Property | Default | |
+| --- | --- | --- |
+| `--ss-depth-bg` | `#000` | The ground around the receded page |
+| `--ss-depth-inset` | `1rem` | Room at each side of the receded page |
+| `--ss-depth-offset` | `safe-area-inset-top + 0.625rem` | How far the page moves down |
+| `--ss-depth-radius` | `12px` | Corners of the receded page |
 
 ## Custom properties
 
